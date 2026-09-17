@@ -28,8 +28,8 @@ export default function HeroVideo() {
         loop
         playsInline
         preload="auto"
-        poster="/hero-poster.jpg?v=1080"
-        src="/hero.mp4?v=1080"
+        poster="/studio/01.jpg"
+        src="/hero.mp4?v=client"
       />
     </section>
   );

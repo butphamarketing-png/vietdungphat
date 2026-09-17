@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { lists } from "../lib/content.js";
+import { studio } from "../lib/studio.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
@@ -13,6 +14,17 @@ export default function ListPage({ kind }) {
         <p>{data.intro}</p>
       </PageHero>
       <div className="page-body">
+        {projects ? (
+          <div className="project-grid" style={{ marginBottom: "2.5rem" }}>
+            {studio.map((p, idx) => (
+              <div key={p.src} className="project-card">
+                <SmartImg src={p.src} alt={p.title} />
+                <span className="num">{String(idx + 1).padStart(2, "0")}</span>
+                <span className="name">{p.title}</span>
+              </div>
+            ))}
+          </div>
+        ) : null}
         <div className={kind === "news" ? "news-grid list" : projects ? "project-grid" : "grid-3"}>
           {data.items.map((p, idx) =>
             kind === "news" ? (

@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import { coreServices, news, products, projects, reviews } from "../lib/content.js";
+import { coreServices, news, products, reviews } from "../lib/content.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import StatsBar from "../components/StatsBar.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 import HeroVideo from "../components/HeroVideo.jsx";
+import { studio } from "../lib/studio.js";
 
 export default function Home() {
   return (
@@ -59,9 +60,9 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {projects.slice(0, 8).map((p) => (
-            <Link key={p.slug} to={`/${p.slug}`} className="card">
-              <SmartImg src={p.image} alt={p.title} />
+          {studio.slice(0, 8).map((p) => (
+            <Link key={p.src} to="/mau-nha" className="card">
+              <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
             </Link>
           ))}
@@ -90,9 +91,9 @@ export default function Home() {
 
       <section className="pad about-block">
         <div className="about-collage">
-          <SmartImg className="shot a" src={products[2]?.image} alt="Nội thất phòng khách" />
-          <SmartImg className="shot b" src={products[4]?.image} alt="Nội thất phòng ăn" />
-          <SmartImg className="shot c" src={projects[1]?.image} alt="Công trình Việt Dũng Phát" />
+          <SmartImg className="shot a" src="/studio/08.jpg" alt="Biệt thự tân cổ điển" />
+          <SmartImg className="shot b" src="/studio/10.jpg" alt="Biệt thự góc" />
+          <SmartImg className="shot c" src="/studio/11.jpg" alt="Công trình Việt Dũng Phát" />
           <p className="about-script">Kiến tạo không gian sống bền vững</p>
         </div>
         <div className="about-copy">
@@ -149,9 +150,9 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {projects.slice(8, 16).map((p) => (
-            <Link key={p.slug} to={`/${p.slug}`} className="card">
-              <SmartImg src={p.image} alt={p.title} />
+          {studio.slice(8).map((p) => (
+            <Link key={p.src} to="/mau-nha" className="card">
+              <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
             </Link>
           ))}

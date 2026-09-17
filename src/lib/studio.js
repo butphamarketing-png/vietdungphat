@@ -1,0 +1,16 @@
+export const studio = [
+  { src: "/studio/01.jpg", title: "Nhà phố mái thái — mặt tiền" },
+  { src: "/studio/02.jpg", title: "Góc ban công biệt thự" },
+  { src: "/studio/03.jpg", title: "Nhìn từ trên cao" },
+  { src: "/studio/04.jpg", title: "Tổng thể khuôn viên" },
+  { src: "/studio/05.jpg", title: "Sân trước và cổng" },
+  { src: "/studio/06.jpg", title: "Chi tiết mặt đứng" },
+  { src: "/studio/07.jpg", title: "Biệt thự phố — góc nhìn flycam" },
+  { src: "/studio/08.jpg", title: "Biệt thự tân cổ điển" },
+  { src: "/studio/09.jpg", title: "Công trình ven kênh" },
+  { src: "/studio/10.jpg", title: "Biệt thự góc — sân thượng" },
+  { src: "/studio/11.jpg", title: "Biệt thự góc phố" },
+  { src: "/studio/12.jpg", title: "Nhà phố 4 tầng" },
+  { src: "/studio/13.jpg", title: "Nhà phố nhìn từ xa" },
+  { src: "/studio/14.jpg", title: "Nhà phố — mặt hông" },
+];

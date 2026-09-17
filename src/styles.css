@@ -1,6 +1,6 @@
 :root {
   --paper: #ffffff;
-  --paper-2: #f2f2f2;
+  --paper-2: #ffffff;
   --ink: #3a3a3a;
   --ink-soft: #6e6e6e;
   --accent: #c9a84c;
@@ -195,9 +195,7 @@ h1, h2, h3, blockquote {
   grid-template-columns: minmax(240px, 1.05fr) repeat(3, minmax(0, 1fr));
   gap: 1rem 1.1rem;
   align-items: center;
-  background:
-    radial-gradient(circle at 8% 0%, rgba(201, 168, 76, 0.14), transparent 36%),
-    var(--paper-2);
+  background: #fff;
 }
 .services-block .service-cards { display: contents; }
 .service-sketch {
@@ -499,7 +497,7 @@ h1, h2, h3, blockquote {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #f2f2f2 0 28%, rgba(242,242,242,0.55) 48%, transparent 72%);
+  background: linear-gradient(90deg, #ffffff 0 28%, rgba(255,255,255,0.55) 48%, transparent 72%);
 }
 .booking-copy {
   position: relative;
@@ -926,9 +924,7 @@ body.is-popup-open .float-consult {
 .price-board {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(201, 168, 76, 0.16), transparent 28%),
-    var(--paper-2);
+  background: #fff;
 }
 .price-sketch {
   position: absolute;

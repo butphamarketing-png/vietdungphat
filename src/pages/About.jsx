@@ -25,7 +25,7 @@ export default function About() {
           ))}
         </div>
         <div className="about-layout">
-          <SmartImg src={site.aboutImage} alt={site.shortName} />
+          <SmartImg src="/studio/09.jpg" alt={site.shortName} />
           <div className="prose">
             {site.aboutHtml ? (
               <div dangerouslySetInnerHTML={{ __html: cleanArticleHtml(site.aboutHtml) }} />

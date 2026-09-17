@@ -29,21 +29,21 @@ export const coreServices = [
     title: "Thiết kế",
     slug: "thiet-ke",
     href: "/thiet-ke-kien-truc-ho-chi-minh",
-    image: "/thiet-ke.jpg",
+    image: "/studio/06.jpg",
     desc: "Thiết kế kiến trúc và nội thất nhà phố, biệt thự, căn hộ — hồ sơ đầy đủ để thi công.",
   },
   {
     title: "Xây dựng",
     slug: "xay-dung",
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/xay-dung.jpg",
+    image: "/studio/11.jpg",
     desc: "Thi công phần thô đến chìa khóa trao tay, giám sát tại công trình, không bán thầu.",
   },
   {
     title: "Cải tạo",
     slug: "cai-tao",
     href: "/bao-gia-sua-chu-nha-tron-goi-2025",
-    image: "/cai-tao.jpg",
+    image: "/studio/12.jpg",
     desc: "Sửa chữa, cải tạo, nâng cấp nhà cũ: kết cấu, hoàn thiện và nội thất.",
   },
 ];
@@ -81,7 +81,7 @@ export const pricePacks = [
       "Giám sát quá trình thi công",
     ],
     href: "/don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022",
-    image: "/thiet-ke.jpg",
+    image: "/studio/04.jpg",
   },
   {
     tag: "Hoàn thiện",
@@ -97,7 +97,7 @@ export const pricePacks = [
       "Chính sách bảo hành",
     ],
     href: "/thiet-ke-noi-that-nha-o",
-    image: "/xay-dung.jpg",
+    image: "/studio/02.jpg",
   },
   {
     tag: "Trọn gói",
@@ -115,6 +115,6 @@ export const pricePacks = [
       "Bảo hành dài hạn",
     ],
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/cai-tao.jpg",
+    image: "/studio/08.jpg",
   },
 ];
