@@ -30,7 +30,7 @@ export default function PriceBoard() {
   return (
     <section className="pad price-board" id="bao-gia">
       <svg className="price-sketch left" viewBox="0 0 280 220" aria-hidden="true">
-        <g fill="none" stroke="#cbb894" strokeWidth="1.2">
+        <g fill="none" stroke="#c9a84c" strokeWidth="1.2">
           <path d="M20 180h70v-58H20zM90 180h95V70l-48-32-47 32v110zM185 180h70v-44h-70z" />
           <path d="M108 180v-48h58v48M40 148h30M40 136h18" />
           <circle cx="52" cy="92" r="10" />

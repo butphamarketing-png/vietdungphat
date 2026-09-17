@@ -14,7 +14,7 @@ export default function Home() {
 
       <section className="pad services-block">
         <svg className="service-sketch" viewBox="0 0 420 180" aria-hidden="true">
-          <g fill="none" stroke="#d4c4a4" strokeWidth="1.15">
+          <g fill="none" stroke="#c9a84c" strokeWidth="1.15">
             <path d="M20 160h70V108H20zM90 160h120V72l-60-40-60 40v88zM210 160h80v-36h-80z" />
             <path d="M118 160v-44h64v44M40 132h28" />
             <path d="M8 168c70-16 140 4 220 6 70 2 140-18 190-8" />
