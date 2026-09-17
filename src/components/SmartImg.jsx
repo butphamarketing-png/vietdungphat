@@ -17,9 +17,8 @@ export default function SmartImg({ src, alt = "", className, ...rest }) {
       referrerPolicy="no-referrer"
       loading="lazy"
       onError={() => {
-        const fallback = original && original !== current ? original : "";
-        const isHttpCms = /^https?:\/\/(www\.)?vietdungphat\.com/i.test(fallback);
-        if (fallback && !isHttpCms) setCurrent(fallback);
+        const httpCms = /^https?:\/\/(www\.)?vietdungphat\.com/i.test(original);
+        if (current !== original && original && !httpCms) setCurrent(original);
         else setDead(true);
       }}
       {...rest}

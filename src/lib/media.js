@@ -10,7 +10,8 @@ export function fullImage(src = "") {
     if (/^https?:\/\//i.test(url)) {
       const parsed = new URL(url);
       if (CMS_HOST.test(parsed.hostname)) {
-        return `/cms${parsed.pathname}${parsed.search}`;
+        const remote = `${parsed.hostname}${parsed.pathname}${parsed.search}`;
+        return `https://images.weserv.nl/?url=${encodeURIComponent(remote)}`;
       }
     }
   } catch {
