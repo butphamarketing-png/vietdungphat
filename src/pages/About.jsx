@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { coreServices, site } from "../lib/content.js";
+import { cleanArticleHtml } from "../lib/media.js";
 import PageHero from "../components/PageHero.jsx";
 import StatsBar from "../components/StatsBar.jsx";
 import BookingCta from "../components/BookingCta.jsx";
+import SmartImg from "../components/SmartImg.jsx";
 
 export default function About() {
   return (
@@ -17,16 +19,16 @@ export default function About() {
         <div className="service-cards about-services">
           {coreServices.map((s) => (
             <Link key={s.title} className="service-card" to={s.href}>
-              <img src={s.image} alt={s.title} />
+              <SmartImg src={s.image} alt={s.title} />
               <strong>{s.title}</strong>
             </Link>
           ))}
         </div>
         <div className="about-layout">
-          <img src={site.aboutImage} alt={site.shortName} />
+          <SmartImg src={site.aboutImage} alt={site.shortName} />
           <div className="prose">
             {site.aboutHtml ? (
-              <div dangerouslySetInnerHTML={{ __html: site.aboutHtml }} />
+              <div dangerouslySetInnerHTML={{ __html: cleanArticleHtml(site.aboutHtml) }} />
             ) : (
               site.aboutIntro.map((p) => <p key={p}>{p}</p>)
             )}

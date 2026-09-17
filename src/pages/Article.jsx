@@ -1,7 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { findPost, kindOf, projects, news, products, services } from "../lib/content.js";
+import { cleanArticleHtml, fullImage, uniqueImages } from "../lib/media.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
+import SmartImg from "../components/SmartImg.jsx";
 
 export default function Article() {
   const { slug } = useParams();
@@ -23,6 +25,12 @@ export default function Article() {
     );
   }
 
+  const cover = fullImage(post.image);
+  const body = cleanArticleHtml(post.html);
+  const gallery = /<img/i.test(body)
+    ? []
+    : uniqueImages(post.gallery || []).filter((src) => src !== cover);
+
   return (
     <article className="page article">
       <PageHero
@@ -36,13 +44,20 @@ export default function Article() {
         {post.date ? <time>{post.date}</time> : null}
       </PageHero>
       <div className="page-body article-wrap">
-        {post.image ? (
+        {cover ? (
           <figure className="article-cover">
-            <img src={post.image} alt={post.title} />
+            <SmartImg src={cover} alt={post.title} />
           </figure>
         ) : null}
-        {post.html ? (
-          <div className="prose article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+        {gallery.length ? (
+          <div className="article-gallery">
+            {gallery.map((src) => (
+              <SmartImg key={src} src={src} alt={post.title} />
+            ))}
+          </div>
+        ) : null}
+        {body ? (
+          <div className="prose article-body" dangerouslySetInnerHTML={{ __html: body }} />
         ) : (
           <p className="muted">Đang tải nội dung gốc từ kho dữ liệu Việt Dũng Phát.</p>
         )}
@@ -53,7 +68,7 @@ export default function Article() {
             <div className="grid-3">
               {related.map((p) => (
                 <Link key={p.slug} to={`/${p.slug}`} className="card">
-                  <img src={p.image} alt={p.title} />
+                  <SmartImg src={p.image} alt={p.title} />
                   <span>{p.title}</span>
                 </Link>
               ))}

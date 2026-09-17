@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { coreServices, lists } from "../lib/content.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
+import SmartImg from "../components/SmartImg.jsx";
 
 export default function Services() {
   const { hash } = useLocation();
@@ -22,7 +23,7 @@ export default function Services() {
         <div className="service-cards">
           {coreServices.map((s) => (
             <Link key={s.title} id={s.slug} className="service-card" to={s.href}>
-              <img src={s.image} alt={s.title} />
+              <SmartImg src={s.image} alt={s.title} />
               <strong>{s.title}</strong>
             </Link>
           ))}
@@ -34,7 +35,7 @@ export default function Services() {
         <div className="grid-3">
           {lists.services.items.map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="card">
-              <img src={p.image} alt={p.title} />
+              <SmartImg src={p.image} alt={p.title} />
               <span>{p.title}</span>
             </Link>
           ))}

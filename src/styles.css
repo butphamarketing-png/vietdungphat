@@ -202,7 +202,7 @@ h1, h2, h3, blockquote {
   gap: 1rem;
   margin-bottom: 2rem;
 }
-.section-head h2, .page-hero h1, .services-intro h2, .about-block h2 {
+.section-head h2, .page-hero h1, .about-block h2 {
   font-size: clamp(1.9rem, 3.6vw, 3rem);
   margin: 0 0 0.8rem;
 }
@@ -211,13 +211,14 @@ h1, h2, h3, blockquote {
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 3rem;
+  grid-template-columns: minmax(240px, 1.05fr) repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.1rem;
   align-items: center;
   background:
     radial-gradient(circle at 8% 0%, rgba(232, 220, 196, 0.45), transparent 36%),
     #fbf8f2;
 }
+.services-block .service-cards { display: contents; }
 .service-sketch {
   position: absolute;
   left: 4%;
@@ -227,17 +228,25 @@ h1, h2, h3, blockquote {
   pointer-events: none;
 }
 .services-intro { position: relative; z-index: 1; }
-.services-intro p { color: var(--ink-soft); line-height: 1.75; max-width: 36rem; }
-.service-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; position: relative; z-index: 1; }
+.services-intro h2 {
+  font-family: "Be Vietnam Pro", var(--sans);
+  font-size: clamp(1.7rem, 2.6vw, 2.55rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  margin: 0 0 0.7rem;
+}
+.services-intro p { color: var(--ink-soft); line-height: 1.7; max-width: 28rem; font-size: 0.95rem; }
+.service-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; position: relative; z-index: 1; }
 .service-card {
   position: relative;
   display: block;
   overflow: hidden;
-  min-height: 360px;
+  min-height: 280px;
   background: #eee;
   border-radius: 10px;
 }
-.service-card img { width: 100%; height: 360px; object-fit: cover; }
+.service-card img { width: 100%; height: 280px; object-fit: cover; }
 .service-card strong {
   position: absolute;
   left: 0;
@@ -426,7 +435,7 @@ h1, h2, h3, blockquote {
 }
 .stats span { color: var(--ink-soft); font-size: 0.9rem; }
 
-.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 .card {
   position: relative;
@@ -605,7 +614,22 @@ h1, h2, h3, blockquote {
 .article-body iframe, .article-body video { max-width: 100%; }
 .article-body table { width: 100%; display: block; overflow-x: auto; border-collapse: collapse; }
 .article-body > h1:first-child { display: none; }
-.article-body .col-100 { width: 100%; }
+.article-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+  margin: 0 0 2rem;
+}
+.article-gallery img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 0;
+  background: #eee;
+}
+.article-body .main-detail-carousel,
+.article-body #carousel-detail { display: none; }
 .article-body .news-order-detail,
 .article-body .pagination,
 .article-body .slick-dots,
@@ -695,16 +719,23 @@ body.is-menu-open .float-consult {
     color: var(--accent);
     border-bottom-color: var(--accent);
   }
-  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .service-card, .service-card img { min-height: 300px; height: 300px; }
 }
 
 @media (max-width: 980px) {
   .pad { padding: 3.4rem 5vw; }
   .page-hero, .page-body { padding-left: 5vw; padding-right: 5vw; }
-  .services-block, .about-block, .about-layout, .footer-grid,
+  .about-block, .about-layout, .footer-grid,
   .cta-band, .booking-cta, .booking-row, .service-detail-row {
     grid-template-columns: 1fr;
+  }
+  .services-block {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+  .services-block .service-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
   }
   .cta-band { flex-direction: column; align-items: flex-start; }
   .booking-form { margin: 0 5vw 2rem; }
@@ -720,9 +751,11 @@ body.is-menu-open .float-consult {
   .header { padding: 0.7rem 4vw; }
   .brand strong { font-size: 0.78rem; }
   .news-card { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 720px) {
+  .grid-4 { grid-template-columns: 1fr; }
   .float-dock { right: 10px; bottom: 78px; gap: 18px; }
   .dock-btn, .dock-btn i { width: 44px; height: 44px; }
   .float-consult { right: 10px; bottom: 12px; font-size: 0.92rem; padding: 0.7rem 0.9rem; }
@@ -732,8 +765,11 @@ body.is-menu-open .float-consult {
   .section-head.row { flex-direction: column; align-items: flex-start; }
   .page-hero { padding-top: 1.8rem; padding-bottom: 1.6rem; }
   .page-hero h1 { font-size: clamp(1.85rem, 8vw, 2.55rem); }
+  .service-cards { gap: 0.5rem; }
+  .service-card, .service-card img { min-height: 150px; height: 150px; }
   .brand img { height: 42px; max-width: 46px; }
   .article-cover img { max-height: 42vh; }
+  .article-gallery { grid-template-columns: 1fr; }
   .price-photo img { height: 150px; }
   .hero { min-height: 70vh; }
 }

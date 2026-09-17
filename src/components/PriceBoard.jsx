@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { pricePacks } from "../lib/content.js";
+import SmartImg from "./SmartImg.jsx";
 
 function Icon({ name }) {
   if (name === "finish") {
@@ -55,7 +56,7 @@ export default function PriceBoard() {
           <Link key={p.title} className={`price-card${p.featured ? " featured" : ""}`} to={p.href}>
             {p.badge ? <span className="price-badge">{p.badge}</span> : null}
             <div className="price-photo">
-              <img src={p.image} alt={p.title} />
+              <SmartImg src={p.image} alt={p.title} />
               <span className="price-tag">
                 <Icon name={p.icon} />
                 {p.tag}

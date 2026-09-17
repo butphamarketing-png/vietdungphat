@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { coreServices, news, products, projects, reviews, site } from "../lib/content.js";
+import { fullImage } from "../lib/media.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import StatsBar from "../components/StatsBar.jsx";
+import SmartImg from "../components/SmartImg.jsx";
 
 export default function Home() {
   const [i, setI] = useState(0);
-  const full = (src) => src.replace(/\/resize\/[^/]+\/\d+\//, "/");
   const photoSlides = site.slides.filter((src) => /\.jpe?g(\?|$)/i.test(src) && !/slider/i.test(src));
   const slides = (photoSlides.length ? photoSlides : site.slides)
     .concat(projects.slice(0, 5).map((p) => p.image))
     .filter(Boolean)
-    .map(full)
+    .map(fullImage)
     .filter((src, idx, arr) => arr.indexOf(src) === idx)
     .slice(0, 6);
 
@@ -26,7 +27,7 @@ export default function Home() {
     <>
       <section className="hero">
         {slides.map((src, idx) => (
-          <img key={src} src={src} alt="" className={idx === i ? "on" : ""} />
+          <img key={src} src={src} alt="" className={idx === i ? "on" : ""} referrerPolicy="no-referrer" />
         ))}
         <div className="hero-dots">
           {slides.map((_, idx) => (
@@ -61,7 +62,7 @@ export default function Home() {
         <div className="service-cards">
           {coreServices.map((s) => (
             <Link key={s.title} className="service-card" to={s.href}>
-              <img src={s.image} alt={s.title} />
+              <SmartImg src={s.image} alt={s.title} />
               <strong>{s.title}</strong>
             </Link>
           ))}
@@ -81,12 +82,31 @@ export default function Home() {
             Xem thêm mẫu nhà
           </Link>
         </div>
-        <div className="project-grid">
-          {projects.slice(0, 6).map((p, idx) => (
-            <Link key={p.slug} to={`/${p.slug}`} className="project-card">
-              <img src={p.image} alt={p.title} />
-              <span className="num">{String(idx + 1).padStart(2, "0")}</span>
-              <span className="name">{p.title}</span>
+        <div className="grid-4">
+          {projects.slice(0, 8).map((p) => (
+            <Link key={p.slug} to={`/${p.slug}`} className="card">
+              <SmartImg src={p.image} alt={p.title} />
+              <span>{p.title}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="pad journal">
+        <div className="section-head row">
+          <div>
+            <p className="kicker">Sản phẩm</p>
+            <h2>Nội thất và combo từ xưởng</h2>
+          </div>
+          <Link className="text-link" to="/san-pham">
+            Xem tất cả sản phẩm
+          </Link>
+        </div>
+        <div className="grid-4">
+          {products.slice(0, 8).map((p) => (
+            <Link key={p.slug} to={`/${p.slug}`} className="card">
+              <SmartImg src={p.image} alt={p.title} />
+              <span>{p.title}</span>
             </Link>
           ))}
         </div>
@@ -94,9 +114,9 @@ export default function Home() {
 
       <section className="pad about-block">
         <div className="about-collage">
-          <img className="shot a" src={full(products[2]?.image)} alt="Nội thất phòng khách" />
-          <img className="shot b" src={full(products[4]?.image)} alt="Nội thất phòng ăn" />
-          <img className="shot c" src={full(projects[1]?.image)} alt="Công trình Việt Dũng Phát" />
+          <SmartImg className="shot a" src={products[2]?.image} alt="Nội thất phòng khách" />
+          <SmartImg className="shot b" src={products[4]?.image} alt="Nội thất phòng ăn" />
+          <SmartImg className="shot c" src={projects[1]?.image} alt="Công trình Việt Dũng Phát" />
           <p className="about-script">Kiến tạo không gian sống bền vững</p>
         </div>
         <div className="about-copy">
@@ -153,9 +173,9 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {projects.slice(6, 14).map((p) => (
+          {projects.slice(8, 16).map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="card">
-              <img src={p.image} alt={p.title} />
+              <SmartImg src={p.image} alt={p.title} />
               <span>{p.title}</span>
             </Link>
           ))}
@@ -175,7 +195,7 @@ export default function Home() {
         <div className="news-cols">
           {news.slice(0, 3).map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="news-col">
-              <img src={p.image} alt={p.title} />
+              <SmartImg src={p.image} alt={p.title} />
               {p.date ? <time>{p.date}</time> : null}
               <h3>{p.title}</h3>
             </Link>
