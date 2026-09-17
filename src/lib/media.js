@@ -38,5 +38,6 @@ export function cleanArticleHtml(html = "") {
   return html
     .replace(/<div[^>]*class="[^"]*main-detail-carousel[^"]*"[\s\S]*?(?=<div class="box-desc-detail")/i, "")
     .replace(/href="[^"]*javascript:[^"]*"/gi, 'href="#"')
-    .replace(/\ssrc=(["'])([^"']+)\1/gi, (_, q, src) => ` src=${q}${fullImage(src)}${q} referrerpolicy=${q}no-referrer${q} loading=${q}lazy${q}`);
+    .replace(/\ssrc=(["'])([^"']+)\1/gi, (_, q, src) => ` src=${q}${fullImage(src)}${q} referrerpolicy=${q}no-referrer${q} loading=${q}lazy${q}`)
+    .replace(/6\+\s*năm kinh nghiệm/gi, "20 năm kinh nghiệm");
 }

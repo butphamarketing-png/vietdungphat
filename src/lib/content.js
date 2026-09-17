@@ -1,6 +1,13 @@
 import data from "../data/content.json";
 
-export const { site, projects, products, services, news, extras = [] } = data;
+export const { site: cmsSite, projects, products, services, news, extras = [] } = data;
+
+export const site = {
+  ...cmsSite,
+  facebook: "https://www.facebook.com/vietdungphat/",
+  messenger: "https://m.me/vietdungphat",
+  profilePdf: String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://"),
+};
 
 const all = [...projects, ...products, ...services, ...news, ...extras];
 
@@ -18,7 +25,7 @@ export function kindOf(slug) {
 }
 
 export const lists = {
-  projects: { title: "Mẫu nhà", kicker: "Mẫu nhà", items: projects, intro: "Những công trình đã thiết kế và thi công — giữ nguyên hình ảnh từ kho tư liệu gốc." },
+  projects: { title: "Mẫu nhà", kicker: "Mẫu nhà", items: projects, intro: "Công trình tiêu biểu từ tư liệu mới và các dự án đã thiết kế, thi công." },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },
   news: { title: "Tin tức", kicker: "Tin tức", items: news, intro: "Bài viết và kinh nghiệm xây nhà — toàn bộ nội dung gốc được giữ lại." },

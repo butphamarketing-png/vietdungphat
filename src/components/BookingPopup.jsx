@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { BookingForm } from "./BookingCta.jsx";
 
 const KEY = "vdp-booking-popup";
+const SKIP = ["/lien-he", "/bao-gia", "/thuoc-lo-ban"];
 
 export default function BookingPopup() {
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (sessionStorage.getItem(KEY) === "1") return;
+    if (SKIP.includes(pathname)) return;
     const t = window.setTimeout(() => setOpen(true), 4800);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;

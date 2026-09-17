@@ -9,7 +9,7 @@ import SmartImg from "../components/SmartImg.jsx";
 export default function About() {
   return (
     <article className="page">
-      <PageHero kicker="Giới thiệu" title="20 năm kiến trúc, xây dựng và cải tạo">
+      <PageHero kicker="Giới thiệu" title={<>20 năm kiến trúc,<br />xây dựng và cải tạo</>}>
         <p>
           Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng, cải tạo nhà ở tại TP.HCM và các tỉnh lân
           cận. Toàn bộ nội dung giới thiệu gốc được giữ nguyên bên dưới.

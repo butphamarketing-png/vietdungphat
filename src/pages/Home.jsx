@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { coreServices, news, products, reviews } from "../lib/content.js";
+import { coreServices, news, products, projects, reviews } from "../lib/content.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -53,8 +53,8 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {studio.map((p) => (
-            <Link key={p.src} to="/mau-nha" className="card">
+          {studio.map((p, i) => (
+            <Link key={p.src} to={projects[i] ? `/${projects[i].slug}` : "/mau-nha"} className="card">
               <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
             </Link>

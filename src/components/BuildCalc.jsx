@@ -197,7 +197,7 @@ export default function BuildCalc() {
         </button>
       </form>
 
-      {done && result ? (
+      {result ? (
         <div className="calc-result">
           <p>
             Diện tích xây dựng ước tính: <strong>{result.area.toFixed(1)} m²</strong>
@@ -209,8 +209,7 @@ export default function BuildCalc() {
             Thành tiền tham khảo: <strong>{fmt(result.total)}</strong>
           </p>
         </div>
-      ) : null}
-      {done && !result ? (
+      ) : done ? (
         <div className="calc-result">
           <p>Vui lòng nhập chiều rộng, chiều dài và số tầng để tính kết quả.</p>
         </div>

@@ -24,7 +24,7 @@ export default function FloatDock() {
             <img src="/zalo.png" alt="" />
           </i>
         </a>
-        <a className="dock-btn dock-msg" href={site.facebook} target="_blank" rel="noreferrer" title="Messenger">
+        <a className="dock-btn dock-msg" href={site.messenger || site.facebook} target="_blank" rel="noreferrer" title="Messenger">
           <span className="alo-circle" aria-hidden="true" />
           <span className="alo-fill" aria-hidden="true" />
           <i className="shake-anim">

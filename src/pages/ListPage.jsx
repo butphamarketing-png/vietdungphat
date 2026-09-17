@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { lists } from "../lib/content.js";
+import { lists, projects as projectPosts } from "../lib/content.js";
 import { studio } from "../lib/studio.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -17,11 +17,11 @@ export default function ListPage({ kind }) {
         {projects ? (
           <div className="project-grid" style={{ marginBottom: "2.5rem" }}>
             {studio.map((p, idx) => (
-              <div key={p.src} className="project-card">
+              <Link key={p.src} className="project-card" to={projectPosts[idx] ? `/${projectPosts[idx].slug}` : "/mau-nha"}>
                 <SmartImg src={p.src} alt={p.title} />
                 <span className="num">{String(idx + 1).padStart(2, "0")}</span>
                 <span className="name">{p.title}</span>
-              </div>
+              </Link>
             ))}
           </div>
         ) : null}

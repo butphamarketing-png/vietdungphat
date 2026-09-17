@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { site } from "../lib/content.js";
 
 const needs = ["Thiết kế", "Xây dựng", "Cải tạo", "Báo giá", "Khác"];
 const slots = ["08:00", "09:00", "10:00", "11:00", "13:30", "14:30", "15:30", "16:30"];
@@ -19,6 +20,18 @@ export function BookingForm() {
       className="booking-form"
       onSubmit={(e) => {
         e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        const body = [
+          `Họ tên: ${data.get("name") || ""}`,
+          `Điện thoại: ${data.get("phone") || ""}`,
+          `Email: ${data.get("email") || ""}`,
+          `Nhu cầu: ${data.get("need") || ""}`,
+          `Ngày: ${data.get("date") || ""}`,
+          `Giờ: ${data.get("slot") || ""}`,
+          `Ghi chú: ${data.get("note") || ""}`,
+        ].join("\n");
+        const href = `mailto:${site.email}?subject=${encodeURIComponent(`Đặt lịch tư vấn — ${data.get("name") || ""}`)}&body=${encodeURIComponent(body)}`;
+        window.location.href = href;
         setSent(true);
       }}
     >
@@ -73,7 +86,16 @@ export function BookingForm() {
       <button className="btn with-arrow" type="submit">
         Gửi yêu cầu đặt lịch
       </button>
-      {sent ? <p className="ok">Cảm ơn quý khách. Bộ phận tư vấn sẽ liên hệ xác nhận lịch hẹn sớm.</p> : null}
+      {sent ? (
+        <p className="ok">
+          Cảm ơn quý khách. Email đặt lịch đã mở — vui lòng bấm Gửi trong hộp thư. Hoặc gọi{" "}
+          <a href={`tel:${site.phone.replace(/\./g, "")}`}>{site.phone}</a> /{" "}
+          <a href={site.zalo} target="_blank" rel="noreferrer">
+            Zalo
+          </a>
+          .
+        </p>
+      ) : null}
       <small>Thông tin của bạn được bảo mật và chỉ sử dụng cho mục đích tư vấn.</small>
     </form>
   );
