@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/cms/:path*",
+      "destination": "/api/cms/:path*"
+    }
+  ]
+}
