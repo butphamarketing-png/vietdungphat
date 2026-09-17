@@ -14,13 +14,6 @@ export default function Home() {
       <HeroVideo />
 
       <section className="pad services-block">
-        <svg className="service-sketch" viewBox="0 0 420 180" aria-hidden="true">
-          <g fill="none" stroke="#c9a84c" strokeWidth="1.15">
-            <path d="M20 160h70V108H20zM90 160h120V72l-60-40-60 40v88zM210 160h80v-36h-80z" />
-            <path d="M118 160v-44h64v44M40 132h28" />
-            <path d="M8 168c70-16 140 4 220 6 70 2 140-18 190-8" />
-          </g>
-        </svg>
         <div className="services-intro">
           <p className="kicker">Dịch vụ</p>
           <h2>
@@ -60,7 +53,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {studio.slice(0, 8).map((p) => (
+          {studio.map((p) => (
             <Link key={p.src} to="/mau-nha" className="card">
               <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
@@ -135,26 +128,6 @@ export default function Home() {
               <strong>{r.name}</strong>
               <span>{r.place}</span>
             </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="pad">
-        <div className="section-head row">
-          <div>
-            <p className="kicker">Mẫu nhà</p>
-            <h2>Thêm công trình đã thi công</h2>
-          </div>
-          <Link className="text-link" to="/mau-nha">
-            Xem thêm mẫu nhà
-          </Link>
-        </div>
-        <div className="grid-4">
-          {studio.slice(8).map((p) => (
-            <Link key={p.src} to="/mau-nha" className="card">
-              <SmartImg src={p.src} alt={p.title} />
-              <span>{p.title}</span>
-            </Link>
           ))}
         </div>
       </section>

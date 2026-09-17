@@ -59,6 +59,9 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
+        <Link className="header-cta" to="/lien-he" onClick={() => setOpen(false)}>
+          Đặt lịch
+        </Link>
       </header>
       {open ? <button className="nav-mask" aria-label="Đóng menu" onClick={() => setOpen(false)} /> : null}
       <main>
