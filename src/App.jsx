@@ -7,6 +7,7 @@ import Article from "./pages/Article.jsx";
 import Contact from "./pages/Contact.jsx";
 import Services from "./pages/Services.jsx";
 import Pricing from "./pages/Pricing.jsx";
+import LoBan from "./pages/LoBan.jsx";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/san-pham" element={<ListPage kind="products" />} />
         <Route path="/dich-vu" element={<Services />} />
         <Route path="/bao-gia" element={<Pricing />} />
+        <Route path="/thuoc-lo-ban" element={<LoBan />} />
         <Route path="/tin-tuc" element={<ListPage kind="news" />} />
         <Route path="/lien-he" element={<Contact />} />
         <Route path="/:slug" element={<Article />} />

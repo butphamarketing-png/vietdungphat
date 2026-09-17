@@ -15,7 +15,8 @@
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; min-height: 100%; }
 html { overflow-x: hidden; }
-body.is-menu-open { overflow: hidden; }
+body.is-menu-open,
+body.is-popup-open { overflow: hidden; }
 body {
   font-family: var(--sans);
   color: var(--ink);
@@ -108,9 +109,9 @@ h1, h2, h3, blockquote {
   letter-spacing: 0.1em;
   font-weight: 600;
 }
-.header nav { display: flex; gap: 1.15rem; flex-wrap: nowrap; }
+.header nav { display: flex; gap: 0.72rem; flex-wrap: nowrap; flex: 1; justify-content: flex-end; min-width: 0; }
 .header nav a {
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   letter-spacing: 0.01em;
   opacity: 0.92;
   white-space: nowrap;
@@ -604,6 +605,59 @@ h1, h2, h3, blockquote {
 .booking-form small { display: block; margin-top: 0.7rem; color: var(--ink-soft); font-size: 0.75rem; }
 .contact-page .booking-cta { margin-bottom: 2.4rem; }
 
+.booking-popup-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.booking-popup-mask {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(20, 18, 12, 0.55);
+  cursor: pointer;
+}
+.booking-popup {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  max-height: min(90vh, 860px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(20, 16, 8, 0.28);
+}
+.booking-popup .booking-form {
+  margin: 0;
+  box-shadow: none;
+  padding-top: 1.2rem;
+}
+.booking-popup-photo {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.booking-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
 .about-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; }
 .about-layout img { width: 100%; object-fit: cover; }
 .prose { line-height: 1.85; color: var(--ink-soft); }
@@ -682,7 +736,9 @@ body.is-menu-open .header {
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 body.is-menu-open .float-dock,
-body.is-menu-open .float-consult {
+body.is-menu-open .float-consult,
+body.is-popup-open .float-dock,
+body.is-popup-open .float-consult {
   opacity: 0;
   pointer-events: none;
 }
@@ -690,7 +746,10 @@ body.is-menu-open .float-consult {
 .menu-btn.is-open span:last-child { transform: translateY(-4px) rotate(-45deg); }
 .menu-btn span { transition: transform 0.2s ease; }
 
-@media (max-width: 1240px) {
+@media (max-width: 1600px) {
+  .brand strong { display: none; }
+}
+@media (max-width: 1480px) {
   .menu-btn { display: block; z-index: 41; }
   .header nav {
     display: none;
@@ -1143,6 +1202,125 @@ body.is-menu-open .float-consult {
 @keyframes reveal-child {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
+}
+
+.loban-tool { margin: 0 0 2.8rem; }
+.loban-input {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+.loban-input > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+.loban-input strong {
+  font-family: var(--display);
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+}
+.loban-input span { color: var(--ink-soft); font-size: 1.1rem; }
+.loban-input label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.loban-input input {
+  min-height: 44px;
+  width: 160px;
+  border: 1px solid var(--line);
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  background: #fff;
+}
+.loban-hint, .loban-unit { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 0.8rem; }
+.loban-unit { margin: 0.7rem 0 1.4rem; }
+.loban-stage {
+  position: relative;
+  border: 1px solid var(--line);
+  background: #1a1916;
+  overflow: hidden;
+}
+.loban-needle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: #e23d3d;
+  z-index: 2;
+  pointer-events: none;
+}
+.loban-needle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: #e23d3d;
+}
+.loban-scroller { overflow-x: auto; overflow-y: hidden; cursor: grab; }
+.loban-scroller:active { cursor: grabbing; }
+.loban-track { padding: 0.85rem 0 1rem; }
+.loban-strip { margin: 0 0 0.55rem; }
+.loban-strip p {
+  margin: 0 0 0.28rem;
+  padding-left: 0.4rem;
+  color: #d7c9a6;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.loban-cells { display: flex; height: 42px; }
+.loban-cells span {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 0.2rem;
+}
+.loban-cells .is-good { background: #9a1f1f; color: #fff; }
+.loban-cells .is-bad { background: #111; color: #f0eadb; }
+.loban-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.loban-results article {
+  border: 1px solid var(--line);
+  padding: 1.15rem 1.2rem;
+  background: var(--paper-2);
+}
+.loban-results h3 {
+  font-family: var(--sans);
+  font-size: 1.02rem;
+  margin: 0.2rem 0 0.6rem;
+}
+.loban-results p { color: var(--ink-soft); line-height: 1.65; font-size: 0.92rem; }
+.loban-results .is-good h3 { color: #9a1f1f; }
+.loban-results .is-bad h3 { color: #333; }
+.loban-guide { max-width: 780px; margin-top: 2.4rem; }
+.loban-guide h2 { margin: 0.4rem 0 0.8rem; }
+.loban-guide p, .loban-guide li { color: var(--ink-soft); line-height: 1.75; }
+.loban-guide ul { padding-left: 1.1rem; }
+.loban-guide li { margin: 0.4rem 0; }
+
+@media (max-width: 980px) {
+  .loban-results { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

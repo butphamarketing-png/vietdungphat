@@ -1,5 +1,6 @@
 import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import FloatDock from "./FloatDock.jsx";
+import BookingPopup from "./BookingPopup.jsx";
 import { site } from "../lib/content.js";
 import { useScrollReveal } from "../lib/useScrollReveal.js";
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ const links = [
   { to: "/mau-nha", label: "Mẫu nhà" },
   { to: "/san-pham", label: "Sản phẩm" },
   { to: "/bao-gia", label: "Báo giá" },
+  { to: "/thuoc-lo-ban", label: "Thước lỗ ban" },
   { to: "/tin-tuc", label: "Tin tức" },
   { to: "/lien-he", label: "Liên hệ" },
 ];
@@ -109,6 +111,7 @@ export default function Layout() {
         <p className="copy">© {new Date().getFullYear()} {site.name}</p>
       </footer>
       <FloatDock />
+      <BookingPopup />
     </>
   );
 }
