@@ -58,6 +58,16 @@
     </style>
   </head>
   <body class="is-loading">
+    <script>
+      document.addEventListener("error", function (e) {
+        const el = e.target;
+        if (!el || el.tagName !== "IMG" || el.dataset.cmsRetry) return;
+        const src = el.currentSrc || el.src || "";
+        if (!/vietdungphat\.com/i.test(src) || /images\.weserv\.nl/i.test(src)) return;
+        el.dataset.cmsRetry = "1";
+        el.src = "https://images.weserv.nl/?url=" + encodeURIComponent(src.replace(/^https?:\/\//i, ""));
+      }, true);
+    </script>
     <div id="app-loader" aria-label="Đang tải">
       <div class="app-loader-mark">
         <img src="/logo.png" alt="Việt Dũng Phát" />

@@ -81,7 +81,7 @@ export const pricePacks = [
       "Giám sát quá trình thi công",
     ],
     href: "/don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022",
-    image: "http://vietdungphat.com/upload/baiviet/06b6f74e02aef0f0a9bf79-8713.jpg",
+    image: "/thiet-ke.jpg",
   },
   {
     tag: "Hoàn thiện",
@@ -97,7 +97,7 @@ export const pricePacks = [
       "Chính sách bảo hành",
     ],
     href: "/thiet-ke-noi-that-nha-o",
-    image: "http://vietdungphat.com/upload/baiviet/286-4007.jpg",
+    image: "/xay-dung.jpg",
   },
   {
     tag: "Trọn gói",
@@ -115,6 +115,6 @@ export const pricePacks = [
       "Bảo hành dài hạn",
     ],
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "http://vietdungphat.com/upload/baiviet/1-5749.jpg",
+    image: "/cai-tao.jpg",
   },
 ];
