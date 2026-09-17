@@ -1,8 +1,8 @@
 import data from "../data/content.json";
 
-export const { site, projects, products, services, news } = data;
+export const { site, projects, products, services, news, extras = [] } = data;
 
-const all = [...projects, ...products, ...services, ...news];
+const all = [...projects, ...products, ...services, ...news, ...extras];
 
 export function findPost(slug) {
   return all.find((p) => p.slug === slug);
@@ -13,6 +13,7 @@ export function kindOf(slug) {
   if (products.some((p) => p.slug === slug)) return { kind: "products", label: "Sản phẩm", path: "/san-pham" };
   if (services.some((p) => p.slug === slug)) return { kind: "services", label: "Dịch vụ", path: "/dich-vu" };
   if (news.some((p) => p.slug === slug)) return { kind: "news", label: "Tin tức", path: "/tin-tuc" };
+  if (extras.some((p) => p.slug === slug)) return { kind: "extras", label: "Bài viết", path: "/" };
   return { kind: "projects", label: "Bài viết", path: "/mau-nha" };
 }
 

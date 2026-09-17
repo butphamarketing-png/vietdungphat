@@ -44,8 +44,18 @@ function slugFromHref(href) {
   return raw.replace(/\/$/, "");
 }
 
+function isArticleSlug(slug) {
+  if (!slug || SKIP.has(slug)) return false;
+  if (slug.includes("page=") || slug.startsWith("cache") || slug.startsWith("upload")) return false;
+  if (/^(https?:|javascript:|mailto:|tel:)/i.test(slug)) return false;
+  if (slug.startsWith("//") || slug.startsWith("/www.") || slug.includes("google") || slug.includes("zalo.me")) return false;
+  if (/\.(png|jpe?g|gif|webp|svg|pdf|css|js)$/i.test(slug)) return false;
+  if (slug.length < 6) return false;
+  return /^[a-z0-9][a-z0-9\-/%._]*$/i.test(slug.replace(/ /g, "-"));
+}
+
 async function fetchHtml(url) {
-  const res = await fetch(url, {
+  const res = await fetch(encodeURI(url), {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -243,6 +253,18 @@ async function scrapeDetails(items) {
   });
 }
 
+function collectSlugs(html) {
+  const out = [];
+  for (const m of html.matchAll(/href=(["'])([^"']+)\1/gi)) {
+    let href = decode(m[2]).trim();
+    if (href.startsWith("//")) continue;
+    const slug = slugFromHref(href);
+    if (!isArticleSlug(slug)) continue;
+    out.push(slug);
+  }
+  return [...new Set(out)];
+}
+
 function homeSlides(html) {
   const slides = [];
   const seen = new Set();
@@ -261,9 +283,10 @@ export { scrapeList, scrapeDetails, listingItems };
 async function main() {
   await mkdir(DATA, { recursive: true });
   console.log("Fetching homepage / about / contact…");
-  const [homeHtml, aboutHtml] = await Promise.all([
+  const [homeHtml, aboutHtml, contactHtml] = await Promise.all([
     fetchHtml(ORIGIN + "/"),
     fetchHtml(ORIGIN + "/gioi-thieu"),
+    fetchHtml(ORIGIN + "/lien-he"),
   ]);
 
   const about = rewriteHtml(
@@ -274,10 +297,10 @@ async function main() {
 
   console.log("Scraping listings…");
   const [projects, products, services, news] = await Promise.all([
-    scrapeList("du-an", 17),
+    scrapeList("du-an", 30),
     scrapeList("san-pham", 20),
     scrapeList("dich-vu", 10),
-    scrapeList("tin-tuc", 5),
+    scrapeList("tin-tuc", 10),
   ]);
 
   console.log("Scraping article bodies…", {
@@ -313,6 +336,11 @@ async function main() {
     aboutImage: "http://vietdungphat.com/upload/hinhanh/about-8486.png",
     slides: homeSlides(homeHtml),
     aboutHtml: about,
+    contactHtml: rewriteHtml(
+      pickBlock(contactHtml, "box-desc-detail") ||
+        pickBlock(contactHtml, "content-main") ||
+        pickBlock(contactHtml, "detail")
+    ),
     aboutIntro: [
       "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc nội thất của Công ty TNHH kiến trúc xây dựng Việt Dũng Phát với 6+ năm kinh nghiệm. Là một trong những công ty thiết kế và thi công uy tín hàng đầu tại Hồ Chí Minh và các tỉnh lân cận, website chính thức vietdungphat.com",
     ],
@@ -343,9 +371,24 @@ async function main() {
     ],
   };
 
-  const payload = { site, projects: p1, products: p2, services: p3, news: p4 };
+  const known = new Set([...p1, ...p2, ...p3, ...p4].map((x) => x.slug));
+  const extraSlugs = collectSlugs([homeHtml, aboutHtml, contactHtml].join("\n")).filter((s) => !known.has(s));
+  console.log("Extra slugs from nav/home", extraSlugs);
+  const extras = extraSlugs.length
+    ? (await scrapeDetails(extraSlugs.map((slug) => ({ slug, title: slug, image: "", date: "" })))).filter(
+        (p) => p.html
+      )
+    : [];
+
+  const payload = { site, projects: p1, products: p2, services: p3, news: p4, extras };
   await writeFile(join(DATA, "content.json"), JSON.stringify(payload));
-  console.log("Wrote src/data/content.json");
+  console.log("Wrote src/data/content.json", {
+    projects: p1.length,
+    products: p2.length,
+    services: p3.length,
+    news: p4.length,
+    extras: extras.length,
+  });
 }
 
 const isDirect =

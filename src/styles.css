@@ -1026,12 +1026,14 @@ body.is-menu-open .float-consult {
   margin-top: 1.3rem;
   width: 100%;
   justify-content: center;
-  border: 0;
-  background: #1b7a3d;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
-  cursor: pointer;
 }
-.calc-submit:hover { background: #166534; }
+.calc-submit:hover {
+  background: #6f5b38;
+  border-color: #6f5b38;
+}
 .calc-result {
   margin-top: 1.4rem;
   padding: 1.2rem 1.3rem;
