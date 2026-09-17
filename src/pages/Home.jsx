@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { coreServices, news, products, projects, reviews, site } from "../lib/content.js";
-import { fullImage } from "../lib/media.js";
+import { coreServices, news, products, projects, reviews } from "../lib/content.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -9,31 +7,21 @@ import StatsBar from "../components/StatsBar.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
 export default function Home() {
-  const [i, setI] = useState(0);
-  const photoSlides = site.slides.filter((src) => /\.jpe?g(\?|$)/i.test(src) && !/slider/i.test(src));
-  const slides = (photoSlides.length ? photoSlides : site.slides)
-    .concat(projects.slice(0, 5).map((p) => p.image))
-    .filter(Boolean)
-    .map(fullImage)
-    .filter((src, idx, arr) => arr.indexOf(src) === idx)
-    .slice(0, 6);
-
-  useEffect(() => {
-    const t = setInterval(() => setI((n) => (n + 1) % slides.length), 5500);
-    return () => clearInterval(t);
-  }, [slides.length]);
-
   return (
     <>
       <section className="hero">
-        {slides.map((src, idx) => (
-          <img key={src} src={src} alt="" className={idx === i ? "on" : ""} referrerPolicy="no-referrer" />
-        ))}
-        <div className="hero-dots">
-          {slides.map((_, idx) => (
-            <button key={idx} className={idx === i ? "on" : ""} onClick={() => setI(idx)} aria-label={`Ảnh ${idx + 1}`} />
-          ))}
-        </div>
+        <video
+          className="hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/hero-poster.jpg"
+          aria-hidden="true"
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
       </section>
 
       <section className="pad services-block">
