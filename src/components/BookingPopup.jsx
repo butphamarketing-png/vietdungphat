@@ -8,7 +8,7 @@ export default function BookingPopup() {
 
   useEffect(() => {
     if (sessionStorage.getItem(KEY) === "1") return;
-    const t = window.setTimeout(() => setOpen(true), 1400);
+    const t = window.setTimeout(() => setOpen(true), 4800);
     return () => window.clearTimeout(t);
   }, []);
 

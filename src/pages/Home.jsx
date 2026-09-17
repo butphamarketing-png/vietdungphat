@@ -5,24 +5,12 @@ import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import StatsBar from "../components/StatsBar.jsx";
 import SmartImg from "../components/SmartImg.jsx";
+import HeroVideo from "../components/HeroVideo.jsx";
 
 export default function Home() {
   return (
     <>
-      <section className="hero">
-        <video
-          className="hero-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/hero-poster.jpg"
-          aria-hidden="true"
-        >
-          <source src="/hero.mp4" type="video/mp4" />
-        </video>
-      </section>
+      <HeroVideo />
 
       <section className="pad services-block">
         <svg className="service-sketch" viewBox="0 0 420 180" aria-hidden="true">
