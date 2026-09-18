@@ -26,7 +26,15 @@ export default function Layout() {
   useScrollReveal(location.pathname);
 
   useEffect(() => {
-    if (!location.hash) window.scrollTo(0, 0);
+    if (location.hash) {
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setOpen(false);
+        return;
+      }
+    }
+    window.scrollTo(0, 0);
     setOpen(false);
   }, [location.pathname, location.hash]);
 
@@ -60,7 +68,7 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <Link className="header-cta" to="/lien-he" onClick={() => setOpen(false)}>
+        <Link className="header-cta" to="/lien-he#dat-lich" onClick={() => setOpen(false)}>
           Đặt lịch
         </Link>
       </header>
