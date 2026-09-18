@@ -121,12 +121,24 @@ function emit() {
   listeners.forEach((fn) => fn());
 }
 
-function persist() {
+function isAuthedLocal() {
+  try {
+    return sessionStorage.getItem(AUTH) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function persistLocal() {
   try {
     localStorage.setItem(STORAGE, JSON.stringify(overlay));
   } catch (err) {
     console.warn("CMS cache local thất bại", err);
   }
+}
+
+function persist() {
+  persistLocal();
   queueRemoteSave();
 }
 
@@ -145,7 +157,7 @@ async function persistRemote() {
 }
 
 function queueRemoteSave() {
-  if (typeof fetch === "undefined") return;
+  if (typeof fetch === "undefined" || !isAuthedLocal()) return;
   clearTimeout(saveTimer);
   saveTimer = window.setTimeout(() => {
     persistRemote().catch((err) => {
@@ -154,12 +166,19 @@ function queueRemoteSave() {
   }, 400);
 }
 
+export async function flushCms() {
+  if (typeof fetch === "undefined" || !isAuthedLocal()) return;
+  clearTimeout(saveTimer);
+  await persistRemote();
+}
+
 export async function hydrateCms() {
   try {
     const res = await fetch("/api/cms", { credentials: "include" });
     const data = await res.json();
     if (res.ok && data.ok && data.data && typeof data.data === "object") {
-      overlay = { ...emptyOverlay(), ...data.data };
+      overlay = { ...emptyOverlay(), ...overlay, ...data.data };
+      persistLocal();
       snapshot = null;
       emit();
     }
@@ -242,6 +261,9 @@ export async function logoutRemote() {
 export function getCms() {
   if (snapshot) return snapshot;
   const site = { ...defaultSite, ...(overlay.site || {}) };
+  const deadPdf = !site.profilePdf || /\/upload\/files\/ho-so-nang-luc/i.test(String(site.profilePdf));
+  if (deadPdf) site.profilePdf = "/Ho-so-nang-luc-Viet-Dung-Phat.docx";
+  if (!site.logo) site.logo = "/logo.png";
   const projects = mergePosts("projects");
   const products = mergePosts("products");
   const services = mergePosts("services");
@@ -310,7 +332,7 @@ export function replaceCms(next) {
 
 export function resetCms() {
   overlay = emptyOverlay();
-  localStorage.removeItem(STORAGE);
+  persist();
   emit();
 }
 
@@ -358,18 +380,18 @@ export async function addBooking(entry) {
   const local = { id: Date.now(), createdAt: new Date().toISOString(), ...entry };
   overlay = { ...overlay, bookings: [local, ...(overlay.bookings || [])] };
   snapshot = null;
-  persist();
+  persistLocal();
   emit();
-  try {
-    const res = await fetch("/api/booking", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(entry),
-    });
-    if (res.ok) await hydrateCms();
-  } catch {
-    /* already saved locally */
+  const res = await fetch("/api/booking", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entry),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Không gửi được đặt lịch");
   }
+  await hydrateCms();
 }
 
 export function removeBooking(id) {

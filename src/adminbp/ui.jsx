@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { logoutRemote } from "../lib/cms.js";
+import { useState } from "react";
+import { flushCms, logoutRemote } from "../lib/cms.js";
 
 const NAV = [
   { to: "/adminbp", end: true, label: "Tổng quan" },
@@ -95,10 +96,26 @@ export function ImageField({ label, value, onChange }) {
   );
 }
 
-export function SaveBar({ saving, message, onSave, label = "Lưu thay đổi" }) {
+export function SaveBar({ message, onSave, label = "Lưu thay đổi" }) {
+  const [saving, setSaving] = useState(false);
   return (
     <div className="adminbp-savebar">
-      <button type="button" className="adminbp-save" disabled={saving} onClick={onSave}>
+      <button
+        type="button"
+        className="adminbp-save"
+        disabled={saving}
+        onClick={async () => {
+          setSaving(true);
+          try {
+            await onSave();
+            await flushCms();
+          } catch (err) {
+            alert(err.message || "Lưu thất bại. Kiểm tra đăng nhập và Supabase.");
+          } finally {
+            setSaving(false);
+          }
+        }}
+      >
         {saving ? "Đang lưu…" : label}
       </button>
       {message ? <span>{message}</span> : null}

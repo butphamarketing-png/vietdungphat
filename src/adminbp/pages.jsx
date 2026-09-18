@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   exportCms,
+  flushCms,
   importCms,
   patchCms,
   removeBooking,
@@ -96,7 +97,9 @@ export function Dashboard() {
           onClick={() => {
             if (confirm("Xóa toàn bộ chỉnh sửa CMS trên Supabase và khôi phục nội dung gốc?")) {
               resetCms();
-              setMessage("Đã khôi phục nội dung gốc");
+              flushCms()
+                .then(() => setMessage("Đã khôi phục nội dung gốc"))
+                .catch((err) => setMessage(err.message || "Khôi phục local, chưa ghi được Supabase"));
             }
           }}
         >
@@ -111,9 +114,14 @@ export function Dashboard() {
             const file = e.target.files?.[0];
             e.target.value = "";
             if (!file) return;
-            file.text().then((t) => {
+            file.text().then(async (t) => {
               importCms(t);
-              setMessage("Đã nhập dữ liệu CMS");
+              try {
+                await flushCms();
+                setMessage("Đã nhập dữ liệu CMS");
+              } catch (err) {
+                setMessage(err.message || "Đã nhập local, chưa ghi được Supabase");
+              }
             });
           }}
         />
@@ -523,16 +531,17 @@ export function ReviewsEditor() {
 
 export function BookingsEditor() {
   const cms = useCms();
+  const bookings = cms.bookings.filter((b) => b.name || b.phone);
   return (
     <>
       <div className="adminbp-page-head">
         <h1>Đặt lịch</h1>
-        <p>Yêu cầu gửi từ form website (đồng thời mở email).</p>
+        <p>Yêu cầu khách gửi từ form website, lưu trên Supabase.</p>
       </div>
       <div className="adminbp-form">
-        <CardList title={`${cms.bookings.length} yêu cầu`}>
-          {cms.bookings.length ? (
-            cms.bookings.map((b) => (
+        <CardList title={`${bookings.length} yêu cầu`}>
+          {bookings.length ? (
+            bookings.map((b) => (
               <article key={b.id} className="adminbp-item">
                 <strong>
                   {b.name} — {b.phone}

@@ -46,8 +46,8 @@ export default function Layout() {
     <>
       <header className={`header ${scrolled || !home ? "is-solid" : ""} ${home ? "on-hero" : ""}`}>
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
-          <img src="/logo.png" alt="Việt Dũng Phát" />
-          <strong>VIỆT DŨNG PHÁT</strong>
+          <img src={site.logo || "/logo.png"} alt={site.shortName || "Việt Dũng Phát"} />
+          <strong>{site.shortName || "VIỆT DŨNG PHÁT"}</strong>
         </Link>
         <button className={`menu-btn${open ? " is-open" : ""}`} aria-label="Menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
           <span />
@@ -98,15 +98,21 @@ export default function Layout() {
               ))}
             </div>
             <div className="socials">
-              <a href={site.facebook} target="_blank" rel="noreferrer">
-                Facebook
-              </a>
-              <a href={site.zalo} target="_blank" rel="noreferrer">
-                Zalo
-              </a>
-              <a href={site.youtube} target="_blank" rel="noreferrer">
-                YouTube
-              </a>
+              {site.facebook ? (
+                <a href={site.facebook} target="_blank" rel="noreferrer">
+                  Facebook
+                </a>
+              ) : null}
+              {site.zalo ? (
+                <a href={site.zalo} target="_blank" rel="noreferrer">
+                  Zalo
+                </a>
+              ) : null}
+              {site.youtube ? (
+                <a href={site.youtube} target="_blank" rel="noreferrer">
+                  YouTube
+                </a>
+              ) : null}
             </div>
           </div>
         </div>

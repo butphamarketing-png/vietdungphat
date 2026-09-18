@@ -26,35 +26,35 @@ function BrText({ text }) {
 export function BookingForm() {
   const { site } = useCms();
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
   return (
     <form
       className="booking-form"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        const data = new FormData(e.currentTarget);
+        if (sending) return;
+        const form = e.currentTarget;
+        const data = new FormData(form);
         const entry = {
-          name: data.get("name") || "",
-          phone: data.get("phone") || "",
-          email: data.get("email") || "",
-          need: data.get("need") || "",
-          date: data.get("date") || "",
-          slot: data.get("slot") || "",
-          note: data.get("note") || "",
+          name: String(data.get("name") || "").trim(),
+          phone: String(data.get("phone") || "").trim(),
+          email: String(data.get("email") || "").trim(),
+          need: String(data.get("need") || "").trim(),
+          date: String(data.get("date") || "").trim(),
+          slot: String(data.get("slot") || "").trim(),
+          note: String(data.get("note") || "").trim(),
         };
-        addBooking(entry);
-        const body = [
-          `Họ tên: ${entry.name}`,
-          `Điện thoại: ${entry.phone}`,
-          `Email: ${entry.email}`,
-          `Nhu cầu: ${entry.need}`,
-          `Ngày: ${entry.date}`,
-          `Giờ: ${entry.slot}`,
-          `Ghi chú: ${entry.note}`,
-        ].join("\n");
-        const href = `mailto:${site.email}?subject=${encodeURIComponent(`Đặt lịch tư vấn — ${entry.name}`)}&body=${encodeURIComponent(body)}`;
-        window.location.href = href;
-        setSent(true);
+        setSending(true);
+        try {
+          await addBooking(entry);
+          setSent(true);
+          form.reset();
+        } catch (err) {
+          alert(err.message || "Không gửi được đặt lịch. Vui lòng gọi hotline.");
+        } finally {
+          setSending(false);
+        }
       }}
     >
       <h3 id="booking-form-title">Đặt lịch hẹn tư vấn</h3>
@@ -87,7 +87,7 @@ export function BookingForm() {
       <div className="booking-row">
         <label>
           <Icon d="M5 6h14v14H5zM5 10h14M9 6V4M15 6V4" />
-          <input type="date" name="date" required />
+          <input type="date" name="date" required aria-label="Ngày hẹn" />
         </label>
         <label>
           <Icon d="M12 21a9 9 0 1 1 9-9 9 9 0 0 1-9 9zM12 7v5l3 2" />
@@ -105,12 +105,12 @@ export function BookingForm() {
         <Icon d="M6 4h9l5 5v11H6z" />
         <textarea name="note" rows="2" placeholder="Thông tin thêm (nếu có)" />
       </label>
-      <button className="btn with-arrow" type="submit">
-        Gửi yêu cầu đặt lịch
+      <button className="btn with-arrow" type="submit" disabled={sending}>
+        {sending ? "Đang gửi…" : "Gửi yêu cầu đặt lịch"}
       </button>
       {sent ? (
         <p className="ok">
-          Cảm ơn quý khách. Email đặt lịch đã mở — vui lòng bấm Gửi trong hộp thư. Hoặc gọi{" "}
+          Cảm ơn quý khách. Yêu cầu đã được ghi nhận. Chúng tôi sẽ gọi xác nhận sớm, hoặc liên hệ ngay{" "}
           <a href={`tel:${String(site.phone || "").replace(/\./g, "")}`}>{site.phone}</a> /{" "}
           <a href={site.zalo} target="_blank" rel="noreferrer">
             Zalo
