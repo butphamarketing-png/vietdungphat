@@ -131,16 +131,26 @@ function persist() {
 }
 
 let saveTimer = 0;
+async function persistRemote() {
+  const res = await fetch("/api/adminbp/cms", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(overlay),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `CMS save HTTP ${res.status}`);
+  }
+}
+
 function queueRemoteSave() {
   if (typeof fetch === "undefined") return;
   clearTimeout(saveTimer);
   saveTimer = window.setTimeout(() => {
-    fetch("/api/adminbp/cms", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(overlay),
-    }).catch(() => {});
+    persistRemote().catch((err) => {
+      console.warn("CMS save remote thất bại", err);
+    });
   }, 400);
 }
 
@@ -348,16 +358,17 @@ export async function addBooking(entry) {
   const local = { id: Date.now(), createdAt: new Date().toISOString(), ...entry };
   overlay = { ...overlay, bookings: [local, ...(overlay.bookings || [])] };
   snapshot = null;
+  persist();
   emit();
   try {
-    await fetch("/api/booking", {
+    const res = await fetch("/api/booking", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry),
     });
-    await hydrateCms();
+    if (res.ok) await hydrateCms();
   } catch {
-    persist();
+    /* already saved locally */
   }
 }
 

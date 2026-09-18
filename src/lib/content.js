@@ -6,7 +6,11 @@ export const site = {
   ...cmsSite,
   facebook: "https://www.facebook.com/vietdungphat/",
   messenger: "https://m.me/vietdungphat",
-  profilePdf: String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://"),
+  profilePdf: (() => {
+    const raw = String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://");
+    if (!raw || /\/upload\/files\/ho-so-nang-luc/i.test(raw)) return "/Ho-so-nang-luc-Viet-Dung-Phat.docx";
+    return raw;
+  })(),
 };
 
 const all = [...projects, ...products, ...services, ...news, ...extras];
