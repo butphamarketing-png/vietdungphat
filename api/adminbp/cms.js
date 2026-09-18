@@ -1,6 +1,6 @@
-import { isAdmin } from "../_lib/auth.js";
-import { methodNotAllowed, readJson, send } from "../_lib/http.js";
-import { getOverlay, healthSupabase, isSupabaseConfigured, setOverlay } from "../_lib/supabase.js";
+import { isAdmin } from "../../lib/api/auth.js";
+import { methodNotAllowed, readJson, send } from "../../lib/api/http.js";
+import { getOverlay, healthSupabase, isSupabaseConfigured, setOverlay } from "../../lib/api/supabase.js";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {

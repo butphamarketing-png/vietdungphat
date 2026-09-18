@@ -1,5 +1,5 @@
-import { getOverlay, isSupabaseConfigured, setOverlay } from "./_lib/supabase.js";
-import { methodNotAllowed, readJson, send } from "./_lib/http.js";
+import { getOverlay, isSupabaseConfigured, setOverlay } from "../lib/api/supabase.js";
+import { methodNotAllowed, readJson, send } from "../lib/api/http.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return methodNotAllowed(res, "POST");

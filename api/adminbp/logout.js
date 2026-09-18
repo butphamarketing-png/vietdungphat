@@ -1,5 +1,5 @@
-import { sessionCookie } from "../_lib/auth.js";
-import { methodNotAllowed, send } from "../_lib/http.js";
+import { sessionCookie } from "../../lib/api/auth.js";
+import { methodNotAllowed, send } from "../../lib/api/http.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return methodNotAllowed(res, "POST");

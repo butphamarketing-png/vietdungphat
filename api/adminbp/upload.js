@@ -1,7 +1,7 @@
 import Busboy from "busboy";
-import { isAdmin } from "../_lib/auth.js";
-import { methodNotAllowed, send } from "../_lib/http.js";
-import { contentTypeFor, isSupabaseConfigured, uploadMediaObject, upsertMedia } from "../_lib/supabase.js";
+import { isAdmin } from "../../lib/api/auth.js";
+import { methodNotAllowed, send } from "../../lib/api/http.js";
+import { contentTypeFor, isSupabaseConfigured, uploadMediaObject, upsertMedia } from "../../lib/api/supabase.js";
 
 const MAX_BYTES = 12 * 1024 * 1024;
 const ALLOWED = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif", ".pdf", ".mp4"]);

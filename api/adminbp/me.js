@@ -1,6 +1,6 @@
-import { isAdmin } from "../_lib/auth.js";
-import { getAdminUser } from "../_lib/env.js";
-import { methodNotAllowed, send } from "../_lib/http.js";
+import { isAdmin } from "../../lib/api/auth.js";
+import { getAdminUser } from "../../lib/api/env.js";
+import { methodNotAllowed, send } from "../../lib/api/http.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return methodNotAllowed(res, "GET");

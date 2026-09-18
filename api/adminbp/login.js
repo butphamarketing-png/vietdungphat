@@ -1,5 +1,5 @@
-import { createSessionToken, isAdmin, sessionCookie, verifyCredentials } from "../_lib/auth.js";
-import { methodNotAllowed, readJson, send } from "../_lib/http.js";
+import { createSessionToken, isAdmin, sessionCookie, verifyCredentials } from "../../lib/api/auth.js";
+import { methodNotAllowed, readJson, send } from "../../lib/api/http.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return methodNotAllowed(res, "POST");
