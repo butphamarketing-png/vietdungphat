@@ -1,17 +1,13 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  addMedia,
   exportCms,
-  getAccount,
   importCms,
   patchCms,
   removeBooking,
-  removeMedia,
   removePost,
   resetCms,
   savePost,
-  setAccount,
   slugify,
   useCms,
 } from "../lib/cms.js";
@@ -33,24 +29,41 @@ const LINKS = [
 export function Dashboard() {
   const cms = useCms();
   const [message, setMessage] = useState("");
+  const [status, setStatus] = useState(null);
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/adminbp/status", { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok) setStatus(d);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="adminbp-dash">
       <h1>CMS Website</h1>
-      <p>Quản lý toàn bộ nội dung website Việt Dũng Phát. Thay đổi lưu trên trình duyệt này và hiện ngay ngoài site.</p>
+      <p>Nội dung và ảnh/video lưu trên Supabase (bảng CMS + Storage).</p>
       <div className="adminbp-status-grid">
+        <article className={`adminbp-status-card ${status?.supabase?.ok ? "is-ok" : ""}`}>
+          <small>Supabase</small>
+          <strong>
+            {status?.supabase?.ok ? "Đã kết nối" : status?.supabase?.configured ? "Lỗi schema" : "Chưa cấu hình"}
+          </strong>
+          <span>{status?.supabase?.error || "CMS JSON lưu bảng cms_docs"}</span>
+        </article>
+        <article className={`adminbp-status-card ${status?.storage?.ok ? "is-ok" : ""}`}>
+          <small>Supabase Storage</small>
+          <strong>{status?.storage?.ok ? "Đã kết nối" : "Chưa cấu hình"}</strong>
+          <span>{status?.storage?.bucket || status?.storage?.error || "Kho ảnh / video"}</span>
+        </article>
         <article className="adminbp-status-card is-ok">
           <small>Nội dung</small>
-          <strong>Đang hoạt động</strong>
-          <span>
-            {cms.counts.projects} mẫu nhà · {cms.counts.products} sản phẩm · {cms.counts.news} tin
-          </span>
-        </article>
-        <article className={`adminbp-status-card ${cms.counts.bookings ? "is-ok" : ""}`}>
-          <small>Đặt lịch</small>
-          <strong>{cms.counts.bookings} yêu cầu</strong>
-          <span>Form website lưu vào /adminbp/dat-lich</span>
+          <strong>
+            {cms.counts.projects} mẫu · {cms.counts.news} tin
+          </strong>
+          <span>{cms.counts.bookings} yêu cầu đặt lịch</span>
         </article>
       </div>
       <nav className="adminbp-shortcuts">
@@ -81,7 +94,7 @@ export function Dashboard() {
           type="button"
           className="danger"
           onClick={() => {
-            if (confirm("Xóa toàn bộ chỉnh sửa CMS trên trình duyệt này?")) {
+            if (confirm("Xóa toàn bộ chỉnh sửa CMS trên Supabase và khôi phục nội dung gốc?")) {
               resetCms();
               setMessage("Đã khôi phục nội dung gốc");
             }
@@ -541,43 +554,64 @@ export function BookingsEditor() {
 }
 
 export function MediaEditor() {
-  const cms = useCms();
+  const [items, setItems] = useState([]);
+  const [message, setMessage] = useState("");
+
+  async function load() {
+    const res = await fetch("/api/adminbp/media", { credentials: "include" });
+    const data = await res.json();
+    if (res.ok && data.ok) setItems(data.data || []);
+    else setMessage(data.error || "Không tải được kho ảnh");
+  }
+
+  useEffect(() => {
+    load().catch(() => setMessage("Không kết nối được máy chủ"));
+  }, []);
+
+  async function onUpload(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/adminbp/upload", { method: "POST", body, credentials: "include" });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok) {
+      setMessage("Đã tải lên Supabase Storage");
+      await load();
+    } else setMessage(data.error || "Upload thất bại");
+  }
+
   return (
     <>
       <div className="adminbp-page-head">
         <h1>Kho ảnh</h1>
-        <p>Upload ảnh vào trình duyệt rồi dán URL vào bài viết. File lớn chỉ lưu máy này.</p>
+        <p>File lưu Supabase Storage, URL dùng trong bài viết và các khối website.</p>
       </div>
       <div className="adminbp-upload">
         <div>
           <h2>Tải ảnh / video</h2>
-          <p>JPG, PNG, MP4 — dùng làm URL trong CMS.</p>
+          <p>JPG, PNG, WebP, MP4, PDF — tối đa 12MB.</p>
         </div>
         <label className="adminbp-upload-btn">
           Chọn file
-          <input
-            type="file"
-            accept="image/*,video/mp4"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              e.target.value = "";
-              if (!file) return;
-              const reader = new FileReader();
-              reader.onload = () =>
-                addMedia({ id: Date.now(), name: file.name, url: String(reader.result || ""), type: file.type });
-              reader.readAsDataURL(file);
-            }}
-          />
+          <input type="file" accept="image/*,video/mp4,application/pdf" onChange={onUpload} />
         </label>
       </div>
+      {message ? <p className="adminbp-dash-msg">{message}</p> : null}
       <ul className="adminbp-media-grid">
-        {cms.media.map((m) => (
+        {items.map((m) => (
           <li key={m.id}>
-            {m.type?.startsWith("video") ? <video src={m.url} muted /> : <img src={m.url} alt={m.name} />}
+            {String(m.type || "").startsWith("video") ? <video src={m.url} muted /> : <img src={m.url} alt={m.name} />}
             <small>{m.name}</small>
             <ItemActions
               onEdit={() => navigator.clipboard.writeText(m.url)}
-              onRemove={() => removeMedia(m.id)}
+              onRemove={async () => {
+                const qs = new URLSearchParams({ id: m.id });
+                if (m.key) qs.set("key", m.key);
+                await fetch(`/api/adminbp/media?${qs}`, { method: "DELETE", credentials: "include" });
+                await load();
+              }}
             />
           </li>
         ))}
@@ -587,28 +621,20 @@ export function MediaEditor() {
 }
 
 export function AccountEditor() {
-  const acc = getAccount();
-  const [email, setEmail] = useState(acc.email);
-  const [password, setPassword] = useState(acc.password);
-  const [message, setMessage] = useState("");
   return (
     <>
       <div className="adminbp-page-head">
         <h1>Tài khoản</h1>
-        <p>Đổi email / mật khẩu đăng nhập /adminbp.</p>
+        <p>Đăng nhập /adminbp dùng biến môi trường trên Vercel.</p>
       </div>
       <div className="adminbp-form">
-        <div className="adminbp-grid">
-          <Field label="Email" value={email} onChange={setEmail} />
-          <Field label="Mật khẩu" value={password} onChange={setPassword} type="text" />
-        </div>
-        <SaveBar
-          message={message}
-          onSave={() => {
-            setAccount({ email, password });
-            setMessage("Đã cập nhật tài khoản");
-          }}
-        />
+        <article className="adminbp-item">
+          <div className="adminbp-grid">
+            <Field label="Email" value="admin@vietdungphat.com" onChange={() => {}} />
+            <Field label="Mật khẩu" value="vietdungphat.com" onChange={() => {}} type="text" />
+          </div>
+          <p>Đổi mật khẩu bằng ADMINBP_PASSWORD trên Vercel. Không lưu mật khẩu trong trình duyệt.</p>
+        </article>
       </div>
     </>
   );

@@ -23,9 +23,11 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
-    if (!login(email, password)) {
+    setError("");
+    const ok = await login(email, password);
+    if (!ok) {
       setError("Email hoặc mật khẩu không đúng");
       return;
     }
@@ -101,7 +103,7 @@ export default function AdminLogin() {
                 </p>
               ) : (
                 <p className="login-desc" style={{ margin: 0 }}>
-                  Mặc định: {BP_LOGIN.emailPlaceholder} / admin123
+                  Email: {BP_LOGIN.emailPlaceholder}
                 </p>
               )}
               <button type="submit" className="btn-login">

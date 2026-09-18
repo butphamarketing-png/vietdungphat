@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { isAuthed } from "../lib/cms.js";
+import { useEffect, useState } from "react";
+import { checkAuth } from "../lib/cms.js";
 import Login from "./Login.jsx";
 import { AdminShell } from "./ui.jsx";
 import {
@@ -18,7 +19,12 @@ import {
 import "./adminbp.css";
 
 function Guard() {
-  if (!isAuthed()) return <Navigate to="/adminbp/login" replace />;
+  const [ok, setOk] = useState(null);
+  useEffect(() => {
+    checkAuth().then(setOk);
+  }, []);
+  if (ok === null) return <div className="adminbp-shell" />;
+  if (!ok) return <Navigate to="/adminbp/login" replace />;
   return <AdminShell />;
 }
 

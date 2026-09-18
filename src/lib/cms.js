@@ -15,7 +15,7 @@ const ACCOUNT = "vdp-adminbp-account";
 
 const KINDS = ["projects", "products", "services", "news", "extras"];
 
-export const defaultAccount = { email: "admin@vietdungphat.com", password: "admin123" };
+export const defaultAccount = { email: "admin@vietdungphat.com", password: "vietdungphat.com" };
 
 export const defaultHome = {
   kicker: "Thiết kế · Xây dựng · Cải tạo",
@@ -125,8 +125,41 @@ function persist() {
   try {
     localStorage.setItem(STORAGE, JSON.stringify(overlay));
   } catch (err) {
-    console.warn("CMS lưu thất bại (có thể vượt dung lượng trình duyệt)", err);
+    console.warn("CMS cache local thất bại", err);
   }
+  queueRemoteSave();
+}
+
+let saveTimer = 0;
+function queueRemoteSave() {
+  if (typeof fetch === "undefined") return;
+  clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => {
+    fetch("/api/adminbp/cms", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(overlay),
+    }).catch(() => {});
+  }, 400);
+}
+
+export async function hydrateCms() {
+  try {
+    const res = await fetch("/api/cms", { credentials: "include" });
+    const data = await res.json();
+    if (res.ok && data.ok && data.data && typeof data.data === "object") {
+      overlay = { ...emptyOverlay(), ...data.data };
+      snapshot = null;
+      emit();
+    }
+  } catch {
+    /* keep local cache */
+  }
+}
+
+if (typeof window !== "undefined") {
+  hydrateCms();
 }
 
 function mergePosts(kind) {
@@ -156,14 +189,43 @@ export function isAuthed() {
   return sessionStorage.getItem(AUTH) === "1";
 }
 
-export function login(email, password) {
-  const acc = getAccount();
-  if (email.trim().toLowerCase() !== acc.email.toLowerCase() || password !== acc.password) return false;
-  sessionStorage.setItem(AUTH, "1");
-  return true;
+export async function login(email, password) {
+  try {
+    const res = await fetch("/api/adminbp/login", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) return false;
+    sessionStorage.setItem(AUTH, "1");
+    await hydrateCms();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export function logout() {
+export async function checkAuth() {
+  try {
+    const res = await fetch("/api/adminbp/me", { credentials: "include" });
+    const data = await res.json().catch(() => ({}));
+    const ok = Boolean(res.ok && data.ok);
+    if (ok) sessionStorage.setItem(AUTH, "1");
+    else sessionStorage.removeItem(AUTH);
+    return ok;
+  } catch {
+    return sessionStorage.getItem(AUTH) === "1";
+  }
+}
+
+export async function logoutRemote() {
+  try {
+    await fetch("/api/adminbp/logout", { method: "POST", credentials: "include" });
+  } catch {
+    /* ignore */
+  }
   sessionStorage.removeItem(AUTH);
 }
 
@@ -282,10 +344,21 @@ export function removePost(kind, slug) {
   emit();
 }
 
-export function addBooking(entry) {
-  overlay = { ...overlay, bookings: [{ id: Date.now(), createdAt: new Date().toISOString(), ...entry }, ...(overlay.bookings || [])] };
-  persist();
+export async function addBooking(entry) {
+  const local = { id: Date.now(), createdAt: new Date().toISOString(), ...entry };
+  overlay = { ...overlay, bookings: [local, ...(overlay.bookings || [])] };
+  snapshot = null;
   emit();
+  try {
+    await fetch("/api/booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry),
+    });
+    await hydrateCms();
+  } catch {
+    persist();
+  }
 }
 
 export function removeBooking(id) {

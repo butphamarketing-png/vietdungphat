@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { logout } from "../lib/cms.js";
+import { logoutRemote } from "../lib/cms.js";
 
 const NAV = [
   { to: "/adminbp", end: true, label: "Tổng quan" },
@@ -44,8 +44,7 @@ export function AdminShell() {
           <button
             type="button"
             onClick={() => {
-              logout();
-              navigate("/adminbp/login", { replace: true });
+              logoutRemote().then(() => navigate("/adminbp/login", { replace: true }));
             }}
           >
             Đăng xuất
@@ -73,13 +72,16 @@ export function Field({ label, value, onChange, type = "text", multiline, rows =
 }
 
 export function ImageField({ label, value, onChange }) {
-  function onFile(e) {
+  async function onFile(e) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(String(reader.result || ""));
-    reader.readAsDataURL(file);
+    const body = new FormData();
+    body.append("file", file);
+    const res = await fetch("/api/adminbp/upload", { method: "POST", body, credentials: "include" });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.ok) onChange(data.data.url);
+    else alert(data.error || "Upload thất bại. Kiểm tra Supabase trên Vercel / .env.local.");
   }
   return (
     <label className="adminbp-field">

@@ -10,6 +10,9 @@
     "scrape": "node scripts/scrape.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1135.0",
+    "@supabase/supabase-js": "^2.116.0",
+    "busboy": "^1.6.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.8.0"
