@@ -8,6 +8,6 @@
   "rewrites": [
     { "source": "/adminbp", "destination": "/index.html" },
     { "source": "/adminbp/:path*", "destination": "/index.html" },
-    { "source": "/:path*", "destination": "/index.html" }
+    { "source": "/((?!api/|assets/|files/|studio/)(?!.*\\.).*)", "destination": "/index.html" }
   ]
 }
