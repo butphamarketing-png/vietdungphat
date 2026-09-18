@@ -50,6 +50,12 @@ export default function Layout() {
     return () => document.body.classList.remove("is-menu-open");
   }, [open]);
 
+  useEffect(() => {
+    const name = site.shortName || "Việt Dũng Phát";
+    const tag = site.tagline || "Atelier kiến trúc & nội thất";
+    document.title = `${name} — ${tag}`;
+  }, [site.shortName, site.tagline]);
+
   return (
     <>
       <header className={`header ${scrolled || !home ? "is-solid" : ""} ${home ? "on-hero" : ""}`}>

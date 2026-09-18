@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
 import Layout from "./components/Layout.jsx";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
@@ -11,6 +12,12 @@ import LoBan from "./pages/LoBan.jsx";
 import AdminApp from "./adminbp/AdminApp.jsx";
 
 export default function App() {
+  useEffect(() => {
+    if (!document.title || !document.title.trim()) {
+      document.title = "Việt Dũng Phát — Atelier kiến trúc & nội thất";
+    }
+  }, []);
+
   return (
     <Routes>
       <Route path="/adminbp/*" element={<AdminApp />} />
