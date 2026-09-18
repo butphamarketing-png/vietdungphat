@@ -1,8 +1,35 @@
-import { copyFileSync, existsSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+
+const SPA_ROUTES = [
+  "adminbp",
+  "adminbp/login",
+  "adminbp/cai-dat",
+  "adminbp/trang-chu",
+  "adminbp/mau-nha",
+  "adminbp/san-pham",
+  "adminbp/dich-vu",
+  "adminbp/tin-tuc",
+  "adminbp/bao-gia",
+  "adminbp/trang",
+  "adminbp/thu-vien",
+  "adminbp/danh-gia",
+  "adminbp/dat-lich",
+  "adminbp/kho-anh",
+  "adminbp/tai-khoan",
+  "gioi-thieu",
+  "du-an",
+  "mau-nha",
+  "san-pham",
+  "dich-vu",
+  "bao-gia",
+  "thuoc-lo-ban",
+  "tin-tuc",
+  "lien-he",
+];
 
 function spaFallbackHtml() {
   return {
@@ -11,6 +38,11 @@ function spaFallbackHtml() {
       const index = path.join(process.cwd(), "dist", "index.html");
       if (!existsSync(index)) return;
       copyFileSync(index, path.join(process.cwd(), "dist", "404.html"));
+      for (const route of SPA_ROUTES) {
+        const dir = path.join(process.cwd(), "dist", route);
+        mkdirSync(dir, { recursive: true });
+        copyFileSync(index, path.join(dir, "index.html"));
+      }
     },
   };
 }
