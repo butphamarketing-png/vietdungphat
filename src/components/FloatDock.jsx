@@ -18,7 +18,7 @@ export default function FloatDock() {
             </svg>
           </i>
         </a>
-        <a className="dock-btn dock-zalo" href={site.zalo} target="_blank" rel="noreferrer" title="Chat Zalo">
+        <a className="dock-btn dock-zalo" href={site.zalo || `https://zalo.me/${tel}`} target="_blank" rel="noreferrer" title="Chat Zalo">
           <span className="alo-circle" aria-hidden="true" />
           <span className="alo-fill" aria-hidden="true" />
           <i className="shake-anim">

@@ -1,13 +1,20 @@
-import { useState } from "react";
-import { fullImage } from "../lib/media.js";
+import { useEffect, useState } from "react";
+import { FALLBACK_IMAGE, fullImage } from "../lib/media.js";
+
+function resolveSrc(src) {
+  const original = src || "";
+  return fullImage(original) || original || FALLBACK_IMAGE;
+}
 
 export default function SmartImg({ src, alt = "", className, ...rest }) {
   const original = src || "";
-  const preferred = fullImage(original) || original;
-  const [current, setCurrent] = useState(preferred);
-  const [dead, setDead] = useState(!original);
+  const [current, setCurrent] = useState(() => resolveSrc(original));
 
-  if (dead || !current) return null;
+  useEffect(() => {
+    setCurrent(resolveSrc(src));
+  }, [src]);
+
+  if (!current) return null;
 
   return (
     <img
@@ -17,9 +24,11 @@ export default function SmartImg({ src, alt = "", className, ...rest }) {
       referrerPolicy="no-referrer"
       loading="lazy"
       onError={() => {
-        const httpCms = /^https?:\/\/(www\.)?vietdungphat\.com/i.test(original);
-        if (current !== original && original && !httpCms) setCurrent(original);
-        else setDead(true);
+        if (current !== original && original && current !== FALLBACK_IMAGE) {
+          setCurrent(original);
+          return;
+        }
+        if (current !== FALLBACK_IMAGE) setCurrent(FALLBACK_IMAGE);
       }}
       {...rest}
     />

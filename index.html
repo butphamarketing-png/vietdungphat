@@ -8,6 +8,7 @@
       name="description"
       content="Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng và cải tạo nhà ở tại TP.HCM. 20 năm kinh nghiệm, báo giá minh bạch."
     />
+    <link rel="icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <title>Việt Dũng Phát — Atelier kiến trúc & nội thất</title>
@@ -23,11 +24,21 @@
     <script>
       document.addEventListener("error", function (e) {
         const el = e.target;
-        if (!el || el.tagName !== "IMG" || el.dataset.cmsRetry) return;
+        if (!el || el.tagName !== "IMG") return;
         const src = el.currentSrc || el.src || "";
-        if (!/vietdungphat\.com/i.test(src) || /images\.weserv\.nl/i.test(src)) return;
-        el.dataset.cmsRetry = "1";
-        el.src = "https://images.weserv.nl/?url=" + encodeURIComponent(src.replace(/^https?:\/\//i, ""));
+        if (!el.dataset.cmsRetry && /vietdungphat\.com/i.test(src) && !/images\.weserv\.nl/i.test(src)) {
+          el.dataset.cmsRetry = "1";
+          el.src =
+            "https://images.weserv.nl/?url=" +
+            encodeURIComponent(src.replace(/^https?:\/\//i, "")) +
+            "&default=" +
+            encodeURIComponent("www.vietdungphat.com/studio/01.jpg");
+          return;
+        }
+        if (el.dataset.ph !== "1" && !/\/studio\/01\.jpg/i.test(src)) {
+          el.dataset.ph = "1";
+          el.src = "/studio/01.jpg";
+        }
       }, true);
     </script>
     <div id="root"></div>

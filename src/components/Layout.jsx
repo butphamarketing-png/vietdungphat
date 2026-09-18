@@ -54,7 +54,7 @@ export default function Layout() {
     <>
       <header className={`header ${scrolled || !home ? "is-solid" : ""} ${home ? "on-hero" : ""}`}>
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
-          <img src="/logo.png" alt={site.shortName || "Việt Dũng Phát"} />
+          <img src={site.logo || "/logo.png"} alt={site.shortName || "Việt Dũng Phát"} />
           <strong>{site.shortName || "VIỆT DŨNG PHÁT"}</strong>
         </Link>
         <button className={`menu-btn${open ? " is-open" : ""}`} aria-label="Menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>

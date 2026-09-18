@@ -6,6 +6,8 @@ export const site = {
   ...cmsSite,
   facebook: "https://www.facebook.com/vietdungphat/",
   messenger: "https://m.me/vietdungphat",
+  logo: "/logo.png",
+  aboutImage: "/studio/09.jpg",
   profilePdf: (() => {
     const raw = String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://");
     if (!raw || /\/upload\/files\/ho-so-nang-luc/i.test(raw)) return "/Ho-so-nang-luc-Viet-Dung-Phat.docx";

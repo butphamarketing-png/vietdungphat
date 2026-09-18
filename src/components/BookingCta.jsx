@@ -23,10 +23,11 @@ function BrText({ text }) {
     ));
 }
 
-export function BookingForm() {
+export function BookingForm({ titleId }) {
   const { site } = useCms();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const headingId = titleId || "booking-form-title";
 
   return (
     <form
@@ -57,7 +58,7 @@ export function BookingForm() {
         }
       }}
     >
-      <h3 id="booking-form-title">Đặt lịch hẹn tư vấn</h3>
+      <h3 id={headingId}>Đặt lịch hẹn tư vấn</h3>
       <p>Vui lòng điền thông tin, chúng tôi sẽ liên hệ xác nhận lịch hẹn trong thời gian sớm nhất.</p>
       <div className="booking-row">
         <label>
@@ -87,7 +88,7 @@ export function BookingForm() {
       <div className="booking-row">
         <label>
           <Icon d="M5 6h14v14H5zM5 10h14M9 6V4M15 6V4" />
-          <input type="date" name="date" required aria-label="Ngày hẹn" />
+          <input type="date" name="date" required aria-label="Ngày hẹn" lang="vi" />
         </label>
         <label>
           <Icon d="M12 21a9 9 0 1 1 9-9 9 9 0 0 1-9 9zM12 7v5l3 2" />
@@ -111,10 +112,16 @@ export function BookingForm() {
       {sent ? (
         <p className="ok">
           Cảm ơn quý khách. Yêu cầu đã được ghi nhận. Chúng tôi sẽ gọi xác nhận sớm, hoặc liên hệ ngay{" "}
-          <a href={`tel:${String(site.phone || "").replace(/\./g, "")}`}>{site.phone}</a> /{" "}
-          <a href={site.zalo} target="_blank" rel="noreferrer">
-            Zalo
-          </a>
+          <a href={`tel:${String(site.phone || "").replace(/\./g, "")}`}>{site.phone}</a>
+          {site.zalo ? (
+            <>
+              {" "}
+              /{" "}
+              <a href={site.zalo} target="_blank" rel="noreferrer">
+                Zalo
+              </a>
+            </>
+          ) : null}
           .
         </p>
       ) : null}

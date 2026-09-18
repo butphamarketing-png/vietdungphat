@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 import { BookingForm } from "./BookingCta.jsx";
@@ -7,6 +7,7 @@ const KEY = "vdp-booking-popup";
 const SKIP = ["/lien-he", "/bao-gia", "/thuoc-lo-ban"];
 
 export default function BookingPopup() {
+  const titleId = useId();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const { home } = useCms();
@@ -41,12 +42,12 @@ export default function BookingPopup() {
   return (
     <div className="booking-popup-layer">
       <button className="booking-popup-mask" aria-label="Đóng popup" onClick={close} />
-      <div className="booking-popup" role="dialog" aria-modal="true" aria-labelledby="booking-form-title">
+      <div className="booking-popup" role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <button type="button" className="booking-popup-close" onClick={close} aria-label="Đóng">
           ×
         </button>
         <img className="booking-popup-photo" src={home.bookingImage || "/studio/05.jpg"} alt="" />
-        <BookingForm />
+        <BookingForm titleId={titleId} />
       </div>
     </div>
   );

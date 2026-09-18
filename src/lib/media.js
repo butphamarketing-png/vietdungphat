@@ -1,4 +1,11 @@
 const CMS_HOST = /^(www\.)?vietdungphat\.com$/i;
+const WESERV_HOST = /^(images\.)?weserv\.nl$/i;
+export const FALLBACK_IMAGE = "/studio/01.jpg";
+const FALLBACK_REMOTE = "www.vietdungphat.com/studio/01.jpg";
+
+function wrapWeserv(remote) {
+  return `https://images.weserv.nl/?url=${encodeURIComponent(remote)}&default=${encodeURIComponent(FALLBACK_REMOTE)}`;
+}
 
 export function fullImage(src = "") {
   if (!src) return "";
@@ -9,9 +16,17 @@ export function fullImage(src = "") {
   try {
     if (/^https?:\/\//i.test(url)) {
       const parsed = new URL(url);
+      if (WESERV_HOST.test(parsed.hostname)) {
+        const inner = parsed.searchParams.get("url") || "";
+        if (/vietdungphat\.com/i.test(inner) && !parsed.searchParams.get("default")) {
+          parsed.searchParams.set("default", FALLBACK_REMOTE);
+          return parsed.toString();
+        }
+        return url;
+      }
       if (CMS_HOST.test(parsed.hostname)) {
         const remote = `${parsed.hostname}${parsed.pathname}${parsed.search}`;
-        return `https://images.weserv.nl/?url=${encodeURIComponent(remote)}`;
+        return wrapWeserv(remote);
       }
     }
   } catch {

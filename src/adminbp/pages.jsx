@@ -13,6 +13,7 @@ import {
   useCms,
 } from "../lib/cms.js";
 import { CardList, Field, ImageField, ItemActions, SaveBar, moveItem } from "./ui.jsx";
+import SmartImg from "../components/SmartImg.jsx";
 
 const LINKS = [
   { href: "/adminbp/cai-dat", label: "Cài đặt", desc: "Hotline, địa chỉ, mạng xã hội" },
@@ -137,6 +138,10 @@ export function SettingsEditor() {
   const [message, setMessage] = useState("");
   const map = site.map || { lat: "", lng: "" };
 
+  useEffect(() => {
+    setSite(cms.site);
+  }, [cms.site]);
+
   function set(key, value) {
     setSite((s) => ({ ...s, [key]: value }));
   }
@@ -187,6 +192,12 @@ export function HomeEditor() {
   const [stats, setStats] = useState(cms.stats);
   const [core, setCore] = useState(cms.coreServices);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setHome(cms.home);
+    setStats(cms.stats);
+    setCore(cms.coreServices);
+  }, [cms.home, cms.stats, cms.coreServices]);
 
   function set(key, value) {
     setHome((h) => ({ ...h, [key]: value }));
@@ -336,7 +347,7 @@ export function PostsEditor({ kind, title, hint }) {
             {filtered.slice(0, 80).map((item) => (
               <article key={item.slug} className="adminbp-item">
                 <div className="adminbp-news-row">
-                  {item.image ? <img src={item.image} alt="" /> : <div className="adminbp-image-empty" />}
+                  {item.image ? <SmartImg src={item.image} alt="" /> : <div className="adminbp-image-empty" />}
                   <div>
                     <strong>{item.title}</strong>
                     <small>/{item.slug}</small>
@@ -357,6 +368,11 @@ export function PricingEditor() {
   const [packs, setPacks] = useState(cms.pricePacks);
   const [page, setPage] = useState(cms.pages.pricing);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setPacks(cms.pricePacks);
+    setPage(cms.pages.pricing);
+  }, [cms.pricePacks, cms.pages.pricing]);
   return (
     <>
       <div className="adminbp-page-head">
@@ -412,6 +428,16 @@ export function PagesEditor() {
     news: { title: cms.lists.news.title, intro: cms.lists.news.intro },
   });
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setPages(cms.pages);
+    setListsMeta({
+      projects: { title: cms.lists.projects.title, intro: cms.lists.projects.intro },
+      products: { title: cms.lists.products.title, intro: cms.lists.products.intro },
+      services: { title: cms.lists.services.title, intro: cms.lists.services.intro },
+      news: { title: cms.lists.news.title, intro: cms.lists.news.intro },
+    });
+  }, [cms.pages, cms.lists]);
   const keys = [
     ["about", "Giới thiệu"],
     ["services", "Dịch vụ"],
@@ -464,6 +490,10 @@ export function StudioEditor() {
   const cms = useCms();
   const [studio, setStudio] = useState(cms.studio);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setStudio(cms.studio);
+  }, [cms.studio]);
   return (
     <>
       <div className="adminbp-page-head">
@@ -498,6 +528,10 @@ export function ReviewsEditor() {
   const cms = useCms();
   const [reviews, setReviews] = useState(cms.reviews);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setReviews(cms.reviews);
+  }, [cms.reviews]);
   return (
     <>
       <div className="adminbp-page-head">

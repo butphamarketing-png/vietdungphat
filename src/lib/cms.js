@@ -178,6 +178,7 @@ export async function hydrateCms() {
     const data = await res.json();
     if (res.ok && data.ok && data.data && typeof data.data === "object") {
       overlay = { ...emptyOverlay(), ...overlay, ...data.data };
+      overlay.bookings = (overlay.bookings || []).filter((b) => b && (b.name || b.phone));
       persistLocal();
       snapshot = null;
       emit();
@@ -263,7 +264,12 @@ export function getCms() {
   const site = { ...defaultSite, ...(overlay.site || {}) };
   const deadPdf = !site.profilePdf || /\/upload\/files\/ho-so-nang-luc/i.test(String(site.profilePdf));
   if (deadPdf) site.profilePdf = "/Ho-so-nang-luc-Viet-Dung-Phat.docx";
-  if (!site.logo) site.logo = "/logo.png";
+  const logo = String(site.logo || "");
+  if (!logo || /upload\/hinhanh\/logo/i.test(logo) || /logo-3495/i.test(logo)) site.logo = "/logo.png";
+  const aboutImage = String(site.aboutImage || "");
+  if (!aboutImage || /upload\/hinhanh\/about/i.test(aboutImage) || /about-8486/i.test(aboutImage)) {
+    site.aboutImage = "/studio/09.jpg";
+  }
   const projects = mergePosts("projects");
   const products = mergePosts("products");
   const services = mergePosts("services");
@@ -296,14 +302,14 @@ export function getCms() {
       services: { ...defaultLists.services, ...(listsMeta.services || {}), items: services },
       news: { ...defaultLists.news, ...(listsMeta.news || {}), items: news },
     },
-    bookings: overlay.bookings || [],
+    bookings: (overlay.bookings || []).filter((b) => b && (b.name || b.phone)),
     media: overlay.media || [],
     counts: {
       projects: projects.length,
       products: products.length,
       services: services.length,
       news: news.length,
-      bookings: (overlay.bookings || []).length,
+      bookings: (overlay.bookings || []).filter((b) => b && (b.name || b.phone)).length,
       media: (overlay.media || []).length,
     },
   };

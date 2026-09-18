@@ -19,12 +19,13 @@ export default function HeroVideo() {
       el.removeEventListener("loadeddata", play);
       el.removeEventListener("canplay", play);
     };
-  }, []);
+  }, [home.video]);
 
   return (
     <section className="hero">
       <video
         ref={ref}
+        key={home.video}
         className="hero-video"
         autoPlay
         muted
