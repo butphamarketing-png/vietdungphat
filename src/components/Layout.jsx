@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import FloatDock from "./FloatDock.jsx";
 import BookingPopup from "./BookingPopup.jsx";
-import { site } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 import { useScrollReveal } from "../lib/useScrollReveal.js";
 import { useEffect, useState } from "react";
 
@@ -18,6 +18,7 @@ const links = [
 ];
 
 export default function Layout() {
+  const { site, home: cmsHome } = useCms();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -71,9 +72,7 @@ export default function Layout() {
         <div className="footer-grid">
           <div>
             <h2>{site.shortName}</h2>
-            <p className="muted">
-              20 năm thiết kế, xây dựng và cải tạo nhà ở tại TP.HCM và các tỉnh lân cận.
-            </p>
+            <p className="muted">{cmsHome.footerBlurb}</p>
             <a className="text-link light" href={site.profilePdf} target="_blank" rel="noreferrer">
               Tải hồ sơ năng lực
             </a>
@@ -84,7 +83,7 @@ export default function Layout() {
             <p>Showroom: {site.showroom}</p>
             <p>Xưởng: {site.workshop}</p>
             <p>
-              <a href={`tel:${site.phone.replace(/\./g, "")}`}>{site.phone}</a>
+              <a href={`tel:${String(site.phone || "").replace(/\./g, "")}`}>{site.phone}</a>
               <br />
               <a href={`mailto:${site.email}`}>{site.email}</a>
             </p>

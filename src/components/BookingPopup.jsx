@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useCms } from "../lib/cms.js";
 import { BookingForm } from "./BookingCta.jsx";
 
 const KEY = "vdp-booking-popup";
@@ -8,6 +9,7 @@ const SKIP = ["/lien-he", "/bao-gia", "/thuoc-lo-ban"];
 export default function BookingPopup() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { home } = useCms();
 
   useEffect(() => {
     if (sessionStorage.getItem(KEY) === "1") return;
@@ -43,7 +45,7 @@ export default function BookingPopup() {
         <button type="button" className="booking-popup-close" onClick={close} aria-label="Đóng">
           ×
         </button>
-        <img className="booking-popup-photo" src="/studio/05.jpg" alt="" />
+        <img className="booking-popup-photo" src={home.bookingImage || "/studio/05.jpg"} alt="" />
         <BookingForm />
       </div>
     </div>

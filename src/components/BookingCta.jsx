@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { site } from "../lib/content.js";
+import { addBooking, useCms } from "../lib/cms.js";
 
 const needs = ["Thiết kế", "Xây dựng", "Cải tạo", "Báo giá", "Khác"];
 const slots = ["08:00", "09:00", "10:00", "11:00", "13:30", "14:30", "15:30", "16:30"];
@@ -12,7 +12,19 @@ function Icon({ d }) {
   );
 }
 
+function BrText({ text }) {
+  return String(text || "")
+    .split("\n")
+    .map((line, i) => (
+      <span key={i}>
+        {i ? <br /> : null}
+        {line}
+      </span>
+    ));
+}
+
 export function BookingForm() {
+  const { site } = useCms();
   const [sent, setSent] = useState(false);
 
   return (
@@ -21,16 +33,26 @@ export function BookingForm() {
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
+        const entry = {
+          name: data.get("name") || "",
+          phone: data.get("phone") || "",
+          email: data.get("email") || "",
+          need: data.get("need") || "",
+          date: data.get("date") || "",
+          slot: data.get("slot") || "",
+          note: data.get("note") || "",
+        };
+        addBooking(entry);
         const body = [
-          `Họ tên: ${data.get("name") || ""}`,
-          `Điện thoại: ${data.get("phone") || ""}`,
-          `Email: ${data.get("email") || ""}`,
-          `Nhu cầu: ${data.get("need") || ""}`,
-          `Ngày: ${data.get("date") || ""}`,
-          `Giờ: ${data.get("slot") || ""}`,
-          `Ghi chú: ${data.get("note") || ""}`,
+          `Họ tên: ${entry.name}`,
+          `Điện thoại: ${entry.phone}`,
+          `Email: ${entry.email}`,
+          `Nhu cầu: ${entry.need}`,
+          `Ngày: ${entry.date}`,
+          `Giờ: ${entry.slot}`,
+          `Ghi chú: ${entry.note}`,
         ].join("\n");
-        const href = `mailto:${site.email}?subject=${encodeURIComponent(`Đặt lịch tư vấn — ${data.get("name") || ""}`)}&body=${encodeURIComponent(body)}`;
+        const href = `mailto:${site.email}?subject=${encodeURIComponent(`Đặt lịch tư vấn — ${entry.name}`)}&body=${encodeURIComponent(body)}`;
         window.location.href = href;
         setSent(true);
       }}
@@ -89,7 +111,7 @@ export function BookingForm() {
       {sent ? (
         <p className="ok">
           Cảm ơn quý khách. Email đặt lịch đã mở — vui lòng bấm Gửi trong hộp thư. Hoặc gọi{" "}
-          <a href={`tel:${site.phone.replace(/\./g, "")}`}>{site.phone}</a> /{" "}
+          <a href={`tel:${String(site.phone || "").replace(/\./g, "")}`}>{site.phone}</a> /{" "}
           <a href={site.zalo} target="_blank" rel="noreferrer">
             Zalo
           </a>
@@ -102,24 +124,21 @@ export function BookingForm() {
 }
 
 export default function BookingCta() {
+  const { home } = useCms();
   return (
     <section className="booking-cta" id="dat-lich">
       <div className="booking-visual">
-        <img src="/studio/05.jpg" alt="" />
+        <img src={home.bookingImage || "/studio/05.jpg"} alt="" />
         <div className="booking-copy">
-          <p className="kicker lined">Đặt lịch hẹn</p>
+          <p className="kicker lined">{home.bookingKicker}</p>
           <h2>
-            Tư vấn giải pháp
-            <br />
-            <em>nhà ở lý tưởng</em>
+            <BrText text={home.bookingTitle} />
           </h2>
-          <p>
-            Đội ngũ kiến trúc sư của Việt Dũng Phát sẵn sàng lắng nghe và đồng hành cùng bạn từ ý tưởng đến hiện thực.
-          </p>
+          <p>{home.bookingLead}</p>
           <ul className="booking-points">
-            <li>Tư vấn tận tâm</li>
-            <li>Giải pháp tối ưu</li>
-            <li>Đồng hành dài lâu</li>
+            {(home.bookingPoints || []).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ul>
           <p className="booking-script">Kiến tạo không gian sống bền vững</p>
         </div>

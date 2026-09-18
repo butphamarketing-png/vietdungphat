@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { pricePacks } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 import SmartImg from "./SmartImg.jsx";
 
 function Icon({ name }) {
@@ -27,6 +27,7 @@ function Icon({ name }) {
 }
 
 export default function PriceBoard() {
+  const { pricePacks } = useCms();
   return (
     <section className="pad price-board" id="bao-gia">
       <svg className="price-sketch left" viewBox="0 0 280 220" aria-hidden="true">

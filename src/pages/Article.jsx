@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { findPost, kindOf, projects, news, products, services } from "../lib/content.js";
+import { findPost, kindOf, useCms } from "../lib/cms.js";
 import { cleanArticleHtml, fullImage, uniqueImages } from "../lib/media.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -7,10 +7,11 @@ import SmartImg from "../components/SmartImg.jsx";
 
 export default function Article() {
   const { slug } = useParams();
-  const post = findPost(slug);
-  const meta = kindOf(slug);
+  const cms = useCms();
+  const post = findPost(slug, cms);
+  const meta = kindOf(slug, cms);
   const pool =
-    meta.kind === "news" ? news : meta.kind === "products" ? products : meta.kind === "services" ? services : projects;
+    meta.kind === "news" ? cms.news : meta.kind === "products" ? cms.products : meta.kind === "services" ? cms.services : cms.projects;
   const related = pool.filter((p) => p.slug !== slug).slice(0, 3);
 
   if (!post) {

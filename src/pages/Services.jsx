@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { coreServices, lists } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
 export default function Services() {
   const { hash } = useLocation();
+  const { coreServices, lists, pages } = useCms();
+  const page = pages.services;
 
   useEffect(() => {
     if (!hash) return;
@@ -16,8 +18,8 @@ export default function Services() {
 
   return (
     <article className="page">
-      <PageHero kicker="Dịch vụ" title="Thiết kế, xây dựng, cải tạo">
-        <p>Ba nhóm dịch vụ cốt lõi — cùng toàn bộ bài viết dịch vụ gốc từ website Việt Dũng Phát.</p>
+      <PageHero kicker={page.kicker} title={page.title}>
+        <p>{page.lead}</p>
       </PageHero>
       <div className="page-body">
         <div className="service-cards">

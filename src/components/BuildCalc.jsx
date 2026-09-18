@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { site } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 
 const fmt = (n) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(n);
@@ -16,6 +16,7 @@ const HOUSE = { pho: 1, bietthu: 1.08, cap4: 0.9 };
 const ALLEY = { wide: 1, mid: 1.05, narrow: 1.1 };
 
 export default function BuildCalc() {
+  const { site } = useCms();
   const [house, setHouse] = useState("pho");
   const [service, setService] = useState("tron");
   const [level, setLevel] = useState("kha");
@@ -65,7 +66,7 @@ export default function BuildCalc() {
     setDone(true);
   }
 
-  const tel = site.phone.replace(/\./g, "");
+  const tel = String(site.phone || "").replace(/\./g, "");
 
   return (
     <section className="pad calc-block" id="tinh-gia">

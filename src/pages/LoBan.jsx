@@ -1,15 +1,15 @@
+import { useCms } from "../lib/cms.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import LoBanRuler from "../components/LoBanRuler.jsx";
 
 export default function LoBan() {
+  const { pages } = useCms();
+  const page = pages.loban;
   return (
     <article className="page loban-page">
-      <PageHero kicker="Phong thủy" title="Thước Lỗ Ban online">
-        <p>
-          Tra kích thước tốt — xấu theo ba loại thước phổ biến: 52.2cm cho khoảng thông thủy, 42.9cm cho khối xây dựng
-          và 38.8cm cho đồ nội thất, bàn thờ. Kết quả mang tính tham khảo phong thủy dân gian.
-        </p>
+      <PageHero kicker={page.kicker} title={page.title}>
+        <p>{page.lead}</p>
       </PageHero>
       <div className="page-body">
         <LoBanRuler />

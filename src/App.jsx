@@ -8,10 +8,12 @@ import Contact from "./pages/Contact.jsx";
 import Services from "./pages/Services.jsx";
 import Pricing from "./pages/Pricing.jsx";
 import LoBan from "./pages/LoBan.jsx";
+import AdminApp from "./adminbp/AdminApp.jsx";
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/adminbp/*" element={<AdminApp />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/gioi-thieu" element={<About />} />

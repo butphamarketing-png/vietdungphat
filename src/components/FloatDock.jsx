@@ -1,7 +1,8 @@
-import { site } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 
 export default function FloatDock() {
-  const tel = site.phone.replace(/\./g, "");
+  const { site } = useCms();
+  const tel = String(site.phone || "").replace(/\./g, "");
   return (
     <>
       <div className="float-dock" aria-label="Liên hệ nhanh">

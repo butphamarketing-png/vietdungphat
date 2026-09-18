@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useCms } from "../lib/cms.js";
 
 export default function HeroVideo() {
+  const { home } = useCms();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -29,22 +31,22 @@ export default function HeroVideo() {
         loop
         playsInline
         preload="auto"
-        poster="/studio/01.jpg"
-        src="/hero.mp4?v=client"
+        poster={home.poster}
+        src={home.video}
       />
       <div className="hero-copy">
-        <p className="kicker light">Thiết kế · Xây dựng · Cải tạo</p>
+        <p className="kicker light">{home.kicker}</p>
         <h1>
-          Kiến tạo không gian
+          {home.title1}
           <br />
-          sống bền vững
+          {home.title2}
         </h1>
         <div className="cta-row">
           <Link className="btn" to="/lien-he">
-            Đặt lịch khảo sát
+            {home.cta1}
           </Link>
           <Link className="btn ghost" to="/mau-nha">
-            Xem mẫu nhà
+            {home.cta2}
           </Link>
         </div>
       </div>

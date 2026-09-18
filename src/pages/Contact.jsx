@@ -1,13 +1,15 @@
-import { site } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 
 export default function Contact() {
-  const tel = site.phone.replace(/\./g, "");
+  const { site, pages } = useCms();
+  const page = pages.contact;
+  const tel = String(site.phone || "").replace(/\./g, "");
   return (
     <article className="page contact-page">
-      <PageHero kicker="Liên hệ" title="Đặt lịch hẹn tư vấn">
-        <p>Gửi yêu cầu bên dưới hoặc gọi trực tiếp. Thông tin liên hệ giữ nguyên từ website Việt Dũng Phát.</p>
+      <PageHero kicker={page.kicker} title={page.title}>
+        <p>{page.lead}</p>
       </PageHero>
       <BookingCta />
       <div className="page-body">
@@ -39,7 +41,7 @@ export default function Contact() {
             <h2>Tìm chúng tôi</h2>
             <iframe
               title="Bản đồ Việt Dũng Phát"
-              src={`https://maps.google.com/maps?q=${site.map.lat},${site.map.lng}&z=16&output=embed`}
+              src={`https://maps.google.com/maps?q=${site.map?.lat},${site.map?.lng}&z=16&output=embed`}
               loading="lazy"
             />
           </div>

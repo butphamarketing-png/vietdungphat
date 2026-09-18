@@ -1,22 +1,15 @@
+import { useCms } from "../lib/cms.js";
+
 export default function StatsBar() {
+  const { stats } = useCms();
   return (
     <section className="stats">
-      <div>
-        <strong>900+</strong>
-        <span>Công trình</span>
-      </div>
-      <div>
-        <strong>20+</strong>
-        <span>Năm kinh nghiệm</span>
-      </div>
-      <div>
-        <strong>200+</strong>
-        <span>Công nhân lành nghề</span>
-      </div>
-      <div>
-        <strong>6 năm</strong>
-        <span>Bảo hành</span>
-      </div>
+      {stats.map((item) => (
+        <div key={item.label}>
+          <strong>{item.value}</strong>
+          <span>{item.label}</span>
+        </div>
+      ))}
     </section>
   );
 }

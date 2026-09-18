@@ -1,32 +1,38 @@
 import { Link } from "react-router-dom";
-import { coreServices, news, products, projects, reviews } from "../lib/content.js";
+import { useCms } from "../lib/cms.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import StatsBar from "../components/StatsBar.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 import HeroVideo from "../components/HeroVideo.jsx";
-import { studio } from "../lib/studio.js";
+
+function BrText({ text }) {
+  return String(text || "")
+    .split("\n")
+    .map((line, i) => (
+      <span key={i}>
+        {i ? <br /> : null}
+        {line}
+      </span>
+    ));
+}
 
 export default function Home() {
+  const { coreServices, news, products, projects, reviews, studio, home } = useCms();
   return (
     <>
       <HeroVideo />
 
       <section className="pad services-block">
         <div className="services-intro">
-          <p className="kicker">Dịch vụ</p>
+          <p className="kicker">{home.servicesKicker}</p>
           <h2>
-            Thiết kế, xây dựng,
-            <br />
-            cải tạo
+            <BrText text={home.servicesTitle} />
           </h2>
-          <p>
-            Việt Dũng Phát đồng hành từ ý tưởng đến chìa khóa trao tay: thiết kế kiến trúc — nội thất, xây dựng nhà phố
-            biệt thự, và cải tạo nhà hiện hữu. 20 năm kinh nghiệm tại TP.HCM và các tỉnh lân cận.
-          </p>
+          <p>{home.servicesLead}</p>
           <Link className="btn with-arrow" to="/dich-vu">
-            Xem toàn bộ dịch vụ
+            {home.servicesCta}
           </Link>
         </div>
         <div className="service-cards">
@@ -45,8 +51,8 @@ export default function Home() {
       <section className="pad">
         <div className="section-head row">
           <div>
-            <p className="kicker">Mẫu nhà</p>
-            <h2>Công trình tiêu biểu</h2>
+            <p className="kicker">{home.projectsKicker}</p>
+            <h2>{home.projectsTitle}</h2>
           </div>
           <Link className="text-link" to="/mau-nha">
             Xem thêm mẫu nhà
@@ -54,7 +60,7 @@ export default function Home() {
         </div>
         <div className="grid-4">
           {studio.map((p, i) => (
-            <Link key={p.src} to={projects[i] ? `/${projects[i].slug}` : "/mau-nha"} className="card">
+            <Link key={p.src + i} to={projects[i] ? `/${projects[i].slug}` : "/mau-nha"} className="card">
               <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
             </Link>
@@ -65,8 +71,8 @@ export default function Home() {
       <section className="pad journal">
         <div className="section-head row">
           <div>
-            <p className="kicker">Sản phẩm</p>
-            <h2>Nội thất và combo từ xưởng</h2>
+            <p className="kicker">{home.productsKicker}</p>
+            <h2>{home.productsTitle}</h2>
           </div>
           <Link className="text-link" to="/san-pham">
             Xem tất cả sản phẩm
@@ -84,22 +90,17 @@ export default function Home() {
 
       <section className="pad about-block">
         <div className="about-collage">
-          <SmartImg className="shot a" src="/studio/08.jpg" alt="Biệt thự tân cổ điển" />
-          <SmartImg className="shot b" src="/studio/10.jpg" alt="Biệt thự góc" />
-          <SmartImg className="shot c" src="/studio/11.jpg" alt="Công trình Việt Dũng Phát" />
+          <SmartImg className="shot a" src={home.aboutImages?.[0] || "/studio/08.jpg"} alt="Biệt thự tân cổ điển" />
+          <SmartImg className="shot b" src={home.aboutImages?.[1] || "/studio/10.jpg"} alt="Biệt thự góc" />
+          <SmartImg className="shot c" src={home.aboutImages?.[2] || "/studio/11.jpg"} alt="Công trình Việt Dũng Phát" />
           <p className="about-script">Kiến tạo không gian sống bền vững</p>
         </div>
         <div className="about-copy">
-          <p className="kicker lined">Về chúng tôi</p>
+          <p className="kicker lined">{home.aboutKicker}</p>
           <h2>
-            20 năm kiến trúc
-            <br />
-            và xây dựng
+            <BrText text={home.aboutTitle} />
           </h2>
-          <p>
-            KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng
-            Phát, với 20 năm kinh nghiệm thiết kế và thi công tại Hồ Chí Minh và các tỉnh lân cận.
-          </p>
+          <p>{home.aboutLead}</p>
           <ul className="field-list">
             {coreServices.map((s) => (
               <li key={s.title}>
@@ -117,8 +118,8 @@ export default function Home() {
 
       <section className="pad reviews">
         <div className="section-head">
-          <p className="kicker">Đánh giá</p>
-          <h2>Khách hàng nói gì về chúng tôi</h2>
+          <p className="kicker">{home.reviewsKicker}</p>
+          <h2>{home.reviewsTitle}</h2>
         </div>
         <div className="review-grid">
           {reviews.map((r) => (
@@ -135,8 +136,8 @@ export default function Home() {
       <section className="pad journal">
         <div className="section-head row">
           <div>
-            <p className="kicker">Tin tức</p>
-            <h2>Góc chia sẻ</h2>
+            <p className="kicker">{home.newsKicker}</p>
+            <h2>{home.newsTitle}</h2>
           </div>
           <Link className="text-link" to="/tin-tuc">
             Tất cả bài viết
