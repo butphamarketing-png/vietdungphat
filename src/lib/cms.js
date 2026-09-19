@@ -24,7 +24,7 @@ export const defaultHome = {
   cta1: "Đặt lịch khảo sát",
   cta2: "Xem mẫu nhà",
   video: "/hero.mp4?v=client",
-  poster: "/studio/01.jpg",
+  poster: "/studio/08.jpg",
   servicesKicker: "Dịch vụ",
   servicesTitle: "Thiết kế, xây dựng,\ncải tạo",
   servicesLead:
@@ -43,7 +43,7 @@ export const defaultHome = {
   newsTitle: "Góc chia sẻ",
   reviewsKicker: "Đánh giá",
   reviewsTitle: "Khách hàng nói gì về chúng tôi",
-  bookingImage: "/studio/05.jpg",
+  bookingImage: "/studio/11.jpg",
   bookingKicker: "Đặt lịch hẹn",
   bookingTitle: "Tư vấn giải pháp\nnhà ở lý tưởng",
   bookingLead:
@@ -64,7 +64,7 @@ export const defaultPages = {
     kicker: "Giới thiệu",
     title: "20 năm kiến trúc,\nxây dựng và cải tạo",
     lead: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng, cải tạo nhà ở tại TP.HCM và các tỉnh lân cận. Toàn bộ nội dung giới thiệu gốc được giữ nguyên bên dưới.",
-    image: "/studio/09.jpg",
+    image: "/studio/08.jpg",
   },
   services: {
     kicker: "Dịch vụ",

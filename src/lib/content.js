@@ -42,7 +42,7 @@ export const coreServices = [
     title: "Thiết kế",
     slug: "thiet-ke",
     href: "/thiet-ke-kien-truc-ho-chi-minh",
-    image: "/studio/06.jpg",
+    image: "/studio/08.jpg",
     desc: "Thiết kế kiến trúc và nội thất nhà phố, biệt thự, căn hộ — hồ sơ đầy đủ để thi công.",
   },
   {
@@ -56,7 +56,7 @@ export const coreServices = [
     title: "Cải tạo",
     slug: "cai-tao",
     href: "/bao-gia-sua-chu-nha-tron-goi-2025",
-    image: "/studio/12.jpg",
+    image: "/studio/07.jpg",
     desc: "Sửa chữa, cải tạo, nâng cấp nhà cũ: kết cấu, hoàn thiện và nội thất.",
   },
 ];
@@ -84,7 +84,7 @@ export const pricePacks = [
     tag: "Phần thô",
     icon: "frame",
     title: "Xây dựng phần thô",
-    price: "3.500.000đ/m²",
+    price: "3.950.000đ/m²",
     lead: "Phù hợp với khách hàng muốn chủ động lựa chọn vật liệu hoàn thiện.",
     points: [
       "Kết cấu móng – khung – mái",
@@ -94,7 +94,7 @@ export const pricePacks = [
       "Giám sát quá trình thi công",
     ],
     href: "/don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022",
-    image: "/studio/04.jpg",
+    image: "/studio/10.jpg",
   },
   {
     tag: "Hoàn thiện",
@@ -110,7 +110,7 @@ export const pricePacks = [
       "Chính sách bảo hành",
     ],
     href: "/thiet-ke-noi-that-nha-o",
-    image: "/studio/02.jpg",
+    image: "/studio/05.jpg",
   },
   {
     tag: "Trọn gói",
@@ -118,7 +118,7 @@ export const pricePacks = [
     featured: true,
     badge: "Lựa chọn toàn diện",
     title: "Xây nhà trọn gói",
-    price: "Từ 5.050.000đ/m²",
+    price: "5.950.000đ/m²",
     lead: "Thiết kế → Xin phép → Thi công → Hoàn thiện → Bàn giao",
     points: [
       "Chìa khóa trao tay",

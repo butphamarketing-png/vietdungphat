@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
+import { homeNeoCards, preferNeoClassic } from "../lib/studio.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -19,7 +20,9 @@ function BrText({ text }) {
 }
 
 export default function Home() {
-  const { coreServices, news, products, projects, reviews, studio, home } = useCms();
+  const { coreServices, news, products, projects, reviews, home } = useCms();
+  const neoHomes = homeNeoCards(projects);
+  const neoProducts = preferNeoClassic(products).slice(0, 8);
   return (
     <>
       <HeroVideo />
@@ -59,8 +62,8 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {studio.map((p, i) => (
-            <Link key={p.src + i} to={projects[i] ? `/${projects[i].slug}` : "/mau-nha"} className="card">
+          {neoHomes.map((p) => (
+            <Link key={p.src} to={p.slug} className="card">
               <SmartImg src={p.src} alt={p.title} />
               <span>{p.title}</span>
             </Link>
@@ -79,7 +82,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {products.slice(0, 8).map((p) => (
+          {neoProducts.map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="card">
               <SmartImg src={p.image} alt={p.title} />
               <span>{p.title}</span>

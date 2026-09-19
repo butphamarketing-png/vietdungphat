@@ -5,8 +5,8 @@ const fmt = (n) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(n);
 
 const UNITS = {
-  tho: { tb: 3200000, kha: 3500000, plus: 3900000 },
-  tron: { tb: 5050000, kha: 5800000, plus: 6950000 },
+  tho: { tb: 3650000, kha: 3950000, plus: 4350000 },
+  tron: { tb: 5550000, kha: 5950000, plus: 6950000 },
 };
 
 const MONG = { bang: 0.5, coc: 0.3, don: 0.4 };

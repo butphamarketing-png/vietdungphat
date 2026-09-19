@@ -8,7 +8,6 @@ export default function ListPage({ kind }) {
   const cms = useCms();
   const data = cms.lists[kind];
   const projects = kind === "projects";
-  const projectPosts = cms.projects;
   return (
     <article className="page">
       <PageHero kicker={data.kicker || data.title} title={data.title}>
@@ -18,7 +17,7 @@ export default function ListPage({ kind }) {
         {projects ? (
           <div className="project-grid" style={{ marginBottom: "2.5rem" }}>
             {cms.studio.map((p, idx) => (
-              <Link key={p.src + idx} className="project-card" to={projectPosts[idx] ? `/${projectPosts[idx].slug}` : "/mau-nha"}>
+              <Link key={p.src + idx} className="project-card" to="/mau-nha">
                 <SmartImg src={p.src} alt={p.title} />
                 <span className="num">{String(idx + 1).padStart(2, "0")}</span>
                 <span className="name">{p.title}</span>
