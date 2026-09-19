@@ -39,7 +39,7 @@ export const defaultHome = {
   aboutTitle: "20 năm kiến trúc\nvà xây dựng",
   aboutLead:
     "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát, với 20 năm kinh nghiệm thiết kế và thi công tại Hồ Chí Minh và các tỉnh lân cận.",
-  aboutImages: ["/studio/08.jpg", "/studio/10.jpg", "/studio/11.jpg"],
+  aboutImages: ["/studio/08.jpg", "/studio/05.jpg", "/studio/12.jpg"],
   newsKicker: "Tin tức",
   newsTitle: "Góc chia sẻ",
   reviewsKicker: "Đánh giá",

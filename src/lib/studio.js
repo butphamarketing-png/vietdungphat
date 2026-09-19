@@ -1,15 +1,29 @@
 export const studio = [
-  { src: "/studio/08.jpg", title: "Biệt thự tân cổ điển — mặt tiền" },
-  { src: "/studio/11.jpg", title: "Biệt thự tân cổ điển — góc phố" },
-  { src: "/studio/10.jpg", title: "Biệt thự tân cổ điển — sân thượng" },
-  { src: "/studio/07.jpg", title: "Biệt thự tân cổ điển — flycam" },
+  { src: "/studio/08.jpg", title: "Biệt thự tân cổ điển mái mansard — mặt tiền" },
+  { src: "/studio/11.jpg", title: "Biệt thự tân cổ điển — góc 2 mặt tiền" },
+  { src: "/studio/10.jpg", title: "Biệt thự tân cổ điển mái mansard — sân thượng" },
   { src: "/studio/09.jpg", title: "Biệt thự tân cổ điển — ven kênh" },
-  { src: "/studio/01.jpg", title: "Nhà phố tân cổ điển — mặt tiền" },
-  { src: "/studio/05.jpg", title: "Nhà phố tân cổ điển — sân trước" },
-  { src: "/studio/02.jpg", title: "Nhà phố tân cổ điển — ban công" },
-  { src: "/studio/06.jpg", title: "Nhà phố tân cổ điển — mặt đứng" },
-  { src: "/studio/03.jpg", title: "Nhà phố tân cổ điển — nhìn cao" },
-  { src: "/studio/04.jpg", title: "Nhà phố tân cổ điển — khuôn viên" },
+  { src: "/studio/07.jpg", title: "Biệt thự tân cổ điển — flycam" },
+  { src: "/studio/05.jpg", title: "Nhà phố tân cổ điển mái Thái — mặt tiền" },
+  { src: "/studio/03.jpg", title: "Nhà phố tân cổ điển mái Thái — nhìn từ trên" },
+  { src: "/studio/01.jpg", title: "Nhà phố tân cổ điển mái Thái — cổng" },
+  { src: "/studio/12.jpg", title: "Nhà phố tân cổ điển 4 tầng — mặt tiền hẹp" },
+  { src: "/studio/02.jpg", title: "Nhà phố tân cổ điển mái Thái — ban công" },
+  { src: "/studio/06.jpg", title: "Nhà phố tân cổ điển mái Thái — cận mặt đứng" },
+  { src: "/studio/04.jpg", title: "Nhà phố tân cổ điển mái Thái — khuôn viên" },
+  { src: "/studio/13.jpg", title: "Nhà phố tân cổ điển 4 tầng — nhìn chính diện" },
+  { src: "/studio/14.jpg", title: "Nhà phố tân cổ điển 4 tầng — góc đường" },
+];
+
+const HOME_NEO = [
+  "/studio/08.jpg",
+  "/studio/11.jpg",
+  "/studio/05.jpg",
+  "/studio/12.jpg",
+  "/studio/10.jpg",
+  "/studio/03.jpg",
+  "/studio/09.jpg",
+  "/studio/01.jpg",
 ];
 
 export const NEO_PROJECT_SLUGS = [
@@ -27,28 +41,19 @@ export const NEO_PROJECT_SLUGS = [
   "du-an-nha-anh-hoang-son-an-bao-loc-lam-dong",
 ];
 
-export function homeNeoCards(projects = []) {
-  const bySlug = new Map(projects.map((p) => [p.slug, p]));
-  const seen = new Set();
-  const cards = [];
-  function push(src, title, slug) {
-    if (!src || seen.has(src)) return;
-    seen.add(src);
-    cards.push({ src, title, slug: slug || "/mau-nha" });
-  }
-  for (const item of studio) push(item.src, item.title, "/mau-nha");
-  for (const slug of NEO_PROJECT_SLUGS) {
-    const post = bySlug.get(slug);
-    if (post) push(post.image, post.title, `/${post.slug}`);
-  }
-  return cards;
+export function homeNeoCards() {
+  const bySrc = new Map(studio.map((item) => [item.src, item]));
+  return HOME_NEO.map((src) => {
+    const item = bySrc.get(src);
+    return { src, title: item?.title || "Mẫu nhà tân cổ điển", slug: "/mau-nha" };
+  });
 }
 
 export function preferNeoClassic(list = []) {
   const neo = [];
   const rest = [];
   for (const item of list) {
-    (/tân cổ|cổ điển/i.test(item.title || "") ? neo : rest).push(item);
+    (/tân cổ|cổ điển|mansard/i.test(`${item.title || ""} ${item.image || ""}`) ? neo : rest).push(item);
   }
   return [...neo, ...rest];
 }

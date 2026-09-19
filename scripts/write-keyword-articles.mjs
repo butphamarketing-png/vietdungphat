@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { KEYWORDS } from "../src/data/keywords.js";
+import { KEYWORDS, keywordNewsPath } from "../src/data/keywords.js";
 
 const IMGS = ["/studio/08.jpg", "/studio/11.jpg", "/studio/10.jpg", "/studio/07.jpg", "/studio/09.jpg", "/studio/01.jpg", "/studio/05.jpg", "/studio/02.jpg"];
 
@@ -929,7 +929,7 @@ const GROUP_DEEP = {
 function relatedLinks(item) {
   const same = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug).slice(0, 3);
   const others = KEYWORDS.filter((k) => k.group !== item.group).filter((_, i) => i % 17 === item.phrase.length % 17).slice(0, 2);
-  return [...same, ...others].map((k) => `<a href="/tu-khoa/${k.slug}">${esc(k.phrase)}</a>`).join(", ");
+  return [...same, ...others].map((k) => `<a href="${keywordNewsPath(k)}">${esc(k.phrase)}</a>`).join(", ");
 }
 
 function article(item, index) {

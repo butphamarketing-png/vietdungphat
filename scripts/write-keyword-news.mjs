@@ -60,6 +60,7 @@ const posts = KEYWORDS.map((item, index) => {
     slug,
     keywordSlug: item.slug,
     source: "keyword",
+    group: item.group,
     title,
     image: item.image,
     imageAlt: item.phrase,

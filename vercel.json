@@ -11,6 +11,16 @@
       "has": [{ "type": "host", "value": "vietdungphat.com" }],
       "destination": "https://www.vietdungphat.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/tu-khoa/thiet-ke-kien-truc-ho-chi-minh",
+      "destination": "/tin-thiet-ke-kien-truc-ho-chi-minh",
+      "permanent": true
+    },
+    {
+      "source": "/tu-khoa/:slug",
+      "destination": "/:slug",
+      "permanent": true
     }
   ],
   "rewrites": [

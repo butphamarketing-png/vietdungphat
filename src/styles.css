@@ -210,6 +210,27 @@ h1, h2, h3, blockquote {
 .page-hero p, .page-hero time { max-width: 46rem; color: var(--ink-soft); line-height: 1.7; }
 .page-hero time { display: block; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.75rem; color: var(--accent); }
 .page-body { padding: 2.6rem 6vw 4rem; }
+.news-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.6rem;
+}
+.news-filters button {
+  border: 1px solid var(--line, #ddd);
+  background: #fff;
+  color: var(--ink);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.news-filters button.is-on {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
 .kw-group { margin: 0 0 2.2rem; }
 .kw-group h2 { margin: 0 0 0.8rem; font-size: 1.2rem; }
 .kw-list {
