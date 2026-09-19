@@ -335,10 +335,11 @@ function postToDraft(item) {
 
 function draftToPost(draft) {
   const slug = draft.slug || slugify(draft.title);
+  const { galleryText, ...rest } = draft;
   return {
-    ...draft,
+    ...rest,
     slug,
-    gallery: (draft.galleryText || "")
+    gallery: (galleryText || "")
       .split("\n")
       .map((l) => l.trim())
       .filter(Boolean),
