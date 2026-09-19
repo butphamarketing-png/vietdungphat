@@ -25,7 +25,7 @@ const SLIDES = [
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [search] = useSearchParams();
-  const [email, setEmail] = useState(BP_LOGIN.emailPlaceholder);
+  const [email, setEmail] = useState("admin");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -66,7 +66,7 @@ export default function AdminLogin() {
             <h1>Đăng nhập</h1>
             <div className="vns-field is-user">
               <input
-                type="email"
+                type="text"
                 name="username"
                 placeholder="Tài khoản"
                 value={email}

@@ -1082,6 +1082,18 @@ body:has(.vns-login) {
   margin: 0;
   color: var(--ink-soft);
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminbp-hello-ico {
+  width: 18px;
+  height: 12px;
+  border-top: 2px solid #cfcfcf;
+  border-bottom: 2px solid #cfcfcf;
+  box-shadow: 0 5px 0 #cfcfcf;
+  box-sizing: border-box;
 }
 
 .adminbp-hello strong {
@@ -1465,9 +1477,30 @@ body:has(.vns-login) {
   gap: 8px;
 }
 
+.adminbp-item-actions a,
+.adminbp-item-actions button {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.adminbp-item-actions a.is-view,
+.adminbp-item-actions button.is-edit {
+  background: #eef2ff;
+  color: #3b5bdb;
+}
+
 .adminbp-item-actions button.danger {
-  color: #b45353;
-  border-color: rgba(180, 83, 83, 0.35);
+  background: #ffe3e3;
+  color: #c92a2a;
 }
 
 .adminbp-savebar {
@@ -1636,15 +1669,17 @@ body:has(.vns-login) {
 
 .adminbp-caret {
   margin-left: auto;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid #b0b0b0;
+  width: 8px;
+  height: 8px;
+  border-right: 1.6px solid #9aa0a6;
+  border-top: 1.6px solid #9aa0a6;
+  transform: rotate(45deg);
+  border-left: 0;
+  border-bottom: 0;
 }
 
 .adminbp-nav-group.is-open .adminbp-caret {
-  transform: rotate(180deg);
+  transform: rotate(135deg);
 }
 
 .adminbp-nav-group a {
@@ -2161,10 +2196,11 @@ body:has(.vns-login) {
 }
 
 .adminbp-table th {
-  background: #fafafa;
+  background: #f0d546;
   font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  color: #2f2f2f;
+  font-weight: 700;
 }
 
 .adminbp-table .is-check { width: 48px; }

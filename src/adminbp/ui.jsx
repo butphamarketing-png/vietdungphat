@@ -125,6 +125,7 @@ export function AdminShell() {
       <div className="adminbp-body">
         <header className="adminbp-topbar">
           <p className="adminbp-hello">
+            <span className="adminbp-hello-ico" aria-hidden />
             Xin chào, <strong>admin</strong> !
           </p>
           <div className="adminbp-topbar-actions">
@@ -430,11 +431,16 @@ export function CardList({ title, onAdd, children }) {
   );
 }
 
-export function ItemActions({ onUp, onDown, onRemove, onEdit }) {
+export function ItemActions({ onUp, onDown, onRemove, onEdit, onView }) {
   return (
     <div className="adminbp-item-actions">
+      {onView ? (
+        <a className="is-view" href={onView} target="_blank" rel="noreferrer">
+          Xem
+        </a>
+      ) : null}
       {onEdit ? (
-        <button type="button" onClick={onEdit}>
+        <button type="button" className="is-edit" onClick={onEdit}>
           Sửa
         </button>
       ) : null}

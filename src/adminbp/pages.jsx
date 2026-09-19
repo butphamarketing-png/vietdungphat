@@ -17,10 +17,10 @@ import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageFi
 import SmartImg from "../components/SmartImg.jsx";
 
 const QUICK = [
-  { href: "/adminbp/cai-dat", label: "Cài đặt website", desc: "Xem chi tiết", tone: "gold" },
+  { href: "/adminbp/cai-dat", label: "Cấu hình Website", desc: "Xem chi tiết", tone: "gold" },
   { href: "/adminbp/tai-khoan", label: "Tài khoản", desc: "Xem chi tiết", tone: "green" },
-  { href: "/adminbp/dat-lich", label: "Đặt lịch", desc: "Xem chi tiết", tone: "blue" },
-  { href: "/", label: "Website", desc: "Xem chi tiết", tone: "violet", external: true },
+  { href: "/adminbp/tai-khoan", label: "Đổi mật khẩu", desc: "Xem chi tiết", tone: "blue" },
+  { href: "/adminbp/dat-lich", label: "Thư liên hệ", desc: "Xem chi tiết", tone: "violet" },
 ];
 
 const LINKS = [
@@ -54,21 +54,13 @@ export function Dashboard() {
     <div className="adminbp-dash">
       <h1>Bảng điều khiển</h1>
       <nav className="adminbp-quick">
-        {QUICK.map((item) =>
-          item.external ? (
-            <a key={item.href} className={`adminbp-quick-card is-${item.tone}`} href={item.href} target="_blank" rel="noreferrer">
-              <span className="adminbp-quick-ico" aria-hidden />
-              <strong>{item.label}</strong>
-              <small>{item.desc}</small>
-            </a>
-          ) : (
-            <Link key={item.href} className={`adminbp-quick-card is-${item.tone}`} to={item.href}>
+        {QUICK.map((item) => (
+            <Link key={`${item.href}-${item.label}`} className={`adminbp-quick-card is-${item.tone}`} to={item.href}>
               <span className="adminbp-quick-ico" aria-hidden />
               <strong>{item.label}</strong>
               <small>{item.desc}</small>
             </Link>
-          ),
-        )}
+        ))}
       </nav>
       <div className="adminbp-status-grid">
         <article className={`adminbp-status-card ${status?.supabase?.ok ? "is-ok" : ""}`}>
@@ -564,7 +556,7 @@ export function PostsEditor({ kind, title, hint }) {
         <div className="adminbp-edit-toolbar-row">
           <h1>{meta.list}</h1>
           <div className="adminbp-edit-tools">
-            <button type="button" className="adminbp-btn is-success" onClick={() => open(null)}>
+            <button type="button" className="adminbp-pill is-gold" onClick={() => open(null)}>
               Thêm mới
             </button>
           </div>
@@ -620,7 +612,11 @@ export function PostsEditor({ kind, title, hint }) {
                     <td>{item.visible === false ? "Ẩn" : "Hiện"}</td>
                     <td>{item.featured ? "Có" : "—"}</td>
                     <td className="is-act">
-                      <ItemActions onEdit={() => open(item)} onRemove={() => removePost(kind, item.slug)} />
+                      <ItemActions
+                        onView={item.slug ? `/${item.slug}` : undefined}
+                        onEdit={() => open(item)}
+                        onRemove={() => removePost(kind, item.slug)}
+                      />
                     </td>
                   </tr>
                 ))
@@ -955,10 +951,10 @@ export function AccountEditor() {
       <div className="adminbp-form">
         <article className="adminbp-item">
           <div className="adminbp-grid">
-            <Field label="Email" value="admin@vietdungphat.com" onChange={() => {}} />
-            <Field label="Mật khẩu" value="vietdungphat.com" onChange={() => {}} type="text" />
+            <Field label="Tài khoản" value="admin" onChange={() => {}} />
+            <Field label="Mật khẩu" value="" onChange={() => {}} type="password" />
           </div>
-          <p>Đổi mật khẩu bằng ADMINBP_PASSWORD trên Vercel. Không lưu mật khẩu trong trình duyệt.</p>
+          <p>Tài khoản đăng nhập: admin. Đổi mật khẩu bằng biến ADMINBP_PASSWORD trên máy local / Vercel.</p>
         </article>
       </div>
     </>
