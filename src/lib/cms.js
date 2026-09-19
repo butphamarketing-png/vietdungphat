@@ -174,10 +174,10 @@ export async function flushCms() {
 
 export async function hydrateCms() {
   try {
-    const res = await fetch("/api/cms", { credentials: "include" });
+    const res = await fetch(`/api/cms?t=${Date.now()}`, { credentials: "include", cache: "no-store" });
     const data = await res.json();
     if (res.ok && data.ok && data.data && typeof data.data === "object") {
-      overlay = { ...emptyOverlay(), ...overlay, ...data.data };
+      overlay = { ...emptyOverlay(), ...data.data };
       overlay.bookings = (overlay.bookings || []).filter((b) => b && (b.name || b.phone));
       persistLocal();
       snapshot = null;
@@ -190,6 +190,22 @@ export async function hydrateCms() {
 
 if (typeof window !== "undefined") {
   hydrateCms();
+  const refreshPublic = () => {
+    if (document.visibilityState === "visible" && !isAuthedLocal()) hydrateCms();
+  };
+  window.addEventListener("focus", refreshPublic);
+  document.addEventListener("visibilitychange", refreshPublic);
+  window.addEventListener("storage", (event) => {
+    if (event.key !== STORAGE || !event.newValue) return;
+    try {
+      overlay = { ...emptyOverlay(), ...JSON.parse(event.newValue) };
+      overlay.bookings = (overlay.bookings || []).filter((b) => b && (b.name || b.phone));
+      snapshot = null;
+      emit();
+    } catch {
+      /* ignore broken cache */
+    }
+  });
 }
 
 function mergePosts(kind) {
