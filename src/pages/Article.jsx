@@ -18,7 +18,10 @@ export default function Article() {
   const meta = kindOf(slug, cms);
   const pool =
     meta.kind === "news" ? cms.news : meta.kind === "products" ? cms.products : meta.kind === "services" ? cms.services : cms.projects;
-  const related = pool.filter((p) => p.slug !== slug).slice(0, 3);
+  const related = pool
+    .filter((p) => p.slug !== slug)
+    .filter((p) => (post?.source === "keyword") === (p.source === "keyword"))
+    .slice(0, 3);
 
   if (!post) {
     return (

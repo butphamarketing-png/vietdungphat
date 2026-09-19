@@ -221,3 +221,7 @@ export function keywordNewsSlug(item) {
   const slug = typeof item === "string" ? item : item?.slug;
   return NEWS_SLUG_OVERRIDE[slug] || slug;
 }
+
+export function keywordNewsPath(item) {
+  return `/${keywordNewsSlug(item)}`;
+}

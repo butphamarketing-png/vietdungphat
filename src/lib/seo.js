@@ -1,4 +1,4 @@
-import { findKeyword } from "../data/keywords.js";
+import { findKeyword, keywordNewsPath } from "../data/keywords.js";
 
 export const SITE_URL = "https://www.vietdungphat.com";
 export const DEFAULT_OG = `${SITE_URL}/studio/08.jpg`;
@@ -42,8 +42,9 @@ export const PAGE_SEO = {
     description: "Tra thước lỗ ban 52.2, 42.9 và 38.8 — kích thước tốt xấu cho cửa, bậc, bàn thờ. Công cụ tham khảo phong thủy.",
   },
   "/tin-tuc": {
-    title: "Tin tức xây nhà và nội thất | Việt Dũng Phát",
-    description: "Kinh nghiệm thiết kế, xây dựng, cải tạo nhà ở và nội thất từ đội ngũ Việt Dũng Phát.",
+    title: "Tin tức xây nhà, thiết kế, cải tạo | Việt Dũng Phát",
+    description:
+      "100 bài tin tức theo từ khóa: xây nhà trọn gói, tân cổ điển, phần thô 3.950.000đ/m², cải tạo và báo giá tại TP.HCM.",
   },
   "/lien-he": {
     title: "Liên hệ và đặt lịch khảo sát | Việt Dũng Phát",
@@ -218,18 +219,20 @@ export function pageSeoFromCms(pathname, cms) {
         noindex: true,
       };
     }
+    const newsPath = keywordNewsPath(item);
     return {
       title: item.title,
       description: item.description,
-      path,
+      path: newsPath,
       image: item.image,
       type: "article",
+      noindex: true,
       article: { title: item.phrase },
       faq: item.faqs,
       breadcrumbs: [
         { name: "Trang chủ", path: "/" },
-        { name: "Từ khóa", path: "/tu-khoa" },
-        { name: item.phrase, path },
+        { name: "Tin tức", path: "/tin-tuc" },
+        { name: item.phrase, path: newsPath },
       ],
     };
   }

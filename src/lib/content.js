@@ -34,7 +34,12 @@ export const lists = {
   projects: { title: "Mẫu nhà", kicker: "Mẫu nhà", items: projects, intro: "Công trình tiêu biểu từ tư liệu mới và các dự án đã thiết kế, thi công." },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },
-  news: { title: "Tin tức", kicker: "Tin tức", items: news, intro: "Bài viết và kinh nghiệm xây nhà — toàn bộ nội dung gốc được giữ lại." },
+  news: {
+    title: "Tin tức",
+    kicker: "Tin tức",
+    items: news,
+    intro: "100 bài theo từ khóa xây nhà, thiết kế, cải tạo cùng các tin gốc của Việt Dũng Phát.",
+  },
 };
 
 export const coreServices = [
