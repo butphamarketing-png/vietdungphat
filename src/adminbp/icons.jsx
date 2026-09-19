@@ -115,6 +115,23 @@ export function IconSpark() {
   );
 }
 
+export function IconUpload() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M12 16V7M8.5 10.5 12 7l3.5 3.5" />
+      <path d="M5 16.5V19h14v-2.5" />
+    </svg>
+  );
+}
+
+export function IconCheck() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
+      <path d="M5 12.5 10 17.5 19 7" />
+    </svg>
+  );
+}
+
 export const promoIcons = {
   phone: IconPhone,
   globe: IconGlobe,

@@ -12,11 +12,18 @@ import {
   slugify,
   useCms,
 } from "../lib/cms.js";
-import { CardList, Field, ImageField, ItemActions, SaveBar, moveItem } from "./ui.jsx";
+import { uploadAdminFile } from "../lib/upload.js";
+import { CardList, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, PhotoBox, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
+const QUICK = [
+  { href: "/adminbp/cai-dat", label: "Cài đặt website", desc: "Xem chi tiết", tone: "gold" },
+  { href: "/adminbp/tai-khoan", label: "Tài khoản", desc: "Xem chi tiết", tone: "green" },
+  { href: "/adminbp/dat-lich", label: "Đặt lịch", desc: "Xem chi tiết", tone: "blue" },
+  { href: "/", label: "Website", desc: "Xem chi tiết", tone: "violet", external: true },
+];
+
 const LINKS = [
-  { href: "/adminbp/cai-dat", label: "Cài đặt", desc: "Hotline, địa chỉ, mạng xã hội" },
   { href: "/adminbp/trang-chu", label: "Trang chủ", desc: "Hero, intro, thống kê" },
   { href: "/adminbp/mau-nha", label: "Mẫu nhà", desc: "Công trình / bài viết" },
   { href: "/adminbp/san-pham", label: "Sản phẩm", desc: "Nội thất xưởng" },
@@ -25,7 +32,7 @@ const LINKS = [
   { href: "/adminbp/tin-tuc", label: "Tin tức", desc: "Bài viết SEO" },
   { href: "/adminbp/trang", label: "Trang nội dung", desc: "Giới thiệu, liên hệ" },
   { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Album studio" },
-  { href: "/adminbp/dat-lich", label: "Đặt lịch", desc: "Form khách gửi" },
+  { href: "/adminbp/kho-anh", label: "Kho ảnh", desc: "Supabase Storage" },
 ];
 
 export function Dashboard() {
@@ -45,8 +52,24 @@ export function Dashboard() {
 
   return (
     <div className="adminbp-dash">
-      <h1>CMS Website</h1>
-      <p>Nội dung và ảnh/video lưu trên Supabase (bảng CMS + Storage).</p>
+      <h1>Bảng điều khiển</h1>
+      <nav className="adminbp-quick">
+        {QUICK.map((item) =>
+          item.external ? (
+            <a key={item.href} className={`adminbp-quick-card is-${item.tone}`} href={item.href} target="_blank" rel="noreferrer">
+              <span className="adminbp-quick-ico" aria-hidden />
+              <strong>{item.label}</strong>
+              <small>{item.desc}</small>
+            </a>
+          ) : (
+            <Link key={item.href} className={`adminbp-quick-card is-${item.tone}`} to={item.href}>
+              <span className="adminbp-quick-ico" aria-hidden />
+              <strong>{item.label}</strong>
+              <small>{item.desc}</small>
+            </Link>
+          ),
+        )}
+      </nav>
       <div className="adminbp-status-grid">
         <article className={`adminbp-status-card ${status?.supabase?.ok ? "is-ok" : ""}`}>
           <small>Supabase</small>
@@ -68,6 +91,7 @@ export function Dashboard() {
           <span>{cms.counts.bookings} yêu cầu đặt lịch</span>
         </article>
       </div>
+      <h2 className="adminbp-dash-sub">Quản lý nội dung</h2>
       <nav className="adminbp-shortcuts">
         {LINKS.map((item) => (
           <Link key={item.href} to={item.href}>
@@ -270,96 +294,266 @@ export function HomeEditor() {
   );
 }
 
+const KIND_META = {
+  news: { list: "Danh sách Tin tức", edit: "Cập nhật Tin tức", group: "Quản lý bài viết", cat: "Tin tức" },
+  projects: { list: "Danh sách Công trình", edit: "Cập nhật Công trình", group: "Quản lý bài viết", cat: "Công trình" },
+  products: { list: "Danh sách Sản phẩm", edit: "Cập nhật Sản phẩm", group: "Quản lý trang tĩnh", cat: "Sản phẩm" },
+  services: { list: "Danh sách Dịch vụ", edit: "Cập nhật Dịch vụ", group: "Quản lý bài viết", cat: "Dịch vụ" },
+};
+
+function postToDraft(item) {
+  if (!item) {
+    return {
+      slug: "",
+      title: "",
+      image: "",
+      date: new Date().toLocaleDateString("vi-VN"),
+      html: "",
+      desc: "",
+      seoTitle: "",
+      seoKeywords: "",
+      seoDesc: "",
+      visible: true,
+      featured: false,
+      noindex: false,
+      gallery: [],
+      galleryText: "",
+    };
+  }
+  return {
+    ...item,
+    desc: item.desc || "",
+    seoTitle: item.seoTitle || item.title || "",
+    seoKeywords: item.seoKeywords || "",
+    seoDesc: item.seoDesc || "",
+    visible: item.visible !== false,
+    featured: !!item.featured,
+    noindex: !!item.noindex,
+    galleryText: (item.gallery || []).join("\n"),
+  };
+}
+
+function draftToPost(draft) {
+  const slug = draft.slug || slugify(draft.title);
+  return {
+    ...draft,
+    slug,
+    gallery: (draft.galleryText || "")
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean),
+  };
+}
+
 export function PostsEditor({ kind, title, hint }) {
   const cms = useCms();
   const items = cms[kind] || [];
+  const meta = KIND_META[kind] || { list: title, edit: `Cập nhật ${title}`, group: "Quản lý bài viết", cat: title };
+  const listPath = { news: "/adminbp/tin-tuc", projects: "/adminbp/mau-nha", products: "/adminbp/san-pham", services: "/adminbp/dich-vu" }[kind];
   const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
   const [draft, setDraft] = useState(null);
+  const [tab, setTab] = useState("vi");
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const filtered = useMemo(
     () => items.filter((p) => !q || `${p.title} ${p.slug}`.toLowerCase().includes(q.toLowerCase())),
     [items, q],
   );
+  const perPage = 10;
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const rows = filtered.slice((page - 1) * perPage, page * perPage);
 
   function open(item) {
-    setDraft(
-      item
-        ? { ...item, galleryText: (item.gallery || []).join("\n") }
-        : { slug: "", title: "", image: "", date: new Date().toLocaleDateString("vi-VN"), html: "", gallery: [], galleryText: "" },
-    );
+    setDraft(postToDraft(item));
+    setTab("vi");
     setMessage("");
   }
 
-  return (
-    <>
-      <div className="adminbp-page-head">
-        <h1>{title}</h1>
-        <p>{hint}</p>
+  async function persistDraft(stay) {
+    if (!draft?.title?.trim()) {
+      setMessage("Nhập tiêu đề");
+      setTab("vi");
+      return;
+    }
+    setSaving(true);
+    try {
+      savePost(kind, draftToPost(draft));
+      await flushCms();
+      setMessage("Đã lưu bài viết");
+      if (!stay) setDraft(null);
+    } catch (err) {
+      setMessage(err.message || "Lưu thất bại. Kiểm tra đăng nhập và Supabase.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (draft) {
+    const seoTitle = draft.seoTitle || draft.title;
+    const seoDesc = draft.seoDesc || draft.desc;
+    return (
+      <div className="adminbp-edit">
+        <EditToolbar
+          title={draft.slug ? meta.edit : `Thêm mới ${meta.cat}`}
+          crumbs={[
+            { to: "/adminbp", label: "Bảng điều khiển" },
+            { to: listPath, label: meta.group },
+            { label: draft.slug ? meta.edit : `Thêm mới ${meta.cat}` },
+          ]}
+          saving={saving}
+          message={message}
+          onSave={() => persistDraft(false)}
+          onSaveStay={() => persistDraft(true)}
+          onExit={() => setDraft(null)}
+        />
+        <section className="adminbp-edit-card">
+          <Tabs
+            value={tab}
+            onChange={setTab}
+            tabs={[
+              { id: "vi", label: "Tiếng Việt" },
+              { id: "seo", label: "SEO" },
+            ]}
+          />
+          <div className="adminbp-edit-split">
+            <div className="adminbp-edit-main">
+              {tab === "vi" ? (
+                <>
+                  <label className="adminbp-field">
+                    <span>Danh mục</span>
+                    <select value={kind} disabled>
+                      <option value={kind}>{meta.cat}</option>
+                    </select>
+                  </label>
+                  <Field label="Tiêu đề" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v, slug: draft.slug || slugify(v) })} />
+                  <Field label="Tên không dấu" value={draft.slug} onChange={(v) => setDraft({ ...draft, slug: v })} />
+                  <Field label="Mô tả" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v })} multiline rows={4} />
+                  <HtmlEditor label="Nội dung" value={draft.html} onChange={(v) => setDraft({ ...draft, html: v })} />
+                </>
+              ) : (
+                <div className="adminbp-seo">
+                  <Field label="Title" value={draft.seoTitle} onChange={(v) => setDraft({ ...draft, seoTitle: v })} />
+                  <Field label="Keywords" value={draft.seoKeywords} onChange={(v) => setDraft({ ...draft, seoKeywords: v })} />
+                  <Field label="Description" value={draft.seoDesc} onChange={(v) => setDraft({ ...draft, seoDesc: v })} multiline rows={5} />
+                  <article className="adminbp-seo-preview">
+                    <small>Google preview</small>
+                    <a href={`/${draft.slug || ""}`} target="_blank" rel="noreferrer">
+                      {seoTitle || "Tiêu đề bài viết"}
+                    </a>
+                    <em>https://www.vietdungphat.com/{draft.slug || ""}</em>
+                    <p>{seoDesc || "Mô tả hiển thị trên Google khi bài được index."}</p>
+                  </article>
+                </div>
+              )}
+            </div>
+            <aside className="adminbp-edit-side">
+              <PhotoBox label="Hình ảnh" hint="Width: 800 px — Height: 560 px" value={draft.image} onChange={(v) => setDraft({ ...draft, image: v })} />
+              <div className="adminbp-photobox">
+                <header>
+                  <strong>Album</strong>
+                  <small>Mỗi dòng 1 URL</small>
+                </header>
+                <textarea rows={5} value={draft.galleryText} onChange={(e) => setDraft({ ...draft, galleryText: e.target.value })} placeholder="https://…" />
+              </div>
+              <Field label="Ngày đăng" value={draft.date} onChange={(v) => setDraft({ ...draft, date: v })} />
+              <div className="adminbp-flags">
+                <SwitchField label="Hiển thị" checked={draft.visible} onChange={(v) => setDraft({ ...draft, visible: v })} />
+                <SwitchField label="Nổi bật" checked={draft.featured} onChange={(v) => setDraft({ ...draft, featured: v })} />
+                <SwitchField label="Noindex" checked={draft.noindex} onChange={(v) => setDraft({ ...draft, noindex: v })} />
+              </div>
+            </aside>
+          </div>
+        </section>
       </div>
-      {draft ? (
-        <div className="adminbp-form">
-          <div className="adminbp-item-actions">
-            <button type="button" onClick={() => setDraft(null)}>
-              ← Danh sách
+    );
+  }
+
+  return (
+    <div className="adminbp-edit">
+      <div className="adminbp-edit-toolbar">
+        <div className="adminbp-edit-toolbar-row">
+          <h1>{meta.list}</h1>
+          <div className="adminbp-edit-tools">
+            <button type="button" className="adminbp-btn is-success" onClick={() => open(null)}>
+              Thêm mới
             </button>
           </div>
-          <div className="adminbp-grid">
-            <Field label="Tiêu đề" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v, slug: draft.slug || slugify(v) })} span2 />
-            <Field label="Slug" value={draft.slug} onChange={(v) => setDraft({ ...draft, slug: v })} />
-            <Field label="Ngày" value={draft.date} onChange={(v) => setDraft({ ...draft, date: v })} />
-            <ImageField label="Ảnh đại diện" value={draft.image} onChange={(v) => setDraft({ ...draft, image: v })} />
-            <Field
-              label="Gallery (mỗi dòng 1 URL)"
-              value={draft.galleryText}
-              onChange={(v) => setDraft({ ...draft, galleryText: v })}
-              multiline
-              span2
-            />
-            <Field label="Nội dung HTML" value={draft.html} onChange={(v) => setDraft({ ...draft, html: v })} multiline rows={16} span2 />
-          </div>
-          <SaveBar
-            message={message}
-            onSave={() => {
-              if (!draft.title.trim()) return setMessage("Nhập tiêu đề");
-              const slug = draft.slug || slugify(draft.title);
-              savePost(kind, {
-                slug,
-                title: draft.title,
-                image: draft.image,
-                date: draft.date,
-                html: draft.html,
-                gallery: (draft.galleryText || "")
-                  .split("\n")
-                  .map((l) => l.trim())
-                  .filter(Boolean),
-              });
-              setMessage("Đã lưu bài viết");
-              setDraft(null);
-            }}
-          />
         </div>
-      ) : (
-        <div className="adminbp-form">
-          <div className="adminbp-grid">
-            <Field label="Tìm kiếm" value={q} onChange={setQ} />
-          </div>
-          <CardList title={`${filtered.length} bài`} onAdd={() => open(null)}>
-            {filtered.slice(0, 80).map((item) => (
-              <article key={item.slug} className="adminbp-item">
-                <div className="adminbp-news-row">
-                  {item.image ? <SmartImg src={item.image} alt="" /> : <div className="adminbp-image-empty" />}
-                  <div>
-                    <strong>{item.title}</strong>
-                    <small>/{item.slug}</small>
-                  </div>
-                  <ItemActions onEdit={() => open(item)} onRemove={() => removePost(kind, item.slug)} />
-                </div>
-              </article>
+        <Crumbs
+          items={[
+            { to: "/adminbp", label: "Bảng điều khiển" },
+            { label: meta.group },
+            { label: meta.list },
+          ]}
+        />
+        <p className="adminbp-edit-hint">{hint}</p>
+      </div>
+      <section className="adminbp-edit-card">
+        <form
+          className="adminbp-list-search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setPage(1);
+          }}
+        >
+          <input value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} placeholder="Tìm kiếm nhanh" />
+          <button type="submit" className="adminbp-btn is-muted">
+            Tìm
+          </button>
+        </form>
+        <div className="adminbp-table-wrap">
+          <table className="adminbp-table">
+            <thead>
+              <tr>
+                <th className="is-check">#</th>
+                <th className="is-thumb">Hình</th>
+                <th>Tiêu đề</th>
+                <th>Hiển thị</th>
+                <th>Nổi bật</th>
+                <th className="is-act">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.length ? (
+                rows.map((item, i) => (
+                  <tr key={item.slug}>
+                    <td className="is-check">{(page - 1) * perPage + i + 1}</td>
+                    <td className="is-thumb">
+                      {item.image ? <SmartImg src={item.image} alt="" /> : <div className="adminbp-image-empty" />}
+                    </td>
+                    <td>
+                      <button type="button" className="adminbp-table-title" onClick={() => open(item)}>
+                        {item.title}
+                      </button>
+                      <small>/{item.slug}</small>
+                    </td>
+                    <td>{item.visible === false ? "Ẩn" : "Hiện"}</td>
+                    <td>{item.featured ? "Có" : "—"}</td>
+                    <td className="is-act">
+                      <ItemActions onEdit={() => open(item)} onRemove={() => removePost(kind, item.slug)} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6}>Không có bài viết.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {pages > 1 ? (
+          <nav className="adminbp-pager">
+            {Array.from({ length: pages }, (_, i) => (
+              <button key={i} type="button" className={page === i + 1 ? "active" : undefined} onClick={() => setPage(i + 1)}>
+                {i + 1}
+              </button>
             ))}
-          </CardList>
-        </div>
-      )}
-    </>
+          </nav>
+        ) : null}
+      </section>
+    </div>
   );
 }
 
@@ -615,14 +809,13 @@ export function MediaEditor() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/adminbp/upload", { method: "POST", body, credentials: "include" });
-    const data = await res.json().catch(() => ({}));
-    if (res.ok && data.ok) {
+    try {
+      await uploadAdminFile(file);
       setMessage("Đã tải lên Supabase Storage");
       await load();
-    } else setMessage(data.error || "Upload thất bại");
+    } catch (err) {
+      setMessage(err.message || "Upload thất bại");
+    }
   }
 
   return (
@@ -634,7 +827,7 @@ export function MediaEditor() {
       <div className="adminbp-upload">
         <div>
           <h2>Tải ảnh / video</h2>
-          <p>JPG, PNG, WebP, MP4, PDF — tối đa 12MB.</p>
+          <p>JPG, PNG, WebP, MP4, PDF — ảnh poster được nén tự động; video tối đa 50MB.</p>
         </div>
         <label className="adminbp-upload-btn">
           Chọn file
