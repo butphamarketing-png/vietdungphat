@@ -33,6 +33,10 @@ body:has(.adminbp-root) main#noi-dung {
   min-height: 100vh;
 }
 
+body:has(.adminbp-shell) {
+  background: #f7f5f0;
+}
+
 /* ——— BPM Login (42 / 58) ——— */
 .login-screen {
   min-height: 100vh;
@@ -600,22 +604,30 @@ body:has(.adminbp-root) main#noi-dung {
   }
 }
 
-/* Dashboard shell after login */
+/* Dashboard shell after login — matches public site (white / gold / gray) */
 .adminbp-shell {
+  --paper: #ffffff;
+  --paper-2: #f7f5f0;
+  --ink: #3a3a3a;
+  --ink-soft: #6e6e6e;
+  --accent: #c9a84c;
+  --accent-2: #dcc06a;
+  --line: rgba(90, 90, 90, 0.16);
   display: flex;
   min-height: 100vh;
-  background: #0f1419;
-  color: #e8edf5;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: "Outfit", system-ui, sans-serif;
 }
 
 .adminbp-sidebar {
   width: 260px;
   flex-shrink: 0;
-  background: #1a2332;
+  background: var(--paper);
   display: flex;
   flex-direction: column;
   padding: 20px 16px;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid var(--line);
 }
 
 .adminbp-brand {
@@ -630,7 +642,7 @@ body:has(.adminbp-root) main#noi-dung {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: #000;
+  background: var(--accent);
   color: #fff;
   display: grid;
   place-items: center;
@@ -643,11 +655,15 @@ body:has(.adminbp-root) main#noi-dung {
 .adminbp-brand strong {
   display: block;
   font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .adminbp-brand small {
-  color: #8b9cb3;
+  color: var(--ink-soft);
   font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .adminbp-nav {
@@ -664,14 +680,18 @@ body:has(.adminbp-root) main#noi-dung {
   gap: 10px;
   padding: 10px 12px;
   border-radius: 10px;
-  color: #c5d0de;
+  color: var(--ink);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
-.adminbp-nav a:hover,
+.adminbp-nav a:hover {
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--ink);
+}
+
 .adminbp-nav a.active {
-  background: rgba(124, 58, 237, 0.22);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -680,7 +700,7 @@ body:has(.adminbp-root) main#noi-dung {
   flex-direction: column;
   gap: 8px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
 }
 
 .adminbp-sidebar-foot a,
@@ -690,7 +710,7 @@ body:has(.adminbp-root) main#noi-dung {
   gap: 8px;
   background: none;
   border: none;
-  color: #8b9cb3;
+  color: var(--ink-soft);
   font: inherit;
   font-size: 13px;
   cursor: pointer;
@@ -700,27 +720,29 @@ body:has(.adminbp-root) main#noi-dung {
 
 .adminbp-sidebar-foot a:hover,
 .adminbp-sidebar-foot button:hover {
-  color: #fff;
+  color: var(--accent);
 }
 
 .adminbp-main {
   flex: 1;
   padding: 32px 36px;
+  background: var(--paper-2);
 }
 
-.adminbp-main h1 {
+.adminbp-main h1,
+.adminbp-dash h1,
+.adminbp-page-head h1 {
   margin: 0 0 8px;
-  font-size: 1.6rem;
+  font-family: "Bodoni Moda", "Cormorant Garamond", serif;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .adminbp-main p {
   margin: 0;
-  color: #8b9cb3;
-}
-
-.adminbp-dash h1 {
-  margin: 0 0 8px;
-  font-size: 1.6rem;
+  color: var(--ink-soft);
 }
 
 .adminbp-status-grid {
@@ -733,36 +755,37 @@ body:has(.adminbp-root) main#noi-dung {
 .adminbp-status-card {
   padding: 16px 18px;
   border-radius: 14px;
-  background: #1a2332;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--paper);
+  border: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .adminbp-status-card small {
-  color: #8b9cb3;
+  color: var(--accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .adminbp-status-card strong {
   font-size: 18px;
+  color: var(--ink);
 }
 
 .adminbp-status-card span {
-  color: #8b9cb3;
+  color: var(--ink-soft);
   font-size: 13px;
 }
 
 .adminbp-status-card.is-ok {
-  border-color: rgba(16, 185, 129, 0.45);
+  border-color: rgba(201, 168, 76, 0.55);
 }
 
 .adminbp-status-card.is-ok strong {
-  color: #34d399;
+  color: #9a7d2e;
 }
 
 .adminbp-upload {
@@ -772,8 +795,8 @@ body:has(.adminbp-root) main#noi-dung {
   gap: 16px;
   padding: 18px;
   border-radius: 14px;
-  background: #1a2332;
-  border: 1px dashed rgba(124, 58, 237, 0.45);
+  background: var(--paper);
+  border: 1px dashed rgba(201, 168, 76, 0.55);
 }
 
 .adminbp-upload h2 {
@@ -790,9 +813,9 @@ body:has(.adminbp-root) main#noi-dung {
   height: 42px;
   padding: 0 16px;
   border-radius: 10px;
-  background: #7c3aed;
+  background: var(--accent);
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -805,7 +828,7 @@ body:has(.adminbp-root) main#noi-dung {
 
 .adminbp-dash-msg {
   margin: 14px 0 0 !important;
-  color: #c4b5fd !important;
+  color: var(--accent) !important;
 }
 
 .adminbp-media-grid {
@@ -822,14 +845,14 @@ body:has(.adminbp-root) main#noi-dung {
   height: 110px;
   object-fit: cover;
   border-radius: 10px;
-  background: #243044;
+  background: #eeeae0;
 }
 
 .adminbp-media-grid small {
   display: block;
   margin-top: 6px;
   font-size: 11px;
-  color: #8b9cb3;
+  color: var(--ink-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -855,7 +878,7 @@ body:has(.adminbp-root) main#noi-dung {
 
 .adminbp-page-head p {
   margin: 0;
-  color: #8b9cb3;
+  color: var(--ink-soft);
 }
 
 .adminbp-form {
@@ -884,8 +907,9 @@ body:has(.adminbp-root) main#noi-dung {
 
 .adminbp-field span {
   font-size: 12px;
-  font-weight: 700;
-  color: #8b9cb3;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
 }
 
 .adminbp-field input,
@@ -894,12 +918,20 @@ body:has(.adminbp-root) main#noi-dung {
   width: 100%;
   min-height: 42px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #1a2332;
-  color: #e8edf5;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
   padding: 8px 12px;
   font: inherit;
   font-size: 14px;
+}
+
+.adminbp-field input:focus,
+.adminbp-field textarea:focus,
+.adminbp-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.18);
 }
 
 .adminbp-field textarea {
@@ -919,7 +951,7 @@ body:has(.adminbp-root) main#noi-dung {
   max-height: 140px;
   object-fit: cover;
   border-radius: 10px;
-  background: #243044;
+  background: #eeeae0;
 }
 
 .adminbp-image-empty {
@@ -927,8 +959,8 @@ body:has(.adminbp-root) main#noi-dung {
   display: grid;
   place-items: center;
   border-radius: 10px;
-  background: #243044;
-  color: #8b9cb3;
+  background: #eeeae0;
+  color: var(--ink-soft);
   font-size: 13px;
 }
 
@@ -951,9 +983,9 @@ body:has(.adminbp-root) main#noi-dung {
   height: 36px;
   padding: 0 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #243044;
-  color: #e8edf5;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
   font: inherit;
   font-size: 13px;
   font-weight: 600;
@@ -961,8 +993,9 @@ body:has(.adminbp-root) main#noi-dung {
 }
 
 .adminbp-cardlist header button {
-  background: #7c3aed;
-  border-color: #7c3aed;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .adminbp-cards {
@@ -975,8 +1008,8 @@ body:has(.adminbp-root) main#noi-dung {
   gap: 12px;
   padding: 16px;
   border-radius: 14px;
-  background: #1a2332;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--paper);
+  border: 1px solid var(--line);
 }
 
 .adminbp-item-actions {
@@ -986,8 +1019,8 @@ body:has(.adminbp-root) main#noi-dung {
 }
 
 .adminbp-item-actions button.danger {
-  color: #fca5a5;
-  border-color: rgba(248, 113, 113, 0.35);
+  color: #b45353;
+  border-color: rgba(180, 83, 83, 0.35);
 }
 
 .adminbp-savebar {
@@ -998,7 +1031,7 @@ body:has(.adminbp-root) main#noi-dung {
   align-items: center;
   gap: 12px;
   padding: 16px 0 8px;
-  background: linear-gradient(transparent, #0f1419 28%);
+  background: linear-gradient(transparent, var(--paper-2) 28%);
 }
 
 .adminbp-save {
@@ -1007,10 +1040,10 @@ body:has(.adminbp-root) main#noi-dung {
   padding: 0 18px;
   border: 0;
   border-radius: 10px;
-  background: #7c3aed;
+  background: var(--accent);
   color: #fff;
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -1020,7 +1053,7 @@ body:has(.adminbp-root) main#noi-dung {
 }
 
 .adminbp-savebar span {
-  color: #c4b5fd;
+  color: var(--accent);
   font-size: 13px;
 }
 
@@ -1043,7 +1076,7 @@ body:has(.adminbp-root) main#noi-dung {
   height: 56px;
   object-fit: cover;
   border-radius: 8px;
-  background: #243044;
+  background: #eeeae0;
 }
 
 .adminbp-news-row strong {
@@ -1052,7 +1085,7 @@ body:has(.adminbp-root) main#noi-dung {
 }
 
 .adminbp-news-row small {
-  color: #8b9cb3;
+  color: var(--ink-soft);
 }
 
 .adminbp-shortcuts {
@@ -1068,18 +1101,18 @@ body:has(.adminbp-root) main#noi-dung {
   gap: 4px;
   padding: 16px;
   border-radius: 14px;
-  background: #1a2332;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #e8edf5;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
   text-decoration: none;
 }
 
 .adminbp-shortcuts a:hover {
-  border-color: rgba(124, 58, 237, 0.55);
+  border-color: var(--accent);
 }
 
 .adminbp-shortcuts small {
-  color: #8b9cb3;
+  color: var(--ink-soft);
 }
 
 @media (max-width: 800px) {
@@ -1111,7 +1144,7 @@ body:has(.adminbp-root) main#noi-dung {
   height: 110px;
   object-fit: cover;
   border-radius: 10px;
-  background: #243044;
+  background: #eeeae0;
 }
 
 .adminbp-sidebar-foot a {
