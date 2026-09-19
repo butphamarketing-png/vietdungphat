@@ -7,6 +7,16 @@ export default function HeroVideo() {
   const ref = useRef(null);
 
   useEffect(() => {
+    if (!home.poster) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = home.poster;
+    document.head.appendChild(link);
+    return () => link.remove();
+  }, [home.poster]);
+
+  useEffect(() => {
     const el = ref.current;
     if (!el) return;
     el.muted = true;
@@ -31,9 +41,10 @@ export default function HeroVideo() {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         poster={home.poster}
         src={home.video}
+        aria-label={`${home.title1 || ""} ${home.title2 || ""}`.trim() || "Video giới thiệu Việt Dũng Phát"}
       />
       <div className="hero-copy">
         <p className="kicker light">{home.kicker}</p>

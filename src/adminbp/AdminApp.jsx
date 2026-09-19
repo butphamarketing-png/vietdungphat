@@ -29,6 +29,17 @@ function Guard() {
 }
 
 export default function AdminApp() {
+  useEffect(() => {
+    document.title = "Quản trị | Việt Dũng Phát";
+    let robots = document.head.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.setAttribute("name", "robots");
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute("content", "noindex, nofollow");
+  }, []);
+
   return (
     <div className="adminbp-root">
       <Routes>

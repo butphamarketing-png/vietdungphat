@@ -5,6 +5,12 @@ import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
+function toDateTime(date) {
+  const match = String(date || "").match(/(\d{1,2})[/.](\d{1,2})[/.](\d{4})/);
+  if (!match) return undefined;
+  return `${match[3]}-${match[2].padStart(2, "0")}-${match[1].padStart(2, "0")}`;
+}
+
 export default function Article() {
   const { slug } = useParams();
   const cms = useCms();
@@ -42,12 +48,12 @@ export default function Article() {
         }
         title={post.title}
       >
-        {post.date ? <time>{post.date}</time> : null}
+        {post.date ? <time dateTime={toDateTime(post.date)}>{post.date}</time> : null}
       </PageHero>
       <div className="page-body article-wrap">
         {cover ? (
           <figure className="article-cover">
-            <SmartImg src={cover} alt={post.title} />
+            <SmartImg src={cover} alt={post.imageAlt || post.seoKeyword || post.title} loading="eager" fetchPriority="high" />
           </figure>
         ) : null}
         {gallery.length ? (

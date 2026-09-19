@@ -13,6 +13,8 @@ import {
   useCms,
 } from "../lib/cms.js";
 import { uploadAdminFile } from "../lib/upload.js";
+import { seoArticleHtml } from "../lib/seo.js";
+import { analyzeRankMath } from "../lib/rankmath.js";
 import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
@@ -305,6 +307,7 @@ function emptyDraft() {
     seoKeywords: "",
     seoKeyword: "",
     seoDesc: "",
+    imageAlt: "",
     sortOrder: 1,
     lockSlug: false,
     visible: true,
@@ -324,7 +327,7 @@ function postToDraft(item) {
     seoTitle: item.seoTitle || "",
     seoKeywords: item.seoKeywords || "",
     seoKeyword: item.seoKeyword || "",
-    seoDesc: item.seoDesc || "",
+    imageAlt: item.imageAlt || item.seoKeyword || item.title || "",
     sortOrder: item.sortOrder ?? 1,
     lockSlug: true,
     visible: item.visible !== false,
@@ -332,46 +335,6 @@ function postToDraft(item) {
     noindex: !!item.noindex,
     galleryText: (item.gallery || []).join("\n"),
   };
-}
-
-function wordCount(html) {
-  return String(html || "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(" ")
-    .filter(Boolean).length;
-}
-
-function seoChecks(draft) {
-  const kw = (draft.seoKeyword || "").trim().toLowerCase();
-  const title = (draft.seoTitle || draft.title || "").trim();
-  const desc = (draft.seoDesc || draft.desc || "").trim();
-  const slug = draft.slug || "";
-  const html = draft.html || "";
-  const words = wordCount(html);
-  const hasKw = Boolean(kw);
-  const inTitle = hasKw && title.toLowerCase().includes(kw);
-  const inDesc = hasKw && desc.toLowerCase().includes(kw);
-  const inSlug = hasKw && slug.toLowerCase().includes(kw.replace(/\s+/g, "-"));
-  const inHtml = hasKw && html.toLowerCase().includes(kw);
-  const inH = hasKw && /<h[2-6][^>]*>[\s\S]*?<\/h[2-6]>/i.test(html) && html.toLowerCase().includes(kw);
-  const hasImg = Boolean(draft.image) || /<img/i.test(html);
-  const hasLink = /<a\s/i.test(html);
-  return [
-    { ok: hasKw, text: hasKw ? "Đã đặt Từ khóa tập trung cho nội dung này." : "Đặt Từ khóa tập trung cho nội dung này." },
-    { ok: inTitle, text: hasKw ? (inTitle ? "Từ khóa có trong tiêu đề." : "Thêm từ khóa vào tiêu đề.") : "Chưa có từ khóa để kiểm tra." },
-    { ok: title.length >= 10 && title.length <= 70, text: "Độ dài thẻ tiêu đề ngắn (10 - 70 ký tự)" },
-    { ok: inDesc, text: hasKw ? "Từ khóa có trong mô tả meta SEO." : "Thêm Từ khóa tập trung vào Mô tả meta SEO của bạn." },
-    { ok: desc.length >= 100 && desc.length <= 160, text: "Độ dài thẻ mô tả ngắn từ 100 - 160 kí tự" },
-    { ok: inSlug, text: hasKw ? "Sử dụng từ khóa chính trong URL." : "Sử dụng từ khóa chính trong URL." },
-    { ok: slug.length > 0 && slug.length <= 75, text: "Độ dài URL phù hợp." },
-    { ok: inHtml, text: hasKw ? "Sử dụng từ khóa chính trong nội dung." : "Chưa có từ khóa để kiểm tra." },
-    { ok: words >= 200, text: "Độ dài nội dung phù hợp (600-2500 từ)." },
-    { ok: hasLink, text: "Thêm liên kết nội bộ vào nội dung của bạn." },
-    { ok: inH, text: "Sử dụng từ khóa chính trong (các) tiêu đề phụ như H2, H3, H4, H5, H6." },
-    { ok: hasImg, text: "Thêm hình ảnh hoặc video vào bài viết để làm phong phú nội dung." },
-  ];
 }
 
 function draftToPost(draft) {
@@ -418,7 +381,14 @@ export function PostsEditor({ kind, title, hint }) {
   }
 
   function setTitle(v) {
-    setDraft((d) => ({ ...d, title: v, slug: d.lockSlug ? d.slug : slugify(v) }));
+    setDraft((d) => ({
+      ...d,
+      title: v,
+      slug: d.lockSlug ? d.slug : slugify(v),
+      seoKeyword: d.seoKeyword || v,
+      seoTitle: d.seoTitle || v,
+      imageAlt: d.imageAlt || v,
+    }));
   }
 
   async function persistDraft(stay) {
@@ -443,7 +413,7 @@ export function PostsEditor({ kind, title, hint }) {
   if (draft) {
     const seoTitle = draft.seoTitle || draft.title;
     const seoDesc = draft.seoDesc || draft.desc;
-    const checks = seoChecks(draft);
+    const rm = analyzeRankMath(draft);
     return (
       <div className="adminbp-cazo">
         <EditToolbar
@@ -479,13 +449,29 @@ export function PostsEditor({ kind, title, hint }) {
           <h2>Nội dung {meta.cat}</h2>
           <Tabs value={tab} onChange={setTab} tabs={[{ id: "vi", label: "Tiếng Việt" }]} />
           <Field label="Tiêu đề (vi):" value={draft.title} onChange={setTitle} />
-          <Field label="Mô tả (vi):" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v })} multiline rows={5} />
+          <Field label="Mô tả (vi):" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v, seoDesc: draft.seoDesc || v })} multiline rows={5} />
+          <button
+            type="button"
+            className="adminbp-pill is-ghost"
+            onClick={() =>
+              setDraft((d) => ({
+                ...d,
+                html: seoArticleHtml({ title: d.title, keyword: d.seoKeyword || d.title }),
+                seoKeyword: d.seoKeyword || d.title,
+                seoTitle: d.seoTitle || d.title,
+                seoDesc: d.seoDesc || d.desc,
+              }))
+            }
+          >
+            Chèn form bài SEO
+          </button>
           <HtmlEditor label="Nội dung (vi):" value={draft.html} onChange={(v) => setDraft({ ...draft, html: v })} />
         </section>
 
         <section className="adminbp-vcard">
           <h2>Hình ảnh {meta.cat}</h2>
           <CazoDropzone value={draft.image} onChange={(v) => setDraft({ ...draft, image: v })} />
+          <Field label="Alt hình (vi):" value={draft.imageAlt} onChange={(v) => setDraft({ ...draft, imageAlt: v })} />
           <Field
             label="Album (mỗi dòng 1 URL)"
             value={draft.galleryText}
@@ -520,16 +506,27 @@ export function PostsEditor({ kind, title, hint }) {
           {seoTab === "vi" ? (
             <>
               <Field label="SEO Title (vi):" value={draft.seoTitle} onChange={(v) => setDraft({ ...draft, seoTitle: v })} />
-              <Field label="SEO Keywords (vi):" value={draft.seoKeywords} onChange={(v) => setDraft({ ...draft, seoKeywords: v })} />
+              <small className={`adminbp-seo-count${rm.titleLen > 60 ? " is-over" : ""}`}>{rm.titleLen}/60 ký tự SERP</small>
+              <Field label="Secondary keywords (vi):" value={draft.seoKeywords} onChange={(v) => setDraft({ ...draft, seoKeywords: v })} />
               <Field label="SEO Description (vi):" value={draft.seoDesc} onChange={(v) => setDraft({ ...draft, seoDesc: v })} multiline rows={4} />
-              <Field label="Keyword chính (vi):" value={draft.seoKeyword} onChange={(v) => setDraft({ ...draft, seoKeyword: v })} />
-              <ul className="adminbp-seo-checks">
-                {checks.map((c) => (
-                  <li key={c.text} className={c.ok ? "is-ok" : "is-bad"}>
-                    {c.text}
-                  </li>
-                ))}
-              </ul>
+              <small className={`adminbp-seo-count${rm.descLen > 160 ? " is-over" : ""}`}>{rm.descLen}/160 ký tự SERP</small>
+              <Field label="Focus Keyword (vi):" value={draft.seoKeyword} onChange={(v) => setDraft({ ...draft, seoKeyword: v })} />
+              <div className={`adminbp-rm-score is-${rm.score >= 80 ? "good" : rm.score >= 50 ? "ok" : "bad"}`}>
+                <strong>{rm.score}</strong>
+                <span>/100 Rank Math</span>
+              </div>
+              {rm.groups.map((group) => (
+                <section key={group.id} className="adminbp-rm-group">
+                  <h3>{group.label}</h3>
+                  <ul className="adminbp-seo-checks">
+                    {group.items.map((c) => (
+                      <li key={c.text} className={c.warn ? "is-warn" : c.ok || (c.partial || 0) > 0 ? "is-ok" : "is-bad"}>
+                        {c.text}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
               <article className="adminbp-seo-preview">
                 <small>Khi lên top, page này sẽ hiển thị theo dạng mẫu như sau:</small>
                 <a href={`/${draft.slug || ""}`} target="_blank" rel="noreferrer">

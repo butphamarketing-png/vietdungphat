@@ -1839,9 +1839,47 @@ body:has(.vns-login) {
   color: #155724;
 }
 
-.adminbp-seo-checks .is-bad {
-  background: #fde8e8;
-  color: #8a1f1f;
+.adminbp-seo-checks .is-warn {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.adminbp-seo-count {
+  display: block;
+  margin: -6px 0 10px;
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+.adminbp-seo-count.is-over {
+  color: #c0392b;
+}
+
+.adminbp-rm-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f6f6f6;
+}
+
+.adminbp-rm-score strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.adminbp-rm-score.is-good { background: #d4edda; color: #155724; }
+.adminbp-rm-score.is-ok { background: #fff3cd; color: #856404; }
+.adminbp-rm-score.is-bad { background: #fde8e8; color: #8a1f1f; }
+
+.adminbp-rm-group h3 {
+  margin: 14px 0 8px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7a7a7a;
 }
 
 .adminbp-edit {

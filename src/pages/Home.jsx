@@ -39,9 +39,9 @@ export default function Home() {
           </Link>
         </div>
         <div className="service-cards">
-          {coreServices.map((s) => (
+          {coreServices.map((s, idx) => (
             <Link key={s.title} className="service-card" to={s.href}>
-              <SmartImg src={s.image} alt={s.title} />
+              <SmartImg src={s.image} alt={s.title} loading={idx < 3 ? "eager" : "lazy"} fetchPriority={idx === 0 ? "high" : undefined} />
               <strong>{s.title}</strong>
             </Link>
           ))}
@@ -147,7 +147,10 @@ export default function Home() {
           </Link>
         </div>
         <div className="news-cols">
-          {news.slice(0, 3).map((p) => (
+          {(() => {
+            const featured = news.filter((p) => p.source !== "keyword").slice(0, 3);
+            return (featured.length ? featured : news.slice(0, 3));
+          })().map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="news-col">
               <SmartImg src={p.image} alt={p.title} />
               {p.date ? <time>{p.date}</time> : null}

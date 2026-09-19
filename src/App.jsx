@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useEffect } from "react";
 import Layout from "./components/Layout.jsx";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
@@ -9,15 +8,10 @@ import Contact from "./pages/Contact.jsx";
 import Services from "./pages/Services.jsx";
 import Pricing from "./pages/Pricing.jsx";
 import LoBan from "./pages/LoBan.jsx";
+import { KeywordHub, KeywordPage } from "./pages/Keywords.jsx";
 import AdminApp from "./adminbp/AdminApp.jsx";
 
 export default function App() {
-  useEffect(() => {
-    if (!document.title || !document.title.trim()) {
-      document.title = "Việt Dũng Phát — Atelier kiến trúc & nội thất";
-    }
-  }, []);
-
   return (
     <Routes>
       <Route path="/adminbp/*" element={<AdminApp />} />
@@ -32,6 +26,8 @@ export default function App() {
         <Route path="/thuoc-lo-ban" element={<LoBan />} />
         <Route path="/tin-tuc" element={<ListPage kind="news" />} />
         <Route path="/lien-he" element={<Contact />} />
+        <Route path="/tu-khoa" element={<KeywordHub />} />
+        <Route path="/tu-khoa/:slug" element={<KeywordPage />} />
         <Route path="/:slug" element={<Article />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
+import keywordNews from "../data/keyword-news.json";
 import { studio as defaultStudio } from "./studio.js";
 import {
   coreServices as defaultCoreServices,
@@ -220,7 +221,13 @@ function mergePosts(kind) {
   const extras = added
     .filter((p) => !deleted.has(p.slug))
     .map((p) => (overrides[p.slug] ? { ...p, ...overrides[p.slug] } : p));
-  return [...extras, ...base];
+  const generated =
+    kind === "news"
+      ? (keywordNews || [])
+          .filter((p) => p?.slug && !deleted.has(p.slug) && !addedSlugs.has(p.slug) && !base.some((b) => b.slug === p.slug))
+          .map((p) => (overrides[p.slug] ? { ...p, ...overrides[p.slug] } : p))
+      : [];
+  return [...extras, ...generated, ...base];
 }
 
 export function getAccount() {

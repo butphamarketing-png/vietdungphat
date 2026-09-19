@@ -210,6 +210,17 @@ h1, h2, h3, blockquote {
 .page-hero p, .page-hero time { max-width: 46rem; color: var(--ink-soft); line-height: 1.7; }
 .page-hero time { display: block; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.75rem; color: var(--accent); }
 .page-body { padding: 2.6rem 6vw 4rem; }
+.kw-group { margin: 0 0 2.2rem; }
+.kw-group h2 { margin: 0 0 0.8rem; font-size: 1.2rem; }
+.kw-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.45rem 1.2rem;
+}
+.kw-list a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .about-services { margin-bottom: 3rem; }
 .related { margin-top: 3.2rem; }
 .related h2 { margin: 0 0 1.2rem; }
@@ -698,6 +709,13 @@ h1, h2, h3, blockquote {
 .prose h1, .prose h2, .prose h3 { color: var(--ink); }
 .article-cover img { width: 100%; max-height: 70vh; object-fit: cover; }
 .article-body { max-width: 980px; margin: 2rem auto 0; }
+.article-body .toc {
+  background: #f7f3ea;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.2rem;
+  margin: 0 0 1.6rem;
+}
+.article-body .toc ol { margin: 0.4rem 0 0 1.1rem; }
 .article-body img { width: 100%; margin: 0.6rem 0 1.4rem; }
 .article-body iframe, .article-body video { max-width: 100%; }
 .article-body table { width: 100%; display: block; overflow-x: auto; border-collapse: collapse; }
@@ -749,7 +767,26 @@ h1, h2, h3, blockquote {
   color: #d8d8d8;
   padding: 3.5rem 6vw 1.6rem;
 }
-.footer h2 { color: #fff; margin: 0 0 0.8rem; }
+.footer-name {
+  color: #fff;
+  margin: 0 0 0.8rem;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 80;
+  background: #fff;
+  color: var(--ink);
+  padding: 0.55rem 0.9rem;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.skip-link:focus {
+  top: 1rem;
+}
 .footer-grid { display: grid; grid-template-columns: 1.3fr 1.3fr 0.8fr; gap: 2rem; }
 .footer-links, .socials { display: flex; flex-direction: column; gap: 0.4rem; }
 .socials { flex-direction: row; gap: 1rem; margin-top: 1rem; }

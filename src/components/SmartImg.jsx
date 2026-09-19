@@ -23,6 +23,7 @@ export default function SmartImg({ src, alt = "", className, ...rest }) {
       className={className}
       referrerPolicy="no-referrer"
       loading="lazy"
+      decoding="async"
       onError={() => {
         if (current !== original && original && current !== FALLBACK_IMAGE) {
           setCurrent(original);

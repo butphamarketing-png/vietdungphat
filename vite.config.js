@@ -1,8 +1,16 @@
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+import { KEYWORDS } from "./src/data/keywords.js";
+import {
+  DEFAULT_OG,
+  PAGE_SEO,
+  excerptFromHtml,
+  injectSeoIntoHtml,
+  pageUrl,
+} from "./src/lib/seo.js";
 
 const SPA_ROUTES = [
   "adminbp",
@@ -29,20 +37,125 @@ const SPA_ROUTES = [
   "thuoc-lo-ban",
   "tin-tuc",
   "lien-he",
+  "tu-khoa",
 ];
+
+function writeHtml(file, html) {
+  mkdirSync(path.dirname(file), { recursive: true });
+  writeFileSync(file, html);
+}
 
 function spaFallbackHtml() {
   return {
     name: "spa-fallback-html",
     closeBundle() {
-      const index = path.join(process.cwd(), "dist", "index.html");
+      const dist = path.join(process.cwd(), "dist");
+      const index = path.join(dist, "index.html");
       if (!existsSync(index)) return;
-      copyFileSync(index, path.join(process.cwd(), "dist", "404.html"));
+      const original = readFileSync(index, "utf8");
+      const today = new Date().toISOString().slice(0, 10);
+
+      copyFileSync(index, path.join(dist, "404.html"));
       for (const route of SPA_ROUTES) {
-        const dir = path.join(process.cwd(), "dist", route);
-        mkdirSync(dir, { recursive: true });
-        copyFileSync(index, path.join(dir, "index.html"));
+        writeHtml(path.join(dist, route, "index.html"), original);
       }
+
+      const urls = Object.entries(PAGE_SEO).map(([loc, meta]) => ({
+        loc,
+        title: meta.title,
+        description: meta.description,
+        image: DEFAULT_OG,
+        type: "website",
+      }));
+
+      let data = {};
+      try {
+        data = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/content.json"), "utf8"));
+      } catch {
+        data = {};
+      }
+
+      const reserved = new Set(
+        Object.keys(PAGE_SEO)
+          .map((p) => p.replace(/^\//, ""))
+          .concat(["adminbp", "api", "assets", "files", "studio"]),
+      );
+
+      let keywordNews = [];
+      try {
+        keywordNews = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/keyword-news.json"), "utf8"));
+      } catch {
+        keywordNews = [];
+      }
+
+      for (const kind of ["projects", "products", "services", "news", "extras"]) {
+        const extraNews = kind === "news" ? keywordNews : [];
+        const seenPost = new Set();
+        for (const post of [...extraNews, ...(data[kind] || [])]) {
+          if (!post?.slug || reserved.has(post.slug) || seenPost.has(post.slug)) continue;
+          seenPost.add(post.slug);
+          if (!/^[a-z0-9-]+$/i.test(post.slug)) {
+            urls.push({
+              loc: `/${post.slug}`,
+              title: post.title,
+              description: excerptFromHtml(post.html) || PAGE_SEO["/"].description,
+              image: post.image || DEFAULT_OG,
+              type: "article",
+            });
+            continue;
+          }
+          urls.push({
+            loc: `/${post.slug}`,
+            title: /việt dũng phát/i.test(post.title || "") ? post.title : `${post.title} | Việt Dũng Phát`,
+            description: excerptFromHtml(post.html) || PAGE_SEO["/"].description,
+            image: post.image || DEFAULT_OG,
+            type: "article",
+          });
+        }
+      }
+
+      for (const kw of KEYWORDS) {
+        urls.push({
+          loc: `/tu-khoa/${kw.slug}`,
+          title: kw.title,
+          description: kw.description,
+          image: DEFAULT_OG,
+          type: "website",
+        });
+      }
+
+      const seen = new Set();
+      const unique = [];
+      for (const item of urls) {
+        if (seen.has(item.loc)) continue;
+        seen.add(item.loc);
+        unique.push(item);
+      }
+
+      for (const item of unique) {
+        const html = injectSeoIntoHtml(original, { ...item, path: item.loc });
+        if (item.loc === "/") {
+          writeFileSync(index, html);
+          continue;
+        }
+        const rel = item.loc.replace(/^\//, "");
+        if (!/^[a-z0-9-]+$/i.test(rel.replace(/\//g, ""))) continue;
+        writeHtml(path.join(dist, rel, "index.html"), html);
+        writeHtml(path.join(dist, `${rel}.html`), html);
+      }
+
+      const sitemap = [
+        `<?xml version="1.0" encoding="UTF-8"?>`,
+        `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+        ...unique.map((item) => {
+          const loc = pageUrl(item.loc);
+          const priority = item.loc === "/" ? "1.0" : item.type === "article" ? "0.6" : "0.8";
+          return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+        }),
+        `</urlset>`,
+        "",
+      ].join("\n");
+      writeFileSync(path.join(dist, "sitemap.xml"), sitemap);
     },
   };
 }

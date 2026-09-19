@@ -1,7 +1,8 @@
 import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import FloatDock from "./FloatDock.jsx";
 import BookingPopup from "./BookingPopup.jsx";
-import { useCms } from "../lib/cms.js";
+import { findPost, kindOf, useCms } from "../lib/cms.js";
+import { applySeo, pageSeoFromCms } from "../lib/seo.js";
 import { useScrollReveal } from "../lib/useScrollReveal.js";
 import { useEffect, useState } from "react";
 
@@ -18,7 +19,8 @@ const links = [
 ];
 
 export default function Layout() {
-  const { site, home: cmsHome } = useCms();
+  const cms = useCms();
+  const { site, home: cmsHome } = cms;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -51,13 +53,22 @@ export default function Layout() {
   }, [open]);
 
   useEffect(() => {
-    const name = site.shortName || "Việt Dũng Phát";
-    const tag = site.tagline || "Atelier kiến trúc & nội thất";
-    document.title = `${name} — ${tag}`;
-  }, [site.shortName, site.tagline]);
+    applySeo({
+      ...pageSeoFromCms(location.pathname, {
+        home: cmsHome,
+        reviews: cms.reviews,
+        findPost: (slug) => findPost(slug, cms),
+        kindOf: (slug) => kindOf(slug, cms),
+      }),
+      site,
+    });
+  }, [location.pathname, cms, cmsHome, site]);
 
   return (
     <>
+      <a className="skip-link" href="#noi-dung">
+        Bỏ qua điều hướng
+      </a>
       <header className={`header ${scrolled || !home ? "is-solid" : ""} ${home ? "on-hero" : ""}`}>
         <Link to="/" className="brand" onClick={() => setOpen(false)}>
           <img src={site.logo || "/logo.png"} alt={site.shortName || "Việt Dũng Phát"} />
@@ -79,13 +90,13 @@ export default function Layout() {
         </Link>
       </header>
       {open ? <button className="nav-mask" aria-label="Đóng menu" onClick={() => setOpen(false)} /> : null}
-      <main>
+      <main id="noi-dung">
         <Outlet />
       </main>
       <footer className="footer">
         <div className="footer-grid">
           <div>
-            <h2>{site.shortName}</h2>
+            <p className="footer-name">{site.shortName}</p>
             <p className="muted">{cmsHome.footerBlurb}</p>
             <a className="text-link light" href={site.profilePdf} target="_blank" rel="noreferrer">
               Tải hồ sơ năng lực
@@ -110,6 +121,7 @@ export default function Layout() {
                   {l.label}
                 </Link>
               ))}
+              <Link to="/tu-khoa">Từ khóa</Link>
             </div>
             <div className="socials">
               {site.facebook ? (
