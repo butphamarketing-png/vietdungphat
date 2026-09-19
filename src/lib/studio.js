@@ -2,6 +2,21 @@ export const studio = [
   { src: "/villas/villa-mansard-rong.jpg", title: "Biệt thự tân cổ điển mái mansard" },
   { src: "/villas/villa-goc-lon.jpg", title: "Biệt thự tân cổ điển góc sân vườn" },
   { src: "/villas/villa-cong-lon.jpg", title: "Biệt thự tân cổ điển mặt tiền rộng" },
+  { src: "/villas/neo-01.jpg", title: "Biệt thự tân cổ điển 3 tầng mái mansard" },
+  { src: "/villas/neo-02.jpg", title: "Biệt thự tân cổ điển hai cánh" },
+  { src: "/villas/neo-03.jpg", title: "Biệt thự tân cổ điển đá xám" },
+  { src: "/villas/neo-04.jpg", title: "Biệt thự tân cổ điển góc lô" },
+  { src: "/villas/neo-05.jpg", title: "Biệt thự tân cổ điển về đêm" },
+  { src: "/villas/neo-06.jpg", title: "Biệt thự tân cổ điển hồ bơi" },
+  { src: "/villas/neo-07.jpg", title: "Biệt thự tân cổ điển mặt tiền 5 gian" },
+  { src: "/villas/neo-08.jpg", title: "Biệt thự tân cổ điển sảnh cong" },
+  { src: "/villas/neo-09.jpg", title: "Biệt thự tân cổ điển cổng cột" },
+  { src: "/villas/neo-10.jpg", title: "Biệt thự tân cổ điển sân vườn" },
+  { src: "/villas/neo-11.jpg", title: "Biệt thự tân cổ điển ánh sáng đêm" },
+  { src: "/villas/neo-12.jpg", title: "Biệt thự tân cổ điển mái xanh" },
+  { src: "/villas/neo-13.jpg", title: "Biệt thự tân cổ điển sân trong" },
+  { src: "/villas/neo-14.jpg", title: "Biệt thự tân cổ điển đế đá" },
+  { src: "/villas/neo-15.jpg", title: "Biệt thự tân cổ điển hình chữ U" },
 ];
 
 function houseKey(src) {
@@ -34,7 +49,24 @@ export function uniqueHouses(list = studio) {
 }
 
 export function homeNeoCards() {
-  return uniqueHouses(studio);
+  return uniqueHouses(studio.slice(0, 9));
+}
+
+export const villaSrcs = studio.map((item) => item.src);
+
+function keepHousePhoto(src = "") {
+  const url = String(src);
+  if (url.startsWith("/villas/") || url.startsWith("/interior/") || url.startsWith("/media/")) return true;
+  return /supabase\.co|r2\.dev|cloudflarestorage/i.test(url);
+}
+
+export function houseCover(item = {}, index = 0) {
+  if (keepHousePhoto(item.image)) return item.image;
+  return studio[index % studio.length]?.src || item.image;
+}
+
+export function withHouseCovers(list = []) {
+  return list.map((item, index) => ({ ...item, image: houseCover(item, index) }));
 }
 
 export function preferNeoClassic(list = []) {

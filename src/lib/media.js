@@ -1,7 +1,7 @@
 const CMS_HOST = /^(www\.)?vietdungphat\.com$/i;
 const WESERV_HOST = /^(images\.)?weserv\.nl$/i;
-export const FALLBACK_IMAGE = "/studio/01.jpg";
-const FALLBACK_REMOTE = "www.vietdungphat.com/studio/01.jpg";
+export const FALLBACK_IMAGE = "/villas/villa-cong-lon.jpg";
+const FALLBACK_REMOTE = "www.vietdungphat.com/villas/villa-cong-lon.jpg";
 
 function wrapWeserv(remote) {
   return `https://images.weserv.nl/?url=${encodeURIComponent(remote)}&default=${encodeURIComponent(FALLBACK_REMOTE)}`;

@@ -46,7 +46,7 @@ export default function BookingPopup() {
         <button type="button" className="booking-popup-close" onClick={close} aria-label="Đóng">
           ×
         </button>
-        <img className="booking-popup-photo" src={home.bookingImage || "/studio/05.jpg"} alt="" />
+        <img className="booking-popup-photo" src={home.bookingImage || "/villas/neo-05.jpg"} alt="" />
         <BookingForm titleId={titleId} />
       </div>
     </div>

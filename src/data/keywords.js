@@ -180,15 +180,34 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
   items: group.phrases.map((phrase, index) => {
     const slug = slugify(phrase);
     const covers = {
-      "xay-dung": ["/news/news-tron-goi.jpg", "/news/news-phan-tho.jpg", "/villas/villa-cong-lon.jpg"],
-      "tan-co-dien": ["/villas/villa-mansard-rong.jpg", "/villas/villa-goc-lon.jpg", "/villas/villa-cong-lon.jpg"],
-      "thiet-ke": ["/news/news-thiet-ke.jpg", "/villas/villa-goc-lon.jpg", "/news/news-tron-goi.jpg"],
-      "cai-tao": ["/news/news-cai-tao.jpg", "/news/news-phan-tho.jpg", "/villas/villa-cong-lon.jpg"],
+      "xay-dung": ["/news/news-tron-goi.jpg", "/news/news-phan-tho.jpg", "/villas/neo-01.jpg", "/villas/neo-07.jpg", "/villas/villa-cong-lon.jpg"],
+      "tan-co-dien": [
+        "/villas/villa-mansard-rong.jpg",
+        "/villas/villa-goc-lon.jpg",
+        "/villas/villa-cong-lon.jpg",
+        "/villas/neo-01.jpg",
+        "/villas/neo-02.jpg",
+        "/villas/neo-03.jpg",
+        "/villas/neo-04.jpg",
+        "/villas/neo-05.jpg",
+        "/villas/neo-06.jpg",
+        "/villas/neo-07.jpg",
+        "/villas/neo-08.jpg",
+        "/villas/neo-09.jpg",
+        "/villas/neo-10.jpg",
+        "/villas/neo-11.jpg",
+        "/villas/neo-12.jpg",
+        "/villas/neo-13.jpg",
+        "/villas/neo-14.jpg",
+        "/villas/neo-15.jpg",
+      ],
+      "thiet-ke": ["/news/news-thiet-ke.jpg", "/villas/neo-02.jpg", "/villas/neo-08.jpg", "/villas/neo-10.jpg"],
+      "cai-tao": ["/news/news-cai-tao.jpg", "/news/news-phan-tho.jpg", "/villas/neo-14.jpg"],
       "noi-that": ["/interior/noi-that-tan-co-dien.jpg", "/interior/combo-can-ho.jpg", "/interior/tu-quan-ao.jpg"],
-      "bao-gia": ["/news/news-bao-gia.jpg", "/news/news-thiet-ke.jpg", "/news/news-tron-goi.jpg"],
-      "khu-vuc": ["/news/news-tron-goi.jpg", "/villas/villa-goc-lon.jpg", "/news/news-phan-tho.jpg"],
+      "bao-gia": ["/news/news-bao-gia.jpg", "/news/news-thiet-ke.jpg", "/villas/neo-09.jpg"],
+      "khu-vuc": ["/villas/neo-01.jpg", "/villas/neo-04.jpg", "/villas/neo-07.jpg", "/news/news-phan-tho.jpg"],
       "phong-thuy": ["/news/news-phong-thuy.jpg", "/news/news-thiet-ke.jpg", "/news/news-bao-gia.jpg"],
-      "thuong-hieu": ["/villas/villa-mansard-rong.jpg", "/news/news-tron-goi.jpg", "/news/news-thiet-ke.jpg"],
+      "thuong-hieu": ["/villas/villa-mansard-rong.jpg", "/villas/neo-02.jpg", "/villas/neo-11.jpg"],
     };
     const pool = covers[group.id] || covers["xay-dung"];
     return {

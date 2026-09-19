@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
-import { studio as defaultStudio, withProductCovers } from "./studio.js";
+import { studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
 import { withNewsCovers } from "./news-media.js";
 import {
   coreServices as defaultCoreServices,
@@ -27,7 +27,7 @@ export const defaultHome = {
   cta1: "Đặt lịch khảo sát",
   cta2: "Xem mẫu nhà",
   video: "/hero.mp4?v=client",
-  poster: "/studio/08.jpg",
+  poster: "/villas/neo-02.jpg",
   servicesKicker: "Dịch vụ",
   servicesTitle: "Thiết kế, xây dựng,\ncải tạo",
   servicesLead:
@@ -41,12 +41,12 @@ export const defaultHome = {
   aboutTitle: "20 năm kiến trúc\nvà xây dựng",
   aboutLead:
     "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát, với 20 năm kinh nghiệm thiết kế và thi công tại Hồ Chí Minh và các tỉnh lân cận.",
-  aboutImages: ["/villas/villa-mansard-rong.jpg", "/villas/villa-goc-lon.jpg", "/villas/villa-cong-lon.jpg"],
+  aboutImages: ["/villas/neo-02.jpg", "/villas/neo-06.jpg", "/villas/neo-11.jpg"],
   newsKicker: "Tin tức",
   newsTitle: "Góc chia sẻ",
   reviewsKicker: "Đánh giá",
   reviewsTitle: "Khách hàng nói gì về chúng tôi",
-  bookingImage: "/studio/11.jpg",
+  bookingImage: "/villas/neo-05.jpg",
   bookingKicker: "Đặt lịch hẹn",
   bookingTitle: "Tư vấn giải pháp\nnhà ở lý tưởng",
   bookingLead:
@@ -67,7 +67,7 @@ export const defaultPages = {
     kicker: "Giới thiệu",
     title: "20 năm kiến trúc,\nxây dựng và cải tạo",
     lead: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng, cải tạo nhà ở tại TP.HCM và các tỉnh lân cận. Toàn bộ nội dung giới thiệu gốc được giữ nguyên bên dưới.",
-    image: "/studio/08.jpg",
+    image: "/villas/neo-02.jpg",
   },
   services: {
     kicker: "Dịch vụ",
@@ -293,20 +293,28 @@ export function getCms() {
   if (!logo || /upload\/hinhanh\/logo/i.test(logo) || /logo-3495/i.test(logo)) site.logo = "/logo.png";
   const aboutImage = String(site.aboutImage || "");
   if (!aboutImage || /upload\/hinhanh\/about/i.test(aboutImage) || /about-8486/i.test(aboutImage)) {
-    site.aboutImage = "/studio/09.jpg";
+    site.aboutImage = "/villas/neo-10.jpg";
   }
-  const projects = mergePosts("projects");
+  const projects = withHouseCovers(mergePosts("projects"));
   const products = withProductCovers(mergePosts("products"));
   const services = mergePosts("services");
   const news = withNewsCovers(mergePosts("news"));
   const extras = mergePosts("extras");
   const listsMeta = overlay.listsMeta || {};
   const home = { ...defaultHome, ...(overlay.home || {}) };
-  if ((home.aboutImages || []).some((src) => /\/studio\/\d+\.jpg/.test(String(src)))) {
+  if ((home.aboutImages || []).some((src) => /\/studio\//.test(String(src)))) {
     home.aboutImages = defaultHome.aboutImages;
   }
+  if (/\/studio\//.test(String(home.bookingImage || ""))) home.bookingImage = defaultHome.bookingImage;
   const studioList = overlay.studio || [];
-  const studio = studioList.some((item) => /\/villas\//.test(item.src || item.image || "")) ? studioList : defaultStudio;
+  const studioSeen = new Set();
+  const studio = [];
+  for (const item of [...defaultStudio, ...studioList]) {
+    const src = item.src || item.image;
+    if (!src || studioSeen.has(src) || /\/studio\/\d+\.jpg/.test(src)) continue;
+    studioSeen.add(src);
+    studio.push({ src, title: item.title || "Biệt thự tân cổ điển" });
+  }
   snapshot = {
     site,
     projects,

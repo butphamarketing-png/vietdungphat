@@ -1,7 +1,7 @@
 import { findKeyword, keywordNewsPath } from "../data/keywords.js";
 
 export const SITE_URL = "https://www.vietdungphat.com";
-export const DEFAULT_OG = `${SITE_URL}/studio/08.jpg`;
+export const DEFAULT_OG = `${SITE_URL}/villas/villa-mansard-rong.jpg`;
 
 export const PAGE_SEO = {
   "/": {
@@ -341,10 +341,10 @@ export function seoArticleHtml({ title, keyword }) {
 <h3>Thi công mất bao lâu?</h3>
 <p>Tiến độ phụ thuộc diện tích, số tầng và phạm vi ${kw}. Sau khảo sát, bạn nhận mốc thời gian theo giai đoạn phần thô và hoàn thiện.</p>
 <p>Xem thêm <a href="/bao-gia">bảng báo giá</a>, <a href="/mau-nha">mẫu nhà</a> và <a href="https://dichvucong.gov.vn">Cổng Dịch vụ công Quốc gia</a> nếu cần thủ tục pháp lý.</p>
-<p><img src="/studio/08.jpg" alt="${kw}" /></p>
-<p><img src="/studio/11.jpg" alt="${kw} — công trình Việt Dũng Phát" /></p>
-<p><img src="/studio/10.jpg" alt="Mẫu nhà liên quan ${kw}" /></p>
-<p><img src="/studio/07.jpg" alt="Thi công ${kw} tại TP.HCM" /></p>`;
+<p><img src="/villas/neo-01.jpg" alt="${kw}" /></p>
+<p><img src="/villas/neo-07.jpg" alt="${kw} — công trình Việt Dũng Phát" /></p>
+<p><img src="/villas/neo-11.jpg" alt="Mẫu nhà liên quan ${kw}" /></p>
+<p><img src="/services/xay-dung.jpg" alt="Thi công ${kw} tại TP.HCM" /></p>`;
 }
 
 export function applySeo({ title, description, path, image, type = "website", noindex = false, breadcrumbs, article, site, faq, reviews }) {

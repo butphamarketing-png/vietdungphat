@@ -1,3 +1,5 @@
+import { villaSrcs } from "./studio.js";
+
 const IMG = {
   tronGoi: "/news/news-tron-goi.jpg",
   phanTho: "/news/news-phan-tho.jpg",
@@ -14,15 +16,15 @@ const IMG = {
 };
 
 const GROUP_POOLS = {
-  "xay-dung": [IMG.tronGoi, IMG.phanTho, IMG.pho4],
-  "tan-co-dien": [IMG.mansard, IMG.thai, IMG.pho4],
-  "thiet-ke": [IMG.thietKe, IMG.thai, IMG.tronGoi],
-  "cai-tao": [IMG.caiTao, IMG.phanTho, IMG.pho4],
+  "xay-dung": [IMG.tronGoi, IMG.phanTho, ...villaSrcs],
+  "tan-co-dien": villaSrcs,
+  "thiet-ke": [IMG.thietKe, ...villaSrcs],
+  "cai-tao": [IMG.caiTao, IMG.phanTho, ...villaSrcs],
   "noi-that": [IMG.living, IMG.combo, IMG.wardrobe],
-  "bao-gia": [IMG.baoGia, IMG.thietKe, IMG.tronGoi],
-  "khu-vuc": [IMG.tronGoi, IMG.thai, IMG.phanTho],
+  "bao-gia": [IMG.baoGia, IMG.thietKe, ...villaSrcs.slice(0, 6)],
+  "khu-vuc": [IMG.tronGoi, IMG.phanTho, ...villaSrcs],
   "phong-thuy": [IMG.phongThuy, IMG.thietKe, IMG.baoGia],
-  "thuong-hieu": [IMG.mansard, IMG.tronGoi, IMG.thietKe],
+  "thuong-hieu": villaSrcs,
 };
 
 const HOME_NEWS = [
@@ -33,7 +35,7 @@ const HOME_NEWS = [
 
 function keepNewsPhoto(src = "") {
   const url = String(src);
-  if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/media/")) return true;
+  if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/villas/") || url.startsWith("/media/")) return true;
   return /supabase\.co|r2\.dev|cloudflarestorage/i.test(url);
 }
 

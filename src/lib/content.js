@@ -7,7 +7,7 @@ export const site = {
   facebook: "https://www.facebook.com/vietdungphat/",
   messenger: "https://m.me/vietdungphat",
   logo: "/logo.png",
-  aboutImage: "/studio/09.jpg",
+  aboutImage: "/villas/neo-10.jpg",
   profilePdf: (() => {
     const raw = String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://");
     if (!raw || /\/upload\/files\/ho-so-nang-luc/i.test(raw)) return "/Ho-so-nang-luc-Viet-Dung-Phat.docx";
@@ -119,7 +119,7 @@ export const pricePacks = [
       "Giám sát quá trình thi công",
     ],
     href: "/don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022",
-    image: "/studio/10.jpg",
+    image: "/news/news-phan-tho.jpg",
   },
   {
     tag: "Hoàn thiện",
@@ -135,7 +135,7 @@ export const pricePacks = [
       "Chính sách bảo hành",
     ],
     href: "/thiet-ke-noi-that-nha-o",
-    image: "/studio/05.jpg",
+    image: "/villas/neo-13.jpg",
   },
   {
     tag: "Trọn gói",
@@ -153,6 +153,6 @@ export const pricePacks = [
       "Bảo hành dài hạn",
     ],
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/studio/08.jpg",
+    image: "/villas/neo-02.jpg",
   },
 ];
