@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { flushCms, logoutRemote } from "../lib/cms.js";
+import { BpMark } from "./icons.jsx";
 
 const NAV = [
   { to: "/adminbp", end: true, label: "Tổng quan" },
@@ -25,10 +26,10 @@ export function AdminShell() {
     <div className="adminbp-shell">
       <aside className="adminbp-sidebar">
         <div className="adminbp-brand">
-          <span className="adminbp-brand-mark">BP</span>
+          <BpMark className="adminbp-brand-logo" />
           <div>
             <strong>Admin Việt Dũng Phát</strong>
-            <small>/adminbp</small>
+            <small>Bứt Phá Marketing</small>
           </div>
         </div>
         <nav className="adminbp-nav">

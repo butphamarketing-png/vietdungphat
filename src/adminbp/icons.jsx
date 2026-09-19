@@ -124,13 +124,14 @@ export const promoIcons = {
   headset: IconHeadset,
 };
 
-export function BpMark() {
+export function BpMark({ className = "login-bp-logo" }) {
   return (
-    <svg className="login-bp-logo" viewBox="0 0 44 44" width="44" height="44" aria-hidden>
-      <rect width="44" height="44" rx="10" fill="#7c3aed" />
-      <text x="22" y="28" textAnchor="middle" fill="#fff" fontSize="14" fontWeight="800" fontFamily="Be Vietnam Pro, sans-serif">
-        BP
-      </text>
-    </svg>
+    <img
+      className={className}
+      src="/files/butpha-marketing.png"
+      alt="Bứt Phá Marketing"
+      width="44"
+      height="44"
+    />
   );
 }
