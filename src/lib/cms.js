@@ -1,13 +1,15 @@
 import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
-import { studio as defaultStudio } from "./studio.js";
+import { studio as defaultStudio, withProductCovers } from "./studio.js";
+import { withNewsCovers } from "./news-media.js";
 import {
   coreServices as defaultCoreServices,
   lists as defaultLists,
   pricePacks as defaultPricePacks,
   reviews as defaultReviews,
   site as defaultSite,
+  withServicePhotos,
 } from "./content.js";
 
 const STORAGE = "vdp-cms-v1";
@@ -39,7 +41,7 @@ export const defaultHome = {
   aboutTitle: "20 năm kiến trúc\nvà xây dựng",
   aboutLead:
     "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát, với 20 năm kinh nghiệm thiết kế và thi công tại Hồ Chí Minh và các tỉnh lân cận.",
-  aboutImages: ["/studio/08.jpg", "/studio/05.jpg", "/studio/12.jpg"],
+  aboutImages: ["/villas/villa-mansard-rong.jpg", "/villas/villa-goc-lon.jpg", "/villas/villa-cong-lon.jpg"],
   newsKicker: "Tin tức",
   newsTitle: "Góc chia sẻ",
   reviewsKicker: "Đánh giá",
@@ -294,11 +296,17 @@ export function getCms() {
     site.aboutImage = "/studio/09.jpg";
   }
   const projects = mergePosts("projects");
-  const products = mergePosts("products");
+  const products = withProductCovers(mergePosts("products"));
   const services = mergePosts("services");
-  const news = mergePosts("news");
+  const news = withNewsCovers(mergePosts("news"));
   const extras = mergePosts("extras");
   const listsMeta = overlay.listsMeta || {};
+  const home = { ...defaultHome, ...(overlay.home || {}) };
+  if ((home.aboutImages || []).some((src) => /\/studio\/\d+\.jpg/.test(String(src)))) {
+    home.aboutImages = defaultHome.aboutImages;
+  }
+  const studioList = overlay.studio || [];
+  const studio = studioList.some((item) => /\/villas\//.test(item.src || item.image || "")) ? studioList : defaultStudio;
   snapshot = {
     site,
     projects,
@@ -306,11 +314,11 @@ export function getCms() {
     services,
     news,
     extras,
-    coreServices: overlay.coreServices || defaultCoreServices,
+    coreServices: withServicePhotos(overlay.coreServices || defaultCoreServices),
     reviews: overlay.reviews || defaultReviews,
     pricePacks: overlay.pricePacks || defaultPricePacks,
-    studio: overlay.studio || defaultStudio,
-    home: { ...defaultHome, ...(overlay.home || {}) },
+    studio,
+    home,
     stats: overlay.stats || defaultStats,
     pages: {
       about: { ...defaultPages.about, ...(overlay.pages?.about || {}) },

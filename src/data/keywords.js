@@ -179,14 +179,25 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
   ...group,
   items: group.phrases.map((phrase, index) => {
     const slug = slugify(phrase);
-    const studio = ["/studio/08.jpg", "/studio/11.jpg", "/studio/10.jpg", "/studio/07.jpg", "/studio/09.jpg", "/studio/01.jpg", "/studio/05.jpg", "/studio/02.jpg"][index % 8];
+    const covers = {
+      "xay-dung": ["/news/news-tron-goi.jpg", "/news/news-phan-tho.jpg", "/villas/villa-cong-lon.jpg"],
+      "tan-co-dien": ["/villas/villa-mansard-rong.jpg", "/villas/villa-goc-lon.jpg", "/villas/villa-cong-lon.jpg"],
+      "thiet-ke": ["/news/news-thiet-ke.jpg", "/villas/villa-goc-lon.jpg", "/news/news-tron-goi.jpg"],
+      "cai-tao": ["/news/news-cai-tao.jpg", "/news/news-phan-tho.jpg", "/villas/villa-cong-lon.jpg"],
+      "noi-that": ["/interior/noi-that-tan-co-dien.jpg", "/interior/combo-can-ho.jpg", "/interior/tu-quan-ao.jpg"],
+      "bao-gia": ["/news/news-bao-gia.jpg", "/news/news-thiet-ke.jpg", "/news/news-tron-goi.jpg"],
+      "khu-vuc": ["/news/news-tron-goi.jpg", "/villas/villa-goc-lon.jpg", "/news/news-phan-tho.jpg"],
+      "phong-thuy": ["/news/news-phong-thuy.jpg", "/news/news-thiet-ke.jpg", "/news/news-bao-gia.jpg"],
+      "thuong-hieu": ["/villas/villa-mansard-rong.jpg", "/news/news-tron-goi.jpg", "/news/news-thiet-ke.jpg"],
+    };
+    const pool = covers[group.id] || covers["xay-dung"];
     return {
       phrase,
       slug,
       group: group.id,
       label: group.label,
       to: group.to,
-      image: studio,
+      image: pool[index % pool.length],
       title: `${phrase[0].toUpperCase()}${phrase.slice(1)} | Việt Dũng Phát`,
       description: `${phrase} — khảo sát, thiết kế, báo giá và thi công tại TP.HCM cùng Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.`.slice(0, 158),
       faqs: [

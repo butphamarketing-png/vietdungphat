@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
+import { isWorkshopProduct, uniqueHouses } from "../lib/studio.js";
 import { KEYWORD_GROUPS } from "../data/keywords.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -12,6 +13,7 @@ export default function ListPage({ kind }) {
   const projects = kind === "projects";
   const [group, setGroup] = useState("all");
   const newsItems = data.items || [];
+  const productItems = kind === "products" ? (data.items || []).filter(isWorkshopProduct) : data.items;
   const filtered = useMemo(() => {
     if (kind !== "news" || group === "all") return newsItems;
     if (group === "goc") return newsItems.filter((p) => p.source !== "keyword");
@@ -26,7 +28,7 @@ export default function ListPage({ kind }) {
       <div className="page-body">
         {projects ? (
           <div className="project-grid" style={{ marginBottom: "2.5rem" }}>
-            {cms.studio.map((p, idx) => (
+            {uniqueHouses(cms.studio).map((p, idx) => (
               <Link key={p.src + idx} className="project-card" to="/mau-nha">
                 <SmartImg src={p.src} alt={p.title} />
                 <span className="num">{String(idx + 1).padStart(2, "0")}</span>
@@ -51,7 +53,7 @@ export default function ListPage({ kind }) {
           </div>
         ) : null}
         <div className={kind === "news" ? "news-grid list" : projects ? "project-grid" : "grid-3"}>
-          {(kind === "news" ? filtered : data.items).map((p, idx) =>
+          {(kind === "news" ? filtered : productItems).map((p, idx) =>
             kind === "news" ? (
               <Link key={p.slug} to={`/${p.slug}`} className="news-card">
                 <SmartImg src={p.image} alt={p.title} />

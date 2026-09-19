@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
-import { homeNeoCards, preferNeoClassic } from "../lib/studio.js";
+import { homeNeoCards, homeWorkshopProducts } from "../lib/studio.js";
+import { homeNewsCards } from "../lib/news-media.js";
 import PriceBoard from "../components/PriceBoard.jsx";
 import BuildCalc from "../components/BuildCalc.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -20,9 +21,11 @@ function BrText({ text }) {
 }
 
 export default function Home() {
-  const { coreServices, news, products, reviews, home } = useCms();
+  const cms = useCms();
+  const { coreServices, news, products, reviews, home } = cms;
   const neoHomes = homeNeoCards();
-  const neoProducts = preferNeoClassic(products).slice(0, 8);
+  const workshopProducts = homeWorkshopProducts(products);
+  const shareNews = homeNewsCards(news);
   return (
     <>
       <HeroVideo />
@@ -61,7 +64,7 @@ export default function Home() {
             Xem thêm mẫu nhà
           </Link>
         </div>
-        <div className="grid-4">
+        <div className="grid-3 homes">
           {neoHomes.map((p) => (
             <Link key={p.src} to={p.slug} className="card">
               <SmartImg src={p.src} alt={p.title} />
@@ -82,7 +85,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid-4">
-          {neoProducts.map((p) => (
+          {workshopProducts.map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="card">
               <SmartImg src={p.image} alt={p.title} />
               <span>{p.title}</span>
@@ -93,9 +96,9 @@ export default function Home() {
 
       <section className="pad about-block">
         <div className="about-collage">
-          <SmartImg className="shot a" src={home.aboutImages?.[0] || "/studio/08.jpg"} alt="Biệt thự tân cổ điển mái mansard" />
-          <SmartImg className="shot b" src={home.aboutImages?.[1] || "/studio/05.jpg"} alt="Nhà phố tân cổ điển mái Thái" />
-          <SmartImg className="shot c" src={home.aboutImages?.[2] || "/studio/12.jpg"} alt="Nhà phố tân cổ điển 4 tầng" />
+          <SmartImg className="shot a" src={home.aboutImages?.[0] || "/villas/villa-mansard-rong.jpg"} alt="Biệt thự tân cổ điển mái mansard" />
+          <SmartImg className="shot b" src={home.aboutImages?.[1] || "/villas/villa-goc-lon.jpg"} alt="Biệt thự tân cổ điển góc sân vườn" />
+          <SmartImg className="shot c" src={home.aboutImages?.[2] || "/villas/villa-cong-lon.jpg"} alt="Biệt thự tân cổ điển mặt tiền rộng" />
           <p className="about-script">Kiến tạo không gian sống bền vững</p>
         </div>
         <div className="about-copy">
@@ -147,7 +150,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="news-cols">
-          {(news.filter((p) => p.source === "keyword").slice(0, 3)).map((p) => (
+          {shareNews.map((p) => (
             <Link key={p.slug} to={`/${p.slug}`} className="news-col">
               <SmartImg src={p.image} alt={p.title} />
               {p.date ? <time>{p.date}</time> : null}

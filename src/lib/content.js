@@ -47,24 +47,44 @@ export const coreServices = [
     title: "Thiết kế",
     slug: "thiet-ke",
     href: "/thiet-ke-kien-truc-ho-chi-minh",
-    image: "/studio/08.jpg",
+    image: "/services/thiet-ke.jpg",
     desc: "Thiết kế kiến trúc và nội thất nhà phố, biệt thự, căn hộ — hồ sơ đầy đủ để thi công.",
   },
   {
     title: "Xây dựng",
     slug: "xay-dung",
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/studio/11.jpg",
+    image: "/services/xay-dung.jpg",
     desc: "Thi công phần thô đến chìa khóa trao tay, giám sát tại công trình, không bán thầu.",
   },
   {
     title: "Cải tạo",
     slug: "cai-tao",
     href: "/bao-gia-sua-chu-nha-tron-goi-2025",
-    image: "/studio/07.jpg",
+    image: "/services/cai-tao.jpg",
     desc: "Sửa chữa, cải tạo, nâng cấp nhà cũ: kết cấu, hoàn thiện và nội thất.",
   },
 ];
+
+const SERVICE_PHOTOS = {
+  "thiet-ke": "/services/thiet-ke.jpg",
+  "xay-dung": "/services/xay-dung.jpg",
+  "cai-tao": "/services/cai-tao.jpg",
+};
+
+export function withServicePhotos(list = coreServices) {
+  return list.map((item) => {
+    const src = String(item.image || "");
+    if (src.startsWith("/services/") || /supabase\.co|r2\.dev|\/media\//i.test(src)) return item;
+    const slug = String(item.slug || "");
+    if (SERVICE_PHOTOS[slug]) return { ...item, image: SERVICE_PHOTOS[slug] };
+    const title = String(item.title || "");
+    if (/thiết kế/i.test(title)) return { ...item, image: SERVICE_PHOTOS["thiet-ke"] };
+    if (/xây dựng/i.test(title)) return { ...item, image: SERVICE_PHOTOS["xay-dung"] };
+    if (/cải tạo/i.test(title)) return { ...item, image: SERVICE_PHOTOS["cai-tao"] };
+    return item;
+  });
+}
 
 export const reviews = [
   {
