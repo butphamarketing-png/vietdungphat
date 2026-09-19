@@ -13,7 +13,7 @@ import {
   useCms,
 } from "../lib/cms.js";
 import { uploadAdminFile } from "../lib/upload.js";
-import { CardList, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, PhotoBox, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
+import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
 const QUICK = [
@@ -295,42 +295,91 @@ export function HomeEditor() {
 }
 
 const KIND_META = {
-  news: { list: "Danh sách Tin tức", edit: "Cập nhật Tin tức", group: "Quản lý bài viết", cat: "Tin tức" },
-  projects: { list: "Danh sách Công trình", edit: "Cập nhật Công trình", group: "Quản lý bài viết", cat: "Công trình" },
-  products: { list: "Danh sách Sản phẩm", edit: "Cập nhật Sản phẩm", group: "Quản lý trang tĩnh", cat: "Sản phẩm" },
-  services: { list: "Danh sách Dịch vụ", edit: "Cập nhật Dịch vụ", group: "Quản lý bài viết", cat: "Dịch vụ" },
+  news: { list: "Danh sách Tin tức", edit: "Chỉnh sửa Tin tức", group: "Quản lý bài viết", cat: "Tin tức" },
+  projects: { list: "Danh sách Công trình", edit: "Chỉnh sửa Công trình", group: "Quản lý bài viết", cat: "Công trình" },
+  products: { list: "Danh sách Sản phẩm", edit: "Chỉnh sửa Sản phẩm", group: "Quản lý trang tĩnh", cat: "Sản phẩm" },
+  services: { list: "Danh sách Dịch vụ", edit: "Chỉnh sửa Dịch vụ", group: "Quản lý bài viết", cat: "Dịch vụ" },
 };
 
-function postToDraft(item) {
-  if (!item) {
-    return {
-      slug: "",
-      title: "",
-      image: "",
-      date: new Date().toLocaleDateString("vi-VN"),
-      html: "",
-      desc: "",
-      seoTitle: "",
-      seoKeywords: "",
-      seoDesc: "",
-      visible: true,
-      featured: false,
-      noindex: false,
-      gallery: [],
-      galleryText: "",
-    };
-  }
+function emptyDraft() {
   return {
+    slug: "",
+    title: "",
+    image: "",
+    date: new Date().toLocaleDateString("vi-VN"),
+    html: "",
+    desc: "",
+    seoTitle: "",
+    seoKeywords: "",
+    seoKeyword: "",
+    seoDesc: "",
+    sortOrder: 1,
+    lockSlug: false,
+    visible: true,
+    featured: false,
+    noindex: false,
+    gallery: [],
+    galleryText: "",
+  };
+}
+
+function postToDraft(item) {
+  if (!item) return emptyDraft();
+  return {
+    ...emptyDraft(),
     ...item,
     desc: item.desc || "",
-    seoTitle: item.seoTitle || item.title || "",
+    seoTitle: item.seoTitle || "",
     seoKeywords: item.seoKeywords || "",
+    seoKeyword: item.seoKeyword || "",
     seoDesc: item.seoDesc || "",
+    sortOrder: item.sortOrder ?? 1,
+    lockSlug: true,
     visible: item.visible !== false,
     featured: !!item.featured,
     noindex: !!item.noindex,
     galleryText: (item.gallery || []).join("\n"),
   };
+}
+
+function wordCount(html) {
+  return String(html || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean).length;
+}
+
+function seoChecks(draft) {
+  const kw = (draft.seoKeyword || "").trim().toLowerCase();
+  const title = (draft.seoTitle || draft.title || "").trim();
+  const desc = (draft.seoDesc || draft.desc || "").trim();
+  const slug = draft.slug || "";
+  const html = draft.html || "";
+  const words = wordCount(html);
+  const hasKw = Boolean(kw);
+  const inTitle = hasKw && title.toLowerCase().includes(kw);
+  const inDesc = hasKw && desc.toLowerCase().includes(kw);
+  const inSlug = hasKw && slug.toLowerCase().includes(kw.replace(/\s+/g, "-"));
+  const inHtml = hasKw && html.toLowerCase().includes(kw);
+  const inH = hasKw && /<h[2-6][^>]*>[\s\S]*?<\/h[2-6]>/i.test(html) && html.toLowerCase().includes(kw);
+  const hasImg = Boolean(draft.image) || /<img/i.test(html);
+  const hasLink = /<a\s/i.test(html);
+  return [
+    { ok: hasKw, text: hasKw ? "Đã đặt Từ khóa tập trung cho nội dung này." : "Đặt Từ khóa tập trung cho nội dung này." },
+    { ok: inTitle, text: hasKw ? (inTitle ? "Từ khóa có trong tiêu đề." : "Thêm từ khóa vào tiêu đề.") : "Chưa có từ khóa để kiểm tra." },
+    { ok: title.length >= 10 && title.length <= 70, text: "Độ dài thẻ tiêu đề ngắn (10 - 70 ký tự)" },
+    { ok: inDesc, text: hasKw ? "Từ khóa có trong mô tả meta SEO." : "Thêm Từ khóa tập trung vào Mô tả meta SEO của bạn." },
+    { ok: desc.length >= 100 && desc.length <= 160, text: "Độ dài thẻ mô tả ngắn từ 100 - 160 kí tự" },
+    { ok: inSlug, text: hasKw ? "Sử dụng từ khóa chính trong URL." : "Sử dụng từ khóa chính trong URL." },
+    { ok: slug.length > 0 && slug.length <= 75, text: "Độ dài URL phù hợp." },
+    { ok: inHtml, text: hasKw ? "Sử dụng từ khóa chính trong nội dung." : "Chưa có từ khóa để kiểm tra." },
+    { ok: words >= 200, text: "Độ dài nội dung phù hợp (600-2500 từ)." },
+    { ok: hasLink, text: "Thêm liên kết nội bộ vào nội dung của bạn." },
+    { ok: inH, text: "Sử dụng từ khóa chính trong (các) tiêu đề phụ như H2, H3, H4, H5, H6." },
+    { ok: hasImg, text: "Thêm hình ảnh hoặc video vào bài viết để làm phong phú nội dung." },
+  ];
 }
 
 function draftToPost(draft) {
@@ -354,7 +403,9 @@ export function PostsEditor({ kind, title, hint }) {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
   const [draft, setDraft] = useState(null);
+  const [origin, setOrigin] = useState(null);
   const [tab, setTab] = useState("vi");
+  const [seoTab, setSeoTab] = useState("vi");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const filtered = useMemo(
@@ -366,9 +417,16 @@ export function PostsEditor({ kind, title, hint }) {
   const rows = filtered.slice((page - 1) * perPage, page * perPage);
 
   function open(item) {
-    setDraft(postToDraft(item));
+    const next = postToDraft(item);
+    setDraft(next);
+    setOrigin(next);
     setTab("vi");
+    setSeoTab("vi");
     setMessage("");
+  }
+
+  function setTitle(v) {
+    setDraft((d) => ({ ...d, title: v, slug: d.lockSlug ? d.slug : slugify(v) }));
   }
 
   async function persistDraft(stay) {
@@ -393,78 +451,108 @@ export function PostsEditor({ kind, title, hint }) {
   if (draft) {
     const seoTitle = draft.seoTitle || draft.title;
     const seoDesc = draft.seoDesc || draft.desc;
+    const checks = seoChecks(draft);
     return (
-      <div className="adminbp-edit">
+      <div className="adminbp-cazo">
         <EditToolbar
-          title={draft.slug ? meta.edit : `Thêm mới ${meta.cat}`}
           crumbs={[
             { to: "/adminbp", label: "Bảng điều khiển" },
-            { to: listPath, label: meta.group },
-            { label: draft.slug ? meta.edit : `Thêm mới ${meta.cat}` },
+            { label: meta.edit },
           ]}
           saving={saving}
           message={message}
           onSave={() => persistDraft(false)}
           onSaveStay={() => persistDraft(true)}
+          onReset={() => {
+            setDraft(origin || emptyDraft());
+            setMessage("");
+          }}
           onExit={() => setDraft(null)}
         />
-        <section className="adminbp-edit-card">
+
+        <section className="adminbp-vcard">
+          <h2>Đường dẫn</h2>
+          <SwitchField
+            label="Thay đổi đường dẫn theo tiêu đề mới:"
+            checked={!draft.lockSlug}
+            onChange={(v) => setDraft({ ...draft, lockSlug: !v, slug: !v ? draft.slug : slugify(draft.title) })}
+          />
+          <p className="adminbp-slug-sample">
+            Đường dẫn mẫu (vi): https://www.vietdungphat.com/{draft.slug || slugify(draft.title)}
+          </p>
+          <Field label="Link đường dẫn (vi)" value={draft.slug} onChange={(v) => setDraft({ ...draft, slug: v, lockSlug: true })} />
+        </section>
+
+        <section className="adminbp-vcard">
+          <h2>Nội dung {meta.cat}</h2>
+          <Tabs value={tab} onChange={setTab} tabs={[{ id: "vi", label: "Tiếng Việt" }]} />
+          <Field label="Tiêu đề (vi):" value={draft.title} onChange={setTitle} />
+          <Field label="Mô tả (vi):" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v })} multiline rows={5} />
+          <HtmlEditor label="Nội dung (vi):" value={draft.html} onChange={(v) => setDraft({ ...draft, html: v })} />
+        </section>
+
+        <section className="adminbp-vcard">
+          <h2>Hình ảnh {meta.cat}</h2>
+          <CazoDropzone value={draft.image} onChange={(v) => setDraft({ ...draft, image: v })} />
+          <Field
+            label="Album (mỗi dòng 1 URL)"
+            value={draft.galleryText}
+            onChange={(v) => setDraft({ ...draft, galleryText: v })}
+            multiline
+            rows={4}
+          />
+        </section>
+
+        <section className="adminbp-vcard">
+          <h2>Thông tin {meta.cat}</h2>
+          <div className="adminbp-info-row">
+            <Field label="Số thứ tự" type="number" value={String(draft.sortOrder ?? 1)} onChange={(v) => setDraft({ ...draft, sortOrder: Number(v) || 0 })} />
+            <Field label="Ngày đăng" value={draft.date} onChange={(v) => setDraft({ ...draft, date: v })} />
+          </div>
+          <div className="adminbp-flags">
+            <SwitchField label="Hiển thị" checked={draft.visible} onChange={(v) => setDraft({ ...draft, visible: v })} />
+            <SwitchField label="Nổi bật" checked={draft.featured} onChange={(v) => setDraft({ ...draft, featured: v })} />
+          </div>
+        </section>
+
+        <section className="adminbp-vcard">
+          <h2>Nội dung SEO</h2>
           <Tabs
-            value={tab}
-            onChange={setTab}
+            value={seoTab}
+            onChange={setSeoTab}
             tabs={[
               { id: "vi", label: "Tiếng Việt" },
-              { id: "seo", label: "SEO" },
+              { id: "robots", label: "Robots meta tag" },
             ]}
           />
-          <div className="adminbp-edit-split">
-            <div className="adminbp-edit-main">
-              {tab === "vi" ? (
-                <>
-                  <label className="adminbp-field">
-                    <span>Danh mục</span>
-                    <select value={kind} disabled>
-                      <option value={kind}>{meta.cat}</option>
-                    </select>
-                  </label>
-                  <Field label="Tiêu đề" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v, slug: draft.slug || slugify(v) })} />
-                  <Field label="Tên không dấu" value={draft.slug} onChange={(v) => setDraft({ ...draft, slug: v })} />
-                  <Field label="Mô tả" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v })} multiline rows={4} />
-                  <HtmlEditor label="Nội dung" value={draft.html} onChange={(v) => setDraft({ ...draft, html: v })} />
-                </>
-              ) : (
-                <div className="adminbp-seo">
-                  <Field label="Title" value={draft.seoTitle} onChange={(v) => setDraft({ ...draft, seoTitle: v })} />
-                  <Field label="Keywords" value={draft.seoKeywords} onChange={(v) => setDraft({ ...draft, seoKeywords: v })} />
-                  <Field label="Description" value={draft.seoDesc} onChange={(v) => setDraft({ ...draft, seoDesc: v })} multiline rows={5} />
-                  <article className="adminbp-seo-preview">
-                    <small>Google preview</small>
-                    <a href={`/${draft.slug || ""}`} target="_blank" rel="noreferrer">
-                      {seoTitle || "Tiêu đề bài viết"}
-                    </a>
-                    <em>https://www.vietdungphat.com/{draft.slug || ""}</em>
-                    <p>{seoDesc || "Mô tả hiển thị trên Google khi bài được index."}</p>
-                  </article>
-                </div>
-              )}
+          {seoTab === "vi" ? (
+            <>
+              <Field label="SEO Title (vi):" value={draft.seoTitle} onChange={(v) => setDraft({ ...draft, seoTitle: v })} />
+              <Field label="SEO Keywords (vi):" value={draft.seoKeywords} onChange={(v) => setDraft({ ...draft, seoKeywords: v })} />
+              <Field label="SEO Description (vi):" value={draft.seoDesc} onChange={(v) => setDraft({ ...draft, seoDesc: v })} multiline rows={4} />
+              <Field label="Keyword chính (vi):" value={draft.seoKeyword} onChange={(v) => setDraft({ ...draft, seoKeyword: v })} />
+              <ul className="adminbp-seo-checks">
+                {checks.map((c) => (
+                  <li key={c.text} className={c.ok ? "is-ok" : "is-bad"}>
+                    {c.text}
+                  </li>
+                ))}
+              </ul>
+              <article className="adminbp-seo-preview">
+                <small>Khi lên top, page này sẽ hiển thị theo dạng mẫu như sau:</small>
+                <a href={`/${draft.slug || ""}`} target="_blank" rel="noreferrer">
+                  {seoTitle || "Tiêu đề bài viết"}
+                </a>
+                <em>https://www.vietdungphat.com/{draft.slug || ""}</em>
+                <p>{seoDesc || "Mô tả hiển thị trên Google khi bài được index."}</p>
+              </article>
+            </>
+          ) : (
+            <div className="adminbp-flags">
+              <SwitchField label="Index" checked={!draft.noindex} onChange={(v) => setDraft({ ...draft, noindex: !v })} />
+              <SwitchField label="No Index" checked={draft.noindex} onChange={(v) => setDraft({ ...draft, noindex: v })} />
             </div>
-            <aside className="adminbp-edit-side">
-              <PhotoBox label="Hình ảnh" hint="Width: 800 px — Height: 560 px" value={draft.image} onChange={(v) => setDraft({ ...draft, image: v })} />
-              <div className="adminbp-photobox">
-                <header>
-                  <strong>Album</strong>
-                  <small>Mỗi dòng 1 URL</small>
-                </header>
-                <textarea rows={5} value={draft.galleryText} onChange={(e) => setDraft({ ...draft, galleryText: e.target.value })} placeholder="https://…" />
-              </div>
-              <Field label="Ngày đăng" value={draft.date} onChange={(v) => setDraft({ ...draft, date: v })} />
-              <div className="adminbp-flags">
-                <SwitchField label="Hiển thị" checked={draft.visible} onChange={(v) => setDraft({ ...draft, visible: v })} />
-                <SwitchField label="Nổi bật" checked={draft.featured} onChange={(v) => setDraft({ ...draft, featured: v })} />
-                <SwitchField label="Noindex" checked={draft.noindex} onChange={(v) => setDraft({ ...draft, noindex: v })} />
-              </div>
-            </aside>
-          </div>
+          )}
         </section>
       </div>
     );

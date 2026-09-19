@@ -173,26 +173,29 @@ export function Crumbs({ items }) {
   );
 }
 
-export function EditToolbar({ title, crumbs, onSave, onSaveStay, onExit, saving, message }) {
+export function EditToolbar({ title, crumbs, onSave, onSaveStay, onReset, onExit, saving, message }) {
   return (
-    <div className="adminbp-edit-toolbar">
-      <div className="adminbp-edit-toolbar-row">
-        <h1>{title}</h1>
-        <div className="adminbp-edit-tools">
-          <button type="button" className="adminbp-btn is-success" disabled={saving} onClick={onSave}>
-            {saving ? "Đang lưu…" : "Lưu"}
-          </button>
-          {onSaveStay ? (
-            <button type="button" className="adminbp-btn is-warning" disabled={saving} onClick={onSaveStay}>
-              Lưu không thoát
-            </button>
-          ) : null}
-          <button type="button" className="adminbp-btn is-danger" disabled={saving} onClick={onExit}>
-            Thoát
-          </button>
-        </div>
-      </div>
+    <div className="adminbp-cazo-head">
       {crumbs ? <Crumbs items={crumbs} /> : null}
+      {title ? <h1 className="adminbp-cazo-title">{title}</h1> : null}
+      <div className="adminbp-cazo-tools">
+        <button type="button" className="adminbp-pill is-gold" disabled={saving} onClick={onSave}>
+          {saving ? "Đang lưu…" : "Lưu"}
+        </button>
+        {onSaveStay ? (
+          <button type="button" className="adminbp-pill is-gold" disabled={saving} onClick={onSaveStay}>
+            Lưu tại trang
+          </button>
+        ) : null}
+        {onReset ? (
+          <button type="button" className="adminbp-pill is-gold" disabled={saving} onClick={onReset}>
+            Làm lại
+          </button>
+        ) : null}
+        <button type="button" className="adminbp-pill is-rose" disabled={saving} onClick={onExit}>
+          Thoát
+        </button>
+      </div>
       {message ? <p className="adminbp-edit-msg">{message}</p> : null}
     </div>
   );
@@ -206,6 +209,46 @@ export function Tabs({ tabs, value, onChange }) {
           {tab.label}
         </button>
       ))}
+    </div>
+  );
+}
+
+export function CazoDropzone({ value, onChange, hint = "Width: 800 px - Height: 560 px (.jpg|.gif|.png|.jpeg|.JPG|.PNG|.JPEG|.GIF)" }) {
+  async function upload(file) {
+    if (!file) return;
+    try {
+      const item = await uploadAdminFile(file);
+      onChange(item.url);
+    } catch (err) {
+      alert(err.message || "Upload thất bại. Kiểm tra đăng nhập và Supabase.");
+    }
+  }
+  function onFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    upload(file);
+  }
+  function onDrop(e) {
+    e.preventDefault();
+    upload(e.dataTransfer.files?.[0]);
+  }
+  return (
+    <div className="adminbp-dropzone" onDragOver={(e) => e.preventDefault()} onDrop={onDrop}>
+      {value ? <img src={value} alt="" /> : null}
+      <div className="adminbp-dropzone-empty">
+        <span>Kéo và thả hình vào đây</span>
+        <small>hoặc</small>
+        <label className="adminbp-pill is-ghost">
+          Chọn hình
+          <input type="file" accept="image/*" hidden onChange={onFile} />
+        </label>
+      </div>
+      <p>{hint}</p>
+      {value ? (
+        <button type="button" className="adminbp-pill is-rose" onClick={() => onChange("")}>
+          Xóa hình
+        </button>
+      ) : null}
     </div>
   );
 }

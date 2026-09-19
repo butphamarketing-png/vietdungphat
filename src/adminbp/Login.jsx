@@ -1,19 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { login } from "../lib/cms.js";
 import { BP_LOGIN } from "./bp-login.js";
-import {
-  BpMark,
-  IconArrow,
-  IconEye,
-  IconEyeOff,
-  IconLock,
-  IconMail,
-  IconShield,
-  IconSpark,
-  IconStar,
-  promoIcons,
-} from "./icons.jsx";
+import { BpMark, IconEye, IconEyeOff } from "./icons.jsx";
+
+const SLIDES = [
+  {
+    title: "Giải pháp",
+    accent: "QUẢN LÝ WEBSITE",
+    points: ["Cập nhật nội dung trang chủ", "Thư viện ảnh và bài viết", "Đặt lịch khách hàng"],
+  },
+  {
+    title: "Dịch vụ",
+    accent: "BỨT PHÁ MARKETING",
+    points: BP_LOGIN.services.map((s) => s.title),
+  },
+  {
+    title: "Hỗ trợ",
+    accent: "KỸ THUẬT & HOTLINE",
+    points: ["Hotline 093.741.7982", "butphamarketing.com", "butphamarketing@gmail.com"],
+  },
+];
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -22,6 +29,12 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 5000);
+    return () => window.clearInterval(id);
+  }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -34,152 +47,81 @@ export default function AdminLogin() {
     navigate(search.get("next") || "/adminbp", { replace: true });
   }
 
+  const current = SLIDES[slide];
+
   return (
-    <div className="login-screen">
-      <div className="login-layout">
-        <section className="login-panel">
-          <div className="login-panel-main">
-            <div className="login-panel-head">
-              <div className="login-logo-row">
-                <BpMark />
-                <div>
-                  <strong className="login-bp-name">BỨT PHÁ MARKETING</strong>
-                  <small>CMS KHÁCH HÀNG</small>
-                </div>
-              </div>
-              <p className="login-kicker">
-                <IconStar />
-                KHU VỰC QUẢN TRỊ HỆ THỐNG
-              </p>
-              <h1>Đăng nhập CMS</h1>
-              <p className="login-desc">
-                {BP_LOGIN.formDescriptionBefore} <strong>{BP_LOGIN.clientName}</strong> {BP_LOGIN.formDescriptionAfter}
-              </p>
+    <div className="vns-login">
+      <div className="vns-login-flex">
+        <section className="vns-login-box">
+          <span />
+          <span />
+          <span />
+          <span />
+          <form className="vns-login-form" onSubmit={onSubmit}>
+            <div className="vns-login-logo">
+              <BpMark className="login-bp-logo" />
+              <strong>BỨT PHÁ MARKETING</strong>
+              <small>CMS khách hàng · {BP_LOGIN.clientName}</small>
             </div>
-            <form className="login-form" onSubmit={onSubmit}>
-              <label className="field-label" htmlFor="loginEmail">
-                Email quản trị
-              </label>
-              <div className="field-wrap">
-                <span className="field-icon" aria-hidden>
-                  <IconMail />
-                </span>
-                <input
-                  id="loginEmail"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="username"
-                  required
-                />
-              </div>
-              <label className="field-label" htmlFor="loginPassword">
-                Mật khẩu
-              </label>
-              <div className="field-wrap">
-                <span className="field-icon" aria-hidden>
-                  <IconLock />
-                </span>
-                <input
-                  id="loginPassword"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                  required
-                />
-                <button
-                  type="button"
-                  className="field-toggle"
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  onClick={() => setShowPassword((v) => !v)}
-                >
-                  {showPassword ? <IconEyeOff /> : <IconEye />}
-                </button>
-              </div>
-              {error ? (
-                <p className="login-error" role="alert">
-                  {error}
-                </p>
-              ) : (
-                <p className="login-desc" style={{ margin: 0 }}>
-                  Email: {BP_LOGIN.emailPlaceholder}
-                </p>
-              )}
-              <button type="submit" className="btn-login">
-                <span>Đăng nhập CMS</span>
-                <span className="btn-login-arrow" aria-hidden>
-                  <IconArrow />
-                </span>
+            <h1>Đăng nhập</h1>
+            <div className="vns-field is-user">
+              <input
+                type="email"
+                name="username"
+                placeholder="Tài khoản"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                required
+              />
+            </div>
+            <div className="vns-field is-pass">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Mật khẩu"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="vns-eye"
+                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? <IconEyeOff /> : <IconEye />}
               </button>
-            </form>
-          </div>
-          <p className="login-copy">
-            <IconShield />
-            <span>
-              © Bứt Phá Marketing · {BP_LOGIN.clientName}
-            </span>
-          </p>
+            </div>
+            {error ? <p className="vns-error">{error}</p> : null}
+            <button type="submit">Đăng nhập</button>
+            <div className="vns-web">
+              <a href="/" target="_blank" rel="noreferrer">
+                Truy cập trang web
+              </a>
+            </div>
+            <p className="vns-note">
+              Trong trường hợp có vấn đề vui lòng liên hệ hotline: <strong>093.741.7982</strong> để được hỗ trợ
+            </p>
+          </form>
         </section>
-        <aside className="login-promo">
-          <div className="login-promo-blobs" aria-hidden>
-            <span className="login-blob login-blob--violet" />
-            <span className="login-blob login-blob--indigo" />
-          </div>
-          <div className="login-promo-inner">
-            <div className="promo-brand">
-              <BpMark />
+        <aside className="vns-login-slide">
+          <div className="vns-login-slide-inner">
+            <button type="button" className="vns-nav prev" aria-label="Trước" onClick={() => setSlide((s) => (s + SLIDES.length - 1) % SLIDES.length)} />
+            <article className="vns-card">
               <div>
-                <strong>BỨT PHÁ MARKETING</strong>
-                <small>DÀNH CHO KHÁCH HÀNG</small>
+                <BpMark className="login-bp-logo" />
+                <p>{current.title}</p>
+                <h2>{current.accent}</h2>
+                <ul>
+                  {current.points.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
               </div>
-            </div>
-            <h2>
-              {BP_LOGIN.heroLines[0]}
-              <br />
-              {BP_LOGIN.heroLines[1]}
-            </h2>
-            <p className="promo-lead">{BP_LOGIN.heroLead}</p>
-            <div className="promo-contacts">
-              {BP_LOGIN.contacts.map((c) => {
-                const Icon = promoIcons[c.icon];
-                return (
-                  <a key={c.key} className="promo-chip" href={c.href} target="_blank" rel="noreferrer">
-                    <span className="promo-chip-ico" aria-hidden>
-                      <Icon />
-                    </span>
-                    <span>
-                      <small>{c.label}</small>
-                      <strong>{c.value}</strong>
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
-            <p className="promo-section-title">DỊCH VỤ CỦA CHÚNG TÔI</p>
-            <div className="promo-services">
-              {BP_LOGIN.services.map((s) => {
-                const Icon = promoIcons[s.icon];
-                return (
-                  <a key={s.title} className="promo-service" href={s.href} target="_blank" rel="noreferrer">
-                    <span className="promo-service-ico" aria-hidden>
-                      <Icon />
-                    </span>
-                    <span>
-                      <strong>{s.title}</strong>
-                      <small>{s.desc}</small>
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
-            <footer className="promo-footer">
-              <span className="promo-powered">
-                <IconSpark />
-                Powered by Bứt Phá Marketing
-              </span>
-              <span className="promo-version">{BP_LOGIN.version}</span>
-            </footer>
+            </article>
+            <button type="button" className="vns-nav next" aria-label="Sau" onClick={() => setSlide((s) => (s + 1) % SLIDES.length)} />
           </div>
         </aside>
       </div>
