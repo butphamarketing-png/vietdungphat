@@ -1,3 +1,5 @@
+import { villaSrcs } from "../lib/studio.js";
+
 function slugify(text) {
   return String(text)
     .normalize("NFD")
@@ -181,26 +183,7 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
     const slug = slugify(phrase);
     const covers = {
       "xay-dung": ["/news/news-tron-goi.jpg", "/news/news-phan-tho.jpg", "/villas/neo-01.jpg", "/villas/neo-07.jpg", "/villas/villa-cong-lon.jpg"],
-      "tan-co-dien": [
-        "/villas/villa-mansard-rong.jpg",
-        "/villas/villa-goc-lon.jpg",
-        "/villas/villa-cong-lon.jpg",
-        "/villas/neo-01.jpg",
-        "/villas/neo-02.jpg",
-        "/villas/neo-03.jpg",
-        "/villas/neo-04.jpg",
-        "/villas/neo-05.jpg",
-        "/villas/neo-06.jpg",
-        "/villas/neo-07.jpg",
-        "/villas/neo-08.jpg",
-        "/villas/neo-09.jpg",
-        "/villas/neo-10.jpg",
-        "/villas/neo-11.jpg",
-        "/villas/neo-12.jpg",
-        "/villas/neo-13.jpg",
-        "/villas/neo-14.jpg",
-        "/villas/neo-15.jpg",
-      ],
+      "tan-co-dien": villaSrcs,
       "thiet-ke": ["/news/news-thiet-ke.jpg", "/villas/neo-02.jpg", "/villas/neo-08.jpg", "/villas/neo-10.jpg"],
       "cai-tao": ["/news/news-cai-tao.jpg", "/news/news-phan-tho.jpg", "/villas/neo-14.jpg"],
       "noi-that": ["/interior/noi-that-tan-co-dien.jpg", "/interior/combo-can-ho.jpg", "/interior/tu-quan-ao.jpg"],
