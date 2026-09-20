@@ -47,35 +47,35 @@ export const coreServices = [
     title: "Thiết kế",
     slug: "thiet-ke",
     href: "/thiet-ke-kien-truc-ho-chi-minh",
-    image: "/services/thiet-ke.jpg",
+    image: "/villas/khach-09.jpg",
     desc: "Thiết kế kiến trúc và nội thất nhà phố, biệt thự, căn hộ — hồ sơ đầy đủ để thi công.",
   },
   {
     title: "Xây dựng",
     slug: "xay-dung",
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/services/xay-dung.jpg",
+    image: "/villas/khach-05.jpg",
     desc: "Thi công phần thô đến chìa khóa trao tay, giám sát tại công trình, không bán thầu.",
   },
   {
     title: "Cải tạo",
     slug: "cai-tao",
     href: "/bao-gia-sua-chu-nha-tron-goi-2025",
-    image: "/services/cai-tao.jpg",
+    image: "/villas/khach-08.jpg",
     desc: "Sửa chữa, cải tạo, nâng cấp nhà cũ: kết cấu, hoàn thiện và nội thất.",
   },
 ];
 
 const SERVICE_PHOTOS = {
-  "thiet-ke": "/services/thiet-ke.jpg",
-  "xay-dung": "/services/xay-dung.jpg",
-  "cai-tao": "/services/cai-tao.jpg",
+  "thiet-ke": "/villas/khach-09.jpg",
+  "xay-dung": "/villas/khach-05.jpg",
+  "cai-tao": "/villas/khach-08.jpg",
 };
 
 export function withServicePhotos(list = coreServices) {
   return list.map((item) => {
     const src = String(item.image || "");
-    if (src.startsWith("/services/") || /supabase\.co|r2\.dev|\/media\//i.test(src)) return item;
+    if (/supabase\.co|r2\.dev|\/media\//i.test(src)) return item;
     const slug = String(item.slug || "");
     if (SERVICE_PHOTOS[slug]) return { ...item, image: SERVICE_PHOTOS[slug] };
     const title = String(item.title || "");
@@ -119,7 +119,7 @@ export const pricePacks = [
       "Giám sát quá trình thi công",
     ],
     href: "/don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022",
-    image: "/news/news-phan-tho.jpg",
+    image: "/villas/khach-06.jpg",
   },
   {
     tag: "Hoàn thiện",
@@ -135,7 +135,7 @@ export const pricePacks = [
       "Chính sách bảo hành",
     ],
     href: "/thiet-ke-noi-that-nha-o",
-    image: "/villas/neo-13.jpg",
+    image: "/villas/khach-07.jpg",
   },
   {
     tag: "Trọn gói",
@@ -153,6 +153,22 @@ export const pricePacks = [
       "Bảo hành dài hạn",
     ],
     href: "/xay-dung-nha-tron-goi-tai-ho-chi-minh",
-    image: "/villas/neo-02.jpg",
+    image: "/villas/khach-04.jpg",
   },
 ];
+
+const PRICE_PHOTOS = {
+  "Phần thô": "/villas/khach-06.jpg",
+  "Hoàn thiện": "/villas/khach-07.jpg",
+  "Trọn gói": "/villas/khach-04.jpg",
+};
+
+export function withPricePhotos(list = pricePacks) {
+  return list.map((item) => {
+    const src = String(item.image || "");
+    if (/supabase\.co|r2\.dev|\/media\//i.test(src)) return item;
+    const tag = String(item.tag || "");
+    if (PRICE_PHOTOS[tag]) return { ...item, image: PRICE_PHOTOS[tag] };
+    return item;
+  });
+}

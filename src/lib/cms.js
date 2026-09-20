@@ -10,6 +10,7 @@ import {
   reviews as defaultReviews,
   site as defaultSite,
   withServicePhotos,
+  withPricePhotos,
 } from "./content.js";
 
 const STORAGE = "vdp-cms-v1";
@@ -324,7 +325,7 @@ export function getCms() {
     extras,
     coreServices: withServicePhotos(overlay.coreServices || defaultCoreServices),
     reviews: overlay.reviews || defaultReviews,
-    pricePacks: overlay.pricePacks || defaultPricePacks,
+    pricePacks: withPricePhotos(overlay.pricePacks || defaultPricePacks),
     studio,
     home,
     stats: overlay.stats || defaultStats,
