@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { KEYWORDS } from "../src/data/keywords.js";
+import { KEYWORDS, keywordNewsPath } from "../src/data/keywords.js";
 import keywordNews from "../src/data/keyword-news.json" with { type: "json" };
 
 const host = "https://www.vietdungphat.com";
@@ -14,7 +14,7 @@ const kept = xml.split(/\r?\n/).filter((l) => {
 });
 const extra = [
   `  <url><loc>${host}/tu-khoa</loc></url>`,
-  ...KEYWORDS.map((k) => `  <url><loc>${host}/tu-khoa/${k.slug}</loc></url>`),
+  ...KEYWORDS.map((k) => `  <url><loc>${host}${keywordNewsPath(k)}</loc></url>`),
   ...keywordNews.map((p) => `  <url><loc>${host}/${p.slug}</loc></url>`),
 ];
 writeFileSync(
@@ -25,4 +25,4 @@ ${[...kept, ...extra].join("\n")}
 </urlset>
 `,
 );
-console.log("kept", kept.length, "keyword hub+pages", KEYWORDS.length + 1, "news", keywordNews.length);
+console.log("kept", kept.length, "keyword hub", 1, "news paths", KEYWORDS.length, "news posts", keywordNews.length);

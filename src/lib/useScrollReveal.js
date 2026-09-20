@@ -1,38 +1,42 @@
 import { useEffect } from "react";
 import { useCms } from "./cms.js";
 
-const BLOCKS = [
-  "main section:not(.hero)",
+/** Từng khối ảnh/chữ, không fade cả section lớn — hiện đúng chỗ đang lướt tới. */
+const ITEMS = [
+  "main .services-intro",
+  "main .service-card",
+  "main .section-head",
+  "main .price-head",
+  "main .price-script",
+  "main .price-card",
+  "main .card",
+  "main .news-col",
+  "main .review-card",
+  "main .about-collage .shot",
+  "main .about-copy",
+  "main .about-script",
+  "main .stats > div",
+  "main .booking-visual",
+  "main .booking-form",
+  "main .calc-block .section-head",
+  "main .calc-note",
+  "main .calc-form",
+  "main .calc-result",
   "main .page-hero",
   "main .page-body",
-  "main .about-layout",
-  "main .loban-tool",
-  "main .loban-guide",
-  "main .related",
   "main .article-cover",
   "main .article-body",
+  "main .related",
+  "main .contact-grid > *",
+  "main .loban-tool",
+  "main .loban-guide",
   ".footer",
 ].join(", ");
 
-const KIDS = [
-  ".service-cards",
-  ".project-grid",
-  ".review-grid",
-  ".grid-4",
-  ".news-cols",
-  ".stats",
-  ".price-cards",
-  ".grid-3",
-  ".news-grid",
-  ".calc-form",
-  ".article-gallery",
-  ".contact-grid",
-].join(", ");
-
-function visibleEnough(el) {
+function inView(el) {
   const rect = el.getBoundingClientRect();
   const vh = window.innerHeight || 1;
-  return rect.top < vh * 0.82 && rect.bottom > 72;
+  return rect.top < vh * 0.88 && rect.bottom > 48;
 }
 
 export function useScrollReveal(pathname) {
@@ -43,9 +47,8 @@ export function useScrollReveal(pathname) {
     let cancelled = false;
     const frame = window.requestAnimationFrame(() => {
       if (cancelled) return;
-      const blocks = [...document.querySelectorAll(BLOCKS)].filter((el) => !el.closest(".adminbp-root"));
-      blocks.forEach((el) => el.classList.add("reveal"));
-      document.querySelectorAll(KIDS).forEach((el) => el.classList.add("reveal-kids"));
+      const items = [...document.querySelectorAll(ITEMS)].filter((el) => !el.closest(".adminbp-root"));
+      items.forEach((el) => el.classList.add("reveal"));
 
       const reveal = (el) => {
         if (el.classList.contains("is-in")) return;
@@ -56,14 +59,14 @@ export function useScrollReveal(pathname) {
       io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting && visibleEnough(entry.target)) reveal(entry.target);
+            if (entry.isIntersecting && inView(entry.target)) reveal(entry.target);
           });
         },
-        { threshold: [0.12, 0.2], rootMargin: "0px 0px -10% 0px" },
+        { threshold: [0.08, 0.18, 0.32], rootMargin: "0px 0px -12% 0px" },
       );
 
-      blocks.forEach((el) => {
-        if (visibleEnough(el)) reveal(el);
+      items.forEach((el) => {
+        if (inView(el)) reveal(el);
         else io.observe(el);
       });
     });

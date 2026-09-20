@@ -22,9 +22,9 @@ const KINDS = ["projects", "products", "services", "news", "extras"];
 export const defaultAccount = { email: "admin@vietdungphat.com", password: "vietdungphat.com" };
 
 export const defaultHome = {
-  kicker: "Thiết kế · Xây dựng · Cải tạo",
-  title1: "Kiến tạo không gian",
-  title2: "sống bền vững",
+  kicker: "Kiến tạo không gian sống bền vững",
+  title1: "Thiết kế xây nhà tân cổ điển",
+  title2: "tại TP.HCM",
   cta1: "Đặt lịch khảo sát",
   cta2: "Xem mẫu nhà",
   video: "/hero.mp4?v=client",
@@ -303,6 +303,11 @@ export function getCms() {
   const extras = mergePosts("extras");
   const listsMeta = overlay.listsMeta || {};
   const home = { ...defaultHome, ...(overlay.home || {}) };
+  if (/kiến tạo không gian/i.test(String(home.title1 || ""))) {
+    home.title1 = defaultHome.title1;
+    home.title2 = defaultHome.title2;
+    if (!home.kicker || /thiết kế · xây dựng/i.test(String(home.kicker))) home.kicker = defaultHome.kicker;
+  }
   if ((home.aboutImages || []).some((src) => /\/studio\//.test(String(src)))) {
     home.aboutImages = defaultHome.aboutImages;
   }

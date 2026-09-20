@@ -4,6 +4,7 @@ import BookingPopup from "./BookingPopup.jsx";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
 import { applySeo, pageSeoFromCms } from "../lib/seo.js";
 import { useScrollReveal } from "../lib/useScrollReveal.js";
+import { trackPageView } from "../lib/track.js";
 import { useEffect, useState } from "react";
 
 const links = [
@@ -62,6 +63,8 @@ export default function Layout() {
       }),
       site,
     });
+    const timer = window.setTimeout(() => trackPageView(location.pathname), 120);
+    return () => window.clearTimeout(timer);
   }, [location.pathname, cms, cmsHome, site]);
 
   return (
@@ -125,17 +128,17 @@ export default function Layout() {
             </div>
             <div className="socials">
               {site.facebook ? (
-                <a href={site.facebook} target="_blank" rel="noreferrer">
+                <a href={site.facebook} target="_blank" rel="noopener noreferrer">
                   Facebook
                 </a>
               ) : null}
               {site.zalo ? (
-                <a href={site.zalo} target="_blank" rel="noreferrer">
+                <a href={site.zalo} target="_blank" rel="noopener noreferrer">
                   Zalo
                 </a>
               ) : null}
               {site.youtube ? (
-                <a href={site.youtube} target="_blank" rel="noreferrer">
+                <a href={site.youtube} target="_blank" rel="noopener noreferrer">
                   YouTube
                 </a>
               ) : null}

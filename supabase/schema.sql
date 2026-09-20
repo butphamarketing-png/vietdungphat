@@ -58,3 +58,19 @@ drop policy if exists "media_bucket_public_read" on storage.objects;
 create policy "media_bucket_public_read"
   on storage.objects for select
   using (bucket_id = 'media');
+
+-- Lượt truy cập khách hàng (ghi bằng service role, không public)
+create table if not exists public.page_views (
+  id bigint generated always as identity primary key,
+  path text not null,
+  title text not null default '',
+  referrer text not null default '',
+  session_id text not null default '',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists page_views_created_at_idx on public.page_views (created_at desc);
+create index if not exists page_views_path_idx on public.page_views (path);
+create index if not exists page_views_session_idx on public.page_views (session_id);
+
+alter table public.page_views enable row level security;

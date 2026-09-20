@@ -8,6 +8,8 @@ export const PAGE_SEO = {
     title: "Thiết kế xây nhà tân cổ điển TP.HCM | Việt Dũng Phát",
     description:
       "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng phần thô, nhà trọn gói và cải tạo nhà ở tại TP.HCM. 20 năm kinh nghiệm, báo giá minh bạch.",
+    keywords:
+      "thiết kế nhà tân cổ điển, xây nhà trọn gói tphcm, xây nhà phần thô, cải tạo nhà tphcm, việt dũng phát",
   },
   "/gioi-thieu": {
     title: "Giới thiệu Việt Dũng Phát | 20 năm kiến trúc và xây dựng",
@@ -170,6 +172,25 @@ export function localBusinessJson(site = {}, extras = {}) {
     areaServed: ["TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai"],
     priceRange: "$$",
     inLanguage: "vi-VN",
+    knowsAbout: [
+      "Thiết kế nhà tân cổ điển",
+      "Xây nhà trọn gói",
+      "Xây nhà phần thô",
+      "Cải tạo nhà",
+      "Nội thất tân cổ điển",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: phone ? `+84${phone.replace(/^0/, "")}` : "+84984444504",
+      contactType: "customer service",
+      areaServed: "VN",
+      availableLanguage: "Vietnamese",
+    },
+    makesOffer: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Thiết kế kiến trúc và nội thất" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Xây dựng nhà phố, biệt thự" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cải tạo nhà" } },
+    ],
   };
   if (extras.reviews?.length) {
     json.aggregateRating = {
@@ -195,13 +216,14 @@ export function pageSeoFromCms(pathname, cms) {
     return {
       title: staticPage.title,
       description: staticPage.description,
+      keywords: staticPage.keywords,
       path,
       image: path === "/" ? cms.home?.poster || DEFAULT_OG : DEFAULT_OG,
       type: "website",
       reviews: path === "/" ? cms.reviews : undefined,
       breadcrumbs:
         path === "/"
-          ? [{ name: "Trang chủ", path: "/" }]
+          ? []
           : [
               { name: "Trang chủ", path: "/" },
               { name: staticPage.title.split("|")[0].trim(), path },
@@ -286,8 +308,8 @@ export function pageSeoFromCms(pathname, cms) {
   };
 }
 
-export function injectSeoIntoHtml(html, { title, description, path, image, type = "website" }) {
-  const url = pageUrl(path);
+export function injectSeoIntoHtml(html, { title, description, path, image, type = "website", noindex = false, keywords }) {
+  const url = path ? pageUrl(path) : "";
   const img = absolutize(image);
   const esc = escapeAttr;
   let out = html;
@@ -297,24 +319,48 @@ export function injectSeoIntoHtml(html, { title, description, path, image, type 
     `<meta name="description" content="${esc(description)}" />`,
   );
   const tags = [
+    ["name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"],
+    ["name", "twitter:card", "summary_large_image"],
     ["property", "og:type", type],
+    ["property", "og:locale", "vi_VN"],
+    ["property", "og:site_name", "Việt Dũng Phát"],
     ["property", "og:title", title],
     ["property", "og:description", description],
-    ["property", "og:url", url],
     ["property", "og:image", img],
+    ["property", "og:image:alt", title],
+    ["property", "og:image:width", "1200"],
+    ["property", "og:image:height", "630"],
     ["name", "twitter:title", title],
     ["name", "twitter:description", description],
     ["name", "twitter:image", img],
   ];
+  if (url) {
+    tags.push(["property", "og:url", url]);
+  }
+  if (keywords) tags.push(["name", "keywords", keywords]);
   for (const [attr, key, value] of tags) {
     const re = new RegExp(`<meta\\s+${attr}="${key}"[^>]*>`, "i");
     const tag = `<meta ${attr}="${key}" content="${esc(value)}" />`;
     out = re.test(out) ? out.replace(re, tag) : out.replace("</head>", `    ${tag}\n  </head>`);
   }
-  if (/<link\s+rel="canonical"/i.test(out)) {
-    out = out.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${esc(url)}" />`);
-  } else {
-    out = out.replace("</head>", `    <link rel="canonical" href="${esc(url)}" />\n  </head>`);
+  if (url) {
+    if (/<link\s+rel="canonical"/i.test(out)) {
+      out = out.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${esc(url)}" />`);
+    } else {
+      out = out.replace("</head>", `    <link rel="canonical" href="${esc(url)}" />\n  </head>`);
+    }
+    out = out.replace(/<link\s+rel="alternate"\s+hreflang="vi"[^>]*>/i, `<link rel="alternate" hreflang="vi" href="${esc(url)}" />`);
+    out = out.replace(
+      /<link\s+rel="alternate"\s+hreflang="x-default"[^>]*>/i,
+      `<link rel="alternate" hreflang="x-default" href="${esc(url)}" />`,
+    );
+  }
+  if (!url) {
+    out = out.replace(/<link\s+rel="canonical"[^>]*>/i, "");
+    out = out.replace(/<link\s+rel="alternate"[^>]*>/gi, "");
+  }
+  if (!keywords) {
+    out = out.replace(/<meta\s+name="keywords"[^>]*>/i, "");
   }
   return out;
 }
@@ -347,11 +393,13 @@ export function seoArticleHtml({ title, keyword }) {
 <p><img src="/services/xay-dung.jpg" alt="Thi công ${kw} tại TP.HCM" /></p>`;
 }
 
-export function applySeo({ title, description, path, image, type = "website", noindex = false, breadcrumbs, article, site, faq, reviews }) {
+export function applySeo({ title, description, path, image, type = "website", noindex = false, breadcrumbs, article, site, faq, reviews, keywords }) {
   const url = pageUrl(path);
   const img = absolutize(image);
   document.title = title;
   upsertMeta("name", "description", description);
+  if (keywords) upsertMeta("name", "keywords", keywords);
+  else document.head.querySelector('meta[name="keywords"]')?.remove();
   upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
   upsertMeta("property", "og:type", type);
   upsertMeta("property", "og:locale", "vi_VN");
@@ -361,10 +409,14 @@ export function applySeo({ title, description, path, image, type = "website", no
   upsertMeta("property", "og:url", url);
   upsertMeta("property", "og:image", img);
   upsertMeta("property", "og:image:alt", title);
+  upsertMeta("property", "og:image:width", "1200");
+  upsertMeta("property", "og:image:height", "630");
   upsertMeta("name", "twitter:card", "summary_large_image");
   upsertMeta("name", "twitter:title", title);
   upsertMeta("name", "twitter:description", description);
   upsertMeta("name", "twitter:image", img);
+  if (article?.datePublished) upsertMeta("property", "article:published_time", article.datePublished);
+  else document.head.querySelector('meta[property="article:published_time"]')?.remove();
   upsertLink("canonical", url);
   upsertHreflang("vi", url);
   upsertHreflang("x-default", url);
@@ -379,7 +431,7 @@ export function applySeo({ title, description, path, image, type = "website", no
     publisher: { "@type": "Organization", name: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát" },
   });
 
-  if (breadcrumbs?.length) {
+  if (breadcrumbs?.length > 1) {
     upsertJsonLd("ld-breadcrumb", {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -390,6 +442,8 @@ export function applySeo({ title, description, path, image, type = "website", no
         item: pageUrl(item.path),
       })),
     });
+  } else {
+    document.getElementById("ld-breadcrumb")?.remove();
   }
 
   if (article) {

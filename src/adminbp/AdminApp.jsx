@@ -15,6 +15,7 @@ import {
   ReviewsEditor,
   SettingsEditor,
   StudioEditor,
+  VisitsEditor,
 } from "./pages.jsx";
 import "./adminbp.css";
 
@@ -57,6 +58,7 @@ export default function AdminApp() {
           <Route path="thu-vien" element={<StudioEditor />} />
           <Route path="danh-gia" element={<ReviewsEditor />} />
           <Route path="dat-lich" element={<BookingsEditor />} />
+          <Route path="truy-cap" element={<VisitsEditor />} />
           <Route path="kho-anh" element={<MediaEditor />} />
           <Route path="tai-khoan" element={<AccountEditor />} />
         </Route>

@@ -135,7 +135,7 @@ export default function BookingCta() {
   return (
     <section className="booking-cta" id="dat-lich">
       <div className="booking-visual">
-        <img src={home.bookingImage || "/villas/neo-05.jpg"} alt="" />
+        <img src={home.bookingImage || "/villas/neo-05.jpg"} alt="Đặt lịch khảo sát nhà với Việt Dũng Phát" />
         <div className="booking-copy">
           <p className="kicker lined">{home.bookingKicker}</p>
           <h2>

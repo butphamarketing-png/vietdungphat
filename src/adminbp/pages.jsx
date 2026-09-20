@@ -23,6 +23,7 @@ const QUICK = [
   { href: "/adminbp/tai-khoan", label: "Tài khoản", desc: "Xem chi tiết", tone: "green" },
   { href: "/adminbp/tai-khoan", label: "Đổi mật khẩu", desc: "Xem chi tiết", tone: "blue" },
   { href: "/adminbp/dat-lich", label: "Thư liên hệ", desc: "Xem chi tiết", tone: "violet" },
+  { href: "/adminbp/truy-cap", label: "Lượt truy cập", desc: "Khách xem website", tone: "blue" },
 ];
 
 const LINKS = [
@@ -35,7 +36,123 @@ const LINKS = [
   { href: "/adminbp/trang", label: "Trang nội dung", desc: "Giới thiệu, liên hệ" },
   { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Album studio" },
   { href: "/adminbp/kho-anh", label: "Kho ảnh", desc: "Supabase Storage" },
+  { href: "/adminbp/truy-cap", label: "Lượt truy cập", desc: "Khách xem website" },
 ];
+
+function formatNum(n) {
+  return new Intl.NumberFormat("vi-VN").format(Number(n) || 0);
+}
+
+function formatTime(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+}
+
+function pageName(path, title) {
+  if (path === "/") return "Trang chủ";
+  const clean = String(title || "").replace(/\s*\|\s*Việt Dũng Phát\s*$/i, "").trim();
+  return clean || path;
+}
+
+function VisitsPanel({ compact = false }) {
+  const [stats, setStats] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/adminbp/visits", { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d.ok && d.error) setError(d.error);
+        else setStats(d);
+      })
+      .catch(() => setError("Không tải được lượt truy cập"));
+  }, []);
+
+  if (error && !stats) {
+    return <p className="muted">{error}</p>;
+  }
+  if (!stats) return <p className="muted">Đang tải lượt truy cập…</p>;
+
+  const cards = [
+    { label: "Hôm nay", views: stats.today?.views, visitors: stats.today?.visitors },
+    { label: "Hôm qua", views: stats.yesterday?.views, visitors: stats.yesterday?.visitors },
+    { label: "7 ngày", views: stats.week?.views, visitors: stats.week?.visitors },
+    { label: "30 ngày", views: stats.month?.views, visitors: stats.month?.visitors },
+    { label: "Tổng", views: stats.total?.views, visitors: stats.total?.visitors },
+  ];
+  const maxDay = Math.max(1, ...(stats.days || []).map((d) => d.views));
+
+  return (
+    <div className="adminbp-visits">
+      <div className="adminbp-visit-stats">
+        {cards.map((card) => (
+          <article key={card.label} className="adminbp-status-card is-ok">
+            <small>{card.label}</small>
+            <strong>{formatNum(card.views)}</strong>
+            <span>{formatNum(card.visitors)} khách</span>
+          </article>
+        ))}
+      </div>
+      {!compact && stats.days?.length ? (
+        <div className="adminbp-visit-chart" aria-hidden>
+          {stats.days.map((d) => (
+            <div key={d.day} className="adminbp-visit-bar">
+              <span style={{ height: `${Math.max(6, (d.views / maxDay) * 100)}%` }} />
+              <small>{d.day.slice(8)}</small>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <div className="adminbp-visit-cols">
+        <section>
+          <h3>Trang xem nhiều</h3>
+          {(stats.pages || []).length ? (
+            <ol className="adminbp-visit-list">
+              {stats.pages.slice(0, compact ? 6 : 12).map((p) => (
+                <li key={p.path}>
+                  <span>{pageName(p.path, p.title)}</span>
+                  <strong>{formatNum(p.views)}</strong>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="muted">Chưa có dữ liệu. Mở trang khách một lần để bắt đầu đếm.</p>
+          )}
+        </section>
+        <section>
+          <h3>Lượt xem gần đây</h3>
+          {(stats.recent || []).length ? (
+            <ol className="adminbp-visit-list">
+              {stats.recent.slice(0, compact ? 6 : 20).map((p, i) => (
+                <li key={`${p.path}-${p.at}-${i}`}>
+                  <span>
+                    {pageName(p.path, p.title)}
+                    <small>{formatTime(p.at)}</small>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="muted">Chưa có lượt xem gần đây.</p>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export function VisitsEditor() {
+  return (
+    <div>
+      <Crumbs items={["Bảng điều khiển", "Lượt truy cập"]} />
+      <h1>Lượt truy cập khách hàng</h1>
+      <p className="muted">Số khách xem website (không tính trang quản trị). Mỗi phiên trình duyệt được tính là một khách.</p>
+      <VisitsPanel />
+    </div>
+  );
+}
 
 export function Dashboard() {
   const cms = useCms();
@@ -85,6 +202,11 @@ export function Dashboard() {
           <span>{cms.counts.bookings} yêu cầu đặt lịch</span>
         </article>
       </div>
+      <h2 className="adminbp-dash-sub">Lượt truy cập khách hàng</h2>
+      <VisitsPanel compact />
+      <p>
+        <Link to="/adminbp/truy-cap">Xem chi tiết lượt truy cập</Link>
+      </p>
       <h2 className="adminbp-dash-sub">Quản lý nội dung</h2>
       <nav className="adminbp-shortcuts">
         {LINKS.map((item) => (

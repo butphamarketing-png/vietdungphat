@@ -1,9 +1,8 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
-import { KEYWORDS } from "./src/data/keywords.js";
 import {
   DEFAULT_OG,
   PAGE_SEO,
@@ -26,6 +25,7 @@ const SPA_ROUTES = [
   "adminbp/thu-vien",
   "adminbp/danh-gia",
   "adminbp/dat-lich",
+  "adminbp/truy-cap",
   "adminbp/kho-anh",
   "adminbp/tai-khoan",
   "gioi-thieu",
@@ -55,7 +55,15 @@ function spaFallbackHtml() {
       const original = readFileSync(index, "utf8");
       const today = new Date().toISOString().slice(0, 10);
 
-      copyFileSync(index, path.join(dist, "404.html"));
+      writeFileSync(
+        path.join(dist, "404.html"),
+        injectSeoIntoHtml(original, {
+          title: "Không tìm thấy trang | Việt Dũng Phát",
+          description: "Trang không tồn tại hoặc đã được gỡ khỏi website Việt Dũng Phát.",
+          noindex: true,
+          image: DEFAULT_OG,
+        }),
+      );
       for (const route of SPA_ROUTES) {
         writeHtml(path.join(dist, route, "index.html"), original);
       }
@@ -64,7 +72,8 @@ function spaFallbackHtml() {
         loc,
         title: meta.title,
         description: meta.description,
-        image: DEFAULT_OG,
+        keywords: meta.keywords,
+        image: loc === "/" ? DEFAULT_OG : DEFAULT_OG,
         type: "website",
       }));
 
@@ -94,34 +103,16 @@ function spaFallbackHtml() {
         for (const post of [...extraNews, ...(data[kind] || [])]) {
           if (!post?.slug || reserved.has(post.slug) || seenPost.has(post.slug)) continue;
           seenPost.add(post.slug);
-          if (!/^[a-z0-9-]+$/i.test(post.slug)) {
-            urls.push({
-              loc: `/${post.slug}`,
-              title: post.title,
-              description: excerptFromHtml(post.html) || PAGE_SEO["/"].description,
-              image: post.image || DEFAULT_OG,
-              type: "article",
-            });
-            continue;
-          }
           urls.push({
             loc: `/${post.slug}`,
-            title: /việt dũng phát/i.test(post.title || "") ? post.title : `${post.title} | Việt Dũng Phát`,
-            description: excerptFromHtml(post.html) || PAGE_SEO["/"].description,
+            title: /việt dũng phát/i.test((post.seoTitle || post.title || "").trim())
+              ? (post.seoTitle || post.title)
+              : `${(post.seoTitle || post.title || "").trim()} | Việt Dũng Phát`,
+            description: (post.seoDesc || post.desc || excerptFromHtml(post.html) || PAGE_SEO["/"].description).slice(0, 160),
             image: post.image || DEFAULT_OG,
             type: "article",
           });
         }
-      }
-
-      for (const kw of KEYWORDS) {
-        urls.push({
-          loc: `/tu-khoa/${kw.slug}`,
-          title: kw.title,
-          description: kw.description,
-          image: DEFAULT_OG,
-          type: "website",
-        });
       }
 
       const seen = new Set();
@@ -144,13 +135,25 @@ function spaFallbackHtml() {
         writeHtml(path.join(dist, `${rel}.html`), html);
       }
 
+      const adminHtml = injectSeoIntoHtml(original, {
+        title: "Quản trị | Việt Dũng Phát",
+        description: "Khu vực quản trị website Việt Dũng Phát.",
+        path: "/adminbp",
+        noindex: true,
+        image: DEFAULT_OG,
+      });
+      for (const route of SPA_ROUTES.filter((r) => r.startsWith("adminbp"))) {
+        writeHtml(path.join(dist, route, "index.html"), adminHtml);
+      }
+
       const sitemap = [
         `<?xml version="1.0" encoding="UTF-8"?>`,
         `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
         ...unique.map((item) => {
           const loc = pageUrl(item.loc);
           const priority = item.loc === "/" ? "1.0" : item.type === "article" ? "0.6" : "0.8";
-          return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+          const freq = item.loc === "/" ? "daily" : item.type === "article" ? "weekly" : "weekly";
+          return `  <url><loc>${loc}</loc><lastmod>${today}</lastmod><changefreq>${freq}</changefreq><priority>${priority}</priority></url>`;
         }),
         `</urlset>`,
         "",

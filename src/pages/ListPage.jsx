@@ -22,7 +22,14 @@ export default function ListPage({ kind }) {
 
   return (
     <article className="page">
-      <PageHero kicker={data.kicker || data.title} title={data.title}>
+      <PageHero
+        kicker={
+          <>
+            <Link to="/">Trang chủ</Link> / {data.title}
+          </>
+        }
+        title={data.title}
+      >
         <p>{data.intro}</p>
       </PageHero>
       <div className="page-body">

@@ -48,6 +48,7 @@ const NAV_GROUPS = [
     label: "Liên hệ",
     items: [
       { to: "/adminbp/dat-lich", label: "Đặt lịch", icon: "M5 5h14v15H5zM5 10h14M9 3v4M15 3v4" },
+      { to: "/adminbp/truy-cap", label: "Lượt truy cập", icon: "M4 19V5h16v14zM8 15v-4M12 15V8M16 15v-6" },
       { to: "/adminbp/danh-gia", label: "Đánh giá", icon: "M12 3l2.2 5.6L20 9.7l-4 3.8L17.2 20 12 16.8 6.8 20 8 13.5 4 9.7l5.8-1.1z" },
     ],
   },
