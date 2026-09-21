@@ -27,7 +27,7 @@ export const defaultHome = {
   title2: "tại TP.HCM",
   cta1: "Đặt lịch khảo sát",
   cta2: "Xem mẫu nhà",
-  video: "/hero.mp4?v=client",
+  video: "https://youtu.be/8DbWI_IjhqE",
   poster: "/villas/neo-02.jpg",
   servicesKicker: "Dịch vụ",
   servicesTitle: "Thiết kế, xây dựng,\ncải tạo",
@@ -303,6 +303,7 @@ export function getCms() {
   const extras = mergePosts("extras");
   const listsMeta = overlay.listsMeta || {};
   const home = { ...defaultHome, ...(overlay.home || {}) };
+  if (!home.video || /hero\.mp4/i.test(String(home.video))) home.video = defaultHome.video;
   if (/kiến tạo không gian/i.test(String(home.title1 || ""))) {
     home.title1 = defaultHome.title1;
     home.title2 = defaultHome.title2;

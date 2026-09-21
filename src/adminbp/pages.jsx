@@ -352,7 +352,7 @@ export function HomeEditor() {
       <div className="adminbp-form">
         <div className="adminbp-grid">
           <Field label="Kicker hero" value={home.kicker} onChange={(v) => set("kicker", v)} />
-          <Field label="Video hero (URL)" value={home.video} onChange={(v) => set("video", v)} />
+          <Field label="Video hero (YouTube hoặc MP4)" value={home.video} onChange={(v) => set("video", v)} />
           <Field label="Dòng tiêu đề 1" value={home.title1} onChange={(v) => set("title1", v)} />
           <Field label="Dòng tiêu đề 2" value={home.title2} onChange={(v) => set("title2", v)} />
           <ImageField label="Poster video" value={home.poster} onChange={(v) => set("poster", v)} />

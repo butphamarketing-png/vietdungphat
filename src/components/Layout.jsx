@@ -12,6 +12,7 @@ const links = [
   { to: "/gioi-thieu", label: "Giới thiệu" },
   { to: "/dich-vu", label: "Dịch vụ" },
   { to: "/mau-nha", label: "Mẫu nhà" },
+  { to: "/album", label: "Album" },
   { to: "/san-pham", label: "Sản phẩm" },
   { to: "/bao-gia", label: "Báo giá" },
   { to: "/thuoc-lo-ban", label: "Thước lỗ ban" },

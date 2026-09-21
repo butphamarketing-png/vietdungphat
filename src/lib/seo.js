@@ -26,6 +26,11 @@ export const PAGE_SEO = {
     description:
       "Xem mẫu biệt thự, nhà phố tân cổ điển và các công trình Việt Dũng Phát đã thiết kế, thi công tại TP.HCM và nhiều tỉnh thành.",
   },
+  "/album": {
+    title: "Album video và ảnh công trình | Việt Dũng Phát",
+    description:
+      "Album video thi công và hình ảnh mẫu nhà tân cổ điển của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.",
+  },
   "/du-an": {
     title: "Dự án và mẫu nhà | Việt Dũng Phát",
     description: "Danh sách dự án thiết kế, xây dựng nhà ở của Việt Dũng Phát — biệt thự, nhà phố, cải tạo.",

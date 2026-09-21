@@ -10,3 +10,4 @@ tmp-hsnl
 178*.mp4
 *.xlsx
 HSNL_VIETDUNGPHAT2026.pdf
+.env*

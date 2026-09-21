@@ -8,6 +8,7 @@ import Contact from "./pages/Contact.jsx";
 import Services from "./pages/Services.jsx";
 import Pricing from "./pages/Pricing.jsx";
 import LoBan from "./pages/LoBan.jsx";
+import Album from "./pages/Album.jsx";
 import { KeywordHub, KeywordPage } from "./pages/Keywords.jsx";
 import AdminApp from "./adminbp/AdminApp.jsx";
 
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/gioi-thieu" element={<About />} />
         <Route path="/du-an" element={<ListPage kind="projects" />} />
         <Route path="/mau-nha" element={<ListPage kind="projects" />} />
+        <Route path="/album" element={<Album />} />
         <Route path="/san-pham" element={<ListPage kind="products" />} />
         <Route path="/dich-vu" element={<Services />} />
         <Route path="/bao-gia" element={<Pricing />} />

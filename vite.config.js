@@ -31,6 +31,7 @@ const SPA_ROUTES = [
   "gioi-thieu",
   "du-an",
   "mau-nha",
+  "album",
   "san-pham",
   "dich-vu",
   "bao-gia",
