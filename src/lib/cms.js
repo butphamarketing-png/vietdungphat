@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
+import { albumVideosFrom, defaultAlbumVideos } from "./album.js";
 import { studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
 import { withNewsCovers } from "./news-media.js";
 import {
@@ -92,6 +93,13 @@ export const defaultPages = {
   },
 };
 
+export const defaultAlbum = {
+  kicker: "Album",
+  title: "Album công trình",
+  lead: "Video thi công và hình ảnh mẫu nhà tân cổ điển của Việt Dũng Phát.",
+  videos: defaultAlbumVideos,
+};
+
 const emptyOverlay = () => ({
   site: {},
   home: {},
@@ -105,6 +113,7 @@ const emptyOverlay = () => ({
   posts: { overrides: {}, deleted: [], added: { projects: [], products: [], services: [], news: [], extras: [] } },
   bookings: [],
   media: [],
+  album: null,
 });
 
 function readJson(key, fallback) {
@@ -313,6 +322,14 @@ export function getCms() {
     home.aboutImages = defaultHome.aboutImages;
   }
   if (/\/studio\//.test(String(home.bookingImage || ""))) home.bookingImage = defaultHome.bookingImage;
+  const albumRaw = overlay.album || {};
+  const albumVideos = albumVideosFrom(albumRaw.videos?.length ? albumRaw.videos : defaultAlbumVideos);
+  const album = {
+    kicker: albumRaw.kicker || defaultAlbum.kicker,
+    title: albumRaw.title || defaultAlbum.title,
+    lead: albumRaw.lead || defaultAlbum.lead,
+    videos: albumVideos.length ? albumVideos : defaultAlbumVideos,
+  };
   const studioList = overlay.studio || [];
   const studioSeen = new Set();
   const studio = [];
@@ -333,6 +350,7 @@ export function getCms() {
     reviews: overlay.reviews || defaultReviews,
     pricePacks: withPricePhotos(overlay.pricePacks || defaultPricePacks),
     studio,
+    album,
     home,
     stats: overlay.stats || defaultStats,
     pages: {
@@ -357,6 +375,7 @@ export function getCms() {
       news: news.length,
       bookings: (overlay.bookings || []).filter((b) => b && (b.name || b.phone)).length,
       media: (overlay.media || []).length,
+      album: album.videos.length,
     },
   };
   return snapshot;

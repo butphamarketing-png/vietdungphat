@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 import { uniqueHouses } from "../lib/studio.js";
-import { defaultAlbumVideos, youtubeThumb } from "../lib/album.js";
+import { youtubeThumb } from "../lib/album.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
 export default function Album() {
-  const { studio } = useCms();
-  const videos = useMemo(() => defaultAlbumVideos, []);
+  const { studio, album } = useCms();
+  const videos = useMemo(() => album?.videos || [], [album]);
   const photos = useMemo(() => uniqueHouses(studio), [studio]);
   const [active, setActive] = useState(videos[0]?.id || "");
   const [lightbox, setLightbox] = useState(-1);
@@ -41,12 +41,12 @@ export default function Album() {
       <PageHero
         kicker={
           <>
-            <Link to="/">Trang chủ</Link> / Album
+            <Link to="/">Trang chủ</Link> / {album?.kicker || "Album"}
           </>
         }
-        title="Album công trình"
+        title={album?.title || "Album công trình"}
       >
-        <p>Video thi công và hình ảnh mẫu nhà tân cổ điển của Việt Dũng Phát.</p>
+        <p>{album?.lead || "Video thi công và hình ảnh mẫu nhà tân cổ điển của Việt Dũng Phát."}</p>
       </PageHero>
 
       <div className="page-body album-split">

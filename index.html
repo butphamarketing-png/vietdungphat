@@ -51,7 +51,8 @@
         z-index: 9999;
         display: grid;
         place-items: center;
-        background: #111;
+        background: #fff;
+        overflow: hidden;
         transition: opacity 0.65s ease, visibility 0.65s ease;
       }
       .boot-loader.is-done {
@@ -59,12 +60,55 @@
         visibility: hidden;
         pointer-events: none;
       }
+      .boot-loader-pattern {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .boot-loader-houses {
+        --r: 158px;
+        position: absolute;
+        width: min(78vw, 380px);
+        height: min(78vw, 380px);
+        pointer-events: none;
+      }
+      @media (max-width: 520px) {
+        .boot-loader-houses { --r: 40vw; }
+        .boot-loader-houses svg { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
+      }
+      .boot-loader-houses svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 48px;
+        height: 48px;
+        margin: -24px 0 0 -24px;
+        color: #c9a84c;
+        animation: boot-house-breathe 2.6s ease-in-out infinite;
+      }
+      .boot-loader-houses svg:nth-child(1) { transform: rotate(0deg) translateY(calc(var(--r) * -1)) rotate(0deg); animation-delay: 0s; }
+      .boot-loader-houses svg:nth-child(2) { transform: rotate(45deg) translateY(calc(var(--r) * -1)) rotate(-45deg); animation-delay: .18s; }
+      .boot-loader-houses svg:nth-child(3) { transform: rotate(90deg) translateY(calc(var(--r) * -1)) rotate(-90deg); animation-delay: .36s; }
+      .boot-loader-houses svg:nth-child(4) { transform: rotate(135deg) translateY(calc(var(--r) * -1)) rotate(-135deg); animation-delay: .54s; }
+      .boot-loader-houses svg:nth-child(5) { transform: rotate(180deg) translateY(calc(var(--r) * -1)) rotate(-180deg); animation-delay: .72s; }
+      .boot-loader-houses svg:nth-child(6) { transform: rotate(225deg) translateY(calc(var(--r) * -1)) rotate(-225deg); animation-delay: .9s; }
+      .boot-loader-houses svg:nth-child(7) { transform: rotate(270deg) translateY(calc(var(--r) * -1)) rotate(-270deg); animation-delay: 1.08s; }
+      .boot-loader-houses svg:nth-child(8) { transform: rotate(315deg) translateY(calc(var(--r) * -1)) rotate(-315deg); animation-delay: 1.26s; }
       .boot-loader-inner {
         position: relative;
-        width: 118px;
-        height: 118px;
+        z-index: 1;
+        width: 122px;
+        height: 122px;
         display: grid;
         place-items: center;
+      }
+      .boot-loader-inner::before {
+        content: "";
+        position: absolute;
+        inset: -22px;
+        background: radial-gradient(circle, #fff 70%, rgba(255,255,255,0) 100%);
       }
       .boot-loader-ring {
         position: absolute;
@@ -75,8 +119,10 @@
         animation: boot-spin 1s linear infinite;
       }
       .boot-loader img {
-        width: 72px;
-        height: 72px;
+        position: relative;
+        z-index: 1;
+        width: 74px;
+        height: 74px;
         object-fit: contain;
         background: #c9a84c;
         padding: 10px;
@@ -89,6 +135,10 @@
       @keyframes boot-pulse {
         0%, 100% { transform: scale(1); opacity: 1; }
         50% { transform: scale(0.94); opacity: 0.88; }
+      }
+      @keyframes boot-house-breathe {
+        0%, 100% { opacity: 0.72; }
+        50% { opacity: 1; }
       }
       body.is-booting { overflow: hidden; }
     </style>
@@ -148,11 +198,55 @@
   </head>
   <body class="is-booting">
     <div id="boot-loader" class="boot-loader" role="status" aria-label="Đang tải Việt Dũng Phát">
+      <svg class="boot-loader-pattern" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="boot-house-tile" width="200" height="200" patternUnits="userSpaceOnUse">
+            <g fill="none" stroke="#c9a84c" stroke-width="1.45" stroke-linejoin="round" stroke-linecap="round" opacity="0.2">
+              <g transform="translate(28,24)">
+                <path d="M4 28 L32 8 L60 28"/>
+                <rect x="12" y="28" width="40" height="26"/>
+                <rect x="18" y="34" width="8" height="8"/>
+                <rect x="38" y="34" width="8" height="8"/>
+                <path d="M29 54 v-12 h6 v12"/>
+                <path d="M46 20 v-9 h5 v11"/>
+              </g>
+              <g transform="translate(128,118)">
+                <path d="M4 26 L28 8 L52 26"/>
+                <rect x="10" y="26" width="36" height="24"/>
+                <rect x="16" y="32" width="7" height="7"/>
+                <rect x="33" y="32" width="7" height="7"/>
+                <path d="M25 50 v-11 h6 v11"/>
+              </g>
+            </g>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#boot-house-tile)" />
+      </svg>
+      <div class="boot-loader-houses" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M8 30 L32 10 L56 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="30" width="36" height="24" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="20" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 54 v-12 h6 v12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M44 22 v-9 h5 v11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M10 32 L32 12 L54 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="16" y="32" width="32" height="20" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="21" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 52 v-10 h6 v10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M8 30 L32 10 L56 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="30" width="36" height="24" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="20" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 54 v-12 h6 v12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M44 22 v-9 h5 v11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M10 32 L32 12 L54 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="16" y="32" width="32" height="20" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="21" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 52 v-10 h6 v10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M8 30 L32 10 L56 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="30" width="36" height="24" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="20" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 54 v-12 h6 v12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M44 22 v-9 h5 v11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M10 32 L32 12 L54 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="16" y="32" width="32" height="20" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="21" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 52 v-10 h6 v10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M8 30 L32 10 L56 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="30" width="36" height="24" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="20" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="36" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 54 v-12 h6 v12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M44 22 v-9 h5 v11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 64 64"><path d="M10 32 L32 12 L54 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="16" y="32" width="32" height="20" fill="rgba(201,168,76,0.08)" stroke="currentColor" stroke-width="1.8"/><rect x="21" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="36" y="37" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M29 52 v-10 h6 v10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </div>
       <div class="boot-loader-inner">
         <span class="boot-loader-ring" aria-hidden="true"></span>
         <img src="/logo.png" alt="Việt Dũng Phát" />
       </div>
     </div>
+    <script>
+      (function () {
+        try {
+          var cms = JSON.parse(localStorage.getItem("vdp-cms-v1") || "{}");
+          var logo = cms.site && cms.site.logo;
+          var img = document.querySelector("#boot-loader img");
+          if (img && logo) img.src = logo;
+        } catch (e) {}
+      })();
+    </script>
     <script>
       document.addEventListener("error", function (e) {
         const el = e.target;

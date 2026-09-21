@@ -8,6 +8,7 @@ import {
   BookingsEditor,
   Dashboard,
   HomeEditor,
+  AlbumEditor,
   MediaEditor,
   PagesEditor,
   PostsEditor,
@@ -49,6 +50,7 @@ export default function AdminApp() {
           <Route index element={<Dashboard />} />
           <Route path="cai-dat" element={<SettingsEditor />} />
           <Route path="trang-chu" element={<HomeEditor />} />
+          <Route path="album" element={<AlbumEditor />} />
           <Route path="mau-nha" element={<PostsEditor kind="projects" title="Mẫu nhà / công trình" hint="Toàn bộ dự án trên website." />} />
           <Route path="san-pham" element={<PostsEditor kind="products" title="Sản phẩm" hint="Nội thất và combo từ xưởng." />} />
           <Route path="dich-vu" element={<PostsEditor kind="services" title="Dịch vụ" hint="Bài viết danh mục dịch vụ." />} />

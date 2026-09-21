@@ -16,6 +16,7 @@ const SPA_ROUTES = [
   "adminbp/login",
   "adminbp/cai-dat",
   "adminbp/trang-chu",
+  "adminbp/album",
   "adminbp/mau-nha",
   "adminbp/san-pham",
   "adminbp/dich-vu",

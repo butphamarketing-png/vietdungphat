@@ -218,9 +218,12 @@ export function pageSeoFromCms(pathname, cms) {
   const path = pathname.replace(/\/+$/, "") || "/";
   const staticPage = PAGE_SEO[path];
   if (staticPage) {
+    const album = cms.album;
+    const albumTitle = path === "/album" && album?.title ? `${album.title} | Việt Dũng Phát` : staticPage.title;
+    const albumDesc = path === "/album" && album?.lead ? album.lead : staticPage.description;
     return {
-      title: staticPage.title,
-      description: staticPage.description,
+      title: albumTitle,
+      description: albumDesc,
       keywords: staticPage.keywords,
       path,
       image: path === "/" ? cms.home?.poster || DEFAULT_OG : DEFAULT_OG,

@@ -11,10 +11,12 @@ import {
   savePost,
   slugify,
   useCms,
+  defaultAlbum,
 } from "../lib/cms.js";
 import { uploadAdminFile } from "../lib/upload.js";
 import { seoArticleHtml } from "../lib/seo.js";
 import { analyzeRankMath } from "../lib/rankmath.js";
+import { albumVideosFrom, youtubeId, youtubeThumb } from "../lib/album.js";
 import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
@@ -27,14 +29,15 @@ const QUICK = [
 ];
 
 const LINKS = [
-  { href: "/adminbp/trang-chu", label: "Trang chủ", desc: "Hero, intro, thống kê" },
+  { href: "/adminbp/trang-chu", label: "Trang chủ", desc: "Hero YouTube, intro, thống kê" },
+  { href: "/adminbp/album", label: "Album", desc: "Video YouTube + ảnh công trình" },
   { href: "/adminbp/mau-nha", label: "Mẫu nhà", desc: "Công trình / bài viết" },
   { href: "/adminbp/san-pham", label: "Sản phẩm", desc: "Nội thất xưởng" },
   { href: "/adminbp/bao-gia", label: "Báo giá", desc: "Gói thi công" },
   { href: "/adminbp/dich-vu", label: "Dịch vụ", desc: "Nhóm dịch vụ + bài viết" },
   { href: "/adminbp/tin-tuc", label: "Tin tức", desc: "Bài viết SEO" },
   { href: "/adminbp/trang", label: "Trang nội dung", desc: "Giới thiệu, liên hệ" },
-  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Album studio" },
+  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Ảnh cột phải trang Album" },
   { href: "/adminbp/kho-anh", label: "Kho ảnh", desc: "Supabase Storage" },
   { href: "/adminbp/truy-cap", label: "Lượt truy cập", desc: "Khách xem website" },
 ];
@@ -197,7 +200,7 @@ export function Dashboard() {
         <article className="adminbp-status-card is-ok">
           <small>Nội dung</small>
           <strong>
-            {cms.counts.projects} mẫu · {cms.counts.news} tin
+            {cms.counts.projects} mẫu · {cms.counts.news} tin · {cms.counts.album || 0} video Album
           </strong>
           <span>{cms.counts.bookings} yêu cầu đặt lịch</span>
         </article>
@@ -304,13 +307,13 @@ export function SettingsEditor() {
           <Field label="Facebook" value={site.facebook} onChange={(v) => set("facebook", v)} />
           <Field label="Messenger" value={site.messenger} onChange={(v) => set("messenger", v)} />
           <Field label="YouTube" value={site.youtube} onChange={(v) => set("youtube", v)} />
-          <Field label="Hồ sơ PDF" value={site.profilePdf} onChange={(v) => set("profilePdf", v)} />
+          <Field label="Hồ sơ PDF" value={site.profilePdf} onChange={(v) => set("profilePdf", v)} hint="Đường dẫn trên site, mặc định /files/ho-so-nang-luc.pdf" />
           <Field label="Địa chỉ" value={site.address} onChange={(v) => set("address", v)} span2 />
           <Field label="Showroom" value={site.showroom} onChange={(v) => set("showroom", v)} span2 />
           <Field label="Xưởng" value={site.workshop} onChange={(v) => set("workshop", v)} span2 />
           <Field label="Map lat" value={String(map.lat || "")} onChange={(v) => set("map", { ...map, lat: Number(v) || v })} />
           <Field label="Map lng" value={String(map.lng || "")} onChange={(v) => set("map", { ...map, lng: Number(v) || v })} />
-          <ImageField label="Logo" value={site.logo} onChange={(v) => set("logo", v)} />
+          <ImageField label="Logo (header và màn loading)" value={site.logo} onChange={(v) => set("logo", v)} />
           <ImageField label="Ảnh giới thiệu" value={site.aboutImage} onChange={(v) => set("aboutImage", v)} />
           <Field label="HTML giới thiệu gốc" value={site.aboutHtml} onChange={(v) => set("aboutHtml", v)} multiline rows={10} span2 />
         </div>
@@ -347,15 +350,27 @@ export function HomeEditor() {
     <>
       <div className="adminbp-page-head">
         <h1>Trang chủ</h1>
-        <p>Video hero, khối dịch vụ, giới thiệu và thống kê.</p>
+        <p>Video YouTube hero (tự chạy khi vào trang), khối dịch vụ, giới thiệu và thống kê.</p>
       </div>
       <div className="adminbp-form">
         <div className="adminbp-grid">
           <Field label="Kicker hero" value={home.kicker} onChange={(v) => set("kicker", v)} />
-          <Field label="Video hero (YouTube hoặc MP4)" value={home.video} onChange={(v) => set("video", v)} />
-          <Field label="Dòng tiêu đề 1" value={home.title1} onChange={(v) => set("title1", v)} />
+          <Field
+            label="Video hero (YouTube)"
+            value={home.video}
+            onChange={(v) => set("video", v)}
+            placeholder="https://youtu.be/8DbWI_IjhqE"
+            hint="Dán link YouTube. Video tự chạy (tắt tiếng) ngay khi khách vào trang; click để bật tiếng."
+          />
+          {youtubeId(home.video) ? (
+            <div className="adminbp-field">
+              <span>Xem trước video hero</span>
+              <img className="adminbp-yt-preview" src={youtubeThumb(youtubeId(home.video))} alt="" />
+            </div>
+          ) : null}
+          <Field label="Dòng tiêu đề 1" value={home.title1} onChange={(v) => set("title1", v)} hint="Giữ ngắn để không rớt chữ trên hero, ví dụ: Thiết kế xây nhà tân cổ điển" />
           <Field label="Dòng tiêu đề 2" value={home.title2} onChange={(v) => set("title2", v)} />
-          <ImageField label="Poster video" value={home.poster} onChange={(v) => set("poster", v)} />
+          <ImageField label="Ảnh chia sẻ Facebook / Zalo" value={home.poster} onChange={(v) => set("poster", v)} />
           <Field label="Nút CTA 1" value={home.cta1} onChange={(v) => set("cta1", v)} />
           <Field label="Nút CTA 2" value={home.cta2} onChange={(v) => set("cta2", v)} />
           <Field label="Tiêu đề dịch vụ" value={home.servicesTitle} onChange={(v) => set("servicesTitle", v)} multiline rows={2} />
@@ -846,7 +861,7 @@ export function PagesEditor() {
     <>
       <div className="adminbp-page-head">
         <h1>Trang nội dung</h1>
-        <p>Hero và mô tả các trang tĩnh.</p>
+        <p>Hero và mô tả các trang tĩnh. Trang Album chỉnh riêng tại mục Album.</p>
       </div>
       <div className="adminbp-form">
         {keys.map(([key, label]) => (
@@ -884,6 +899,83 @@ export function PagesEditor() {
   );
 }
 
+export function AlbumEditor() {
+  const cms = useCms();
+  const [album, setAlbum] = useState(cms.album || defaultAlbum);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setAlbum(cms.album || defaultAlbum);
+  }, [cms.album]);
+
+  function set(key, value) {
+    setAlbum((a) => ({ ...a, [key]: value }));
+  }
+
+  function setVideo(i, patch) {
+    setAlbum((a) => ({
+      ...a,
+      videos: a.videos.map((item, n) => (n === i ? { ...item, ...patch } : item)),
+    }));
+  }
+
+  return (
+    <>
+      <div className="adminbp-page-head">
+        <h1>Album</h1>
+        <p>
+          Trang <a href="/album" target="_blank" rel="noreferrer">/album</a>: cột trái là video YouTube, cột phải lấy ảnh từ{" "}
+          <Link to="/adminbp/thu-vien">Thư viện ảnh</Link>.
+        </p>
+      </div>
+      <div className="adminbp-form">
+        <div className="adminbp-grid">
+          <Field label="Kicker" value={album.kicker} onChange={(v) => set("kicker", v)} />
+          <Field label="Tiêu đề trang" value={album.title} onChange={(v) => set("title", v)} />
+          <Field label="Mô tả" value={album.lead} onChange={(v) => set("lead", v)} multiline span2 />
+        </div>
+        <CardList
+          title="Video YouTube"
+          onAdd={() => setAlbum((a) => ({ ...a, videos: [...(a.videos || []), { id: "", title: "Video mới" }] }))}
+        >
+          {(album.videos || []).map((item, i) => {
+            const id = youtubeId(item.id || item.url);
+            return (
+              <article key={`${item.id || "new"}-${i}`} className="adminbp-item">
+                <div className="adminbp-grid">
+                  {id ? <img className="adminbp-yt-preview" src={youtubeThumb(id)} alt="" /> : <div className="adminbp-image-empty">Chưa có video</div>}
+                  <Field
+                    label="Link YouTube"
+                    value={item.url || (item.id ? `https://youtu.be/${item.id}` : "")}
+                    onChange={(v) => setVideo(i, { url: v, id: youtubeId(v) })}
+                    placeholder="https://youtu.be/..."
+                  />
+                  <Field label="Tiêu đề" value={item.title} onChange={(v) => setVideo(i, { title: v })} />
+                </div>
+                <ItemActions
+                  onUp={() => setAlbum((a) => ({ ...a, videos: moveItem(a.videos, i, -1) }))}
+                  onDown={() => setAlbum((a) => ({ ...a, videos: moveItem(a.videos, i, 1) }))}
+                  onRemove={() => setAlbum((a) => ({ ...a, videos: a.videos.filter((_, n) => n !== i) }))}
+                />
+              </article>
+            );
+          })}
+        </CardList>
+        <SaveBar
+          message={message}
+          onSave={() => {
+            const videos = albumVideosFrom(
+              (album.videos || []).map((item) => ({ id: item.id || item.url, title: item.title })),
+            );
+            patchCms({ album: { ...album, videos } });
+            setMessage("Đã lưu Album");
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
 export function StudioEditor() {
   const cms = useCms();
   const [studio, setStudio] = useState(cms.studio);
@@ -896,10 +988,12 @@ export function StudioEditor() {
     <>
       <div className="adminbp-page-head">
         <h1>Thư viện ảnh</h1>
-        <p>Album studio trên trang chủ và Mẫu nhà.</p>
+        <p>
+          Ảnh cột phải trang <Link to="/adminbp/album">Album</Link>, collage trang chủ và Mẫu nhà.
+        </p>
       </div>
       <div className="adminbp-form">
-        <CardList title="Album" onAdd={() => setStudio([...studio, { src: "/studio/01.jpg", title: "Công trình mới" }])}>
+        <CardList title="Ảnh công trình" onAdd={() => setStudio([...studio, { src: "/studio/01.jpg", title: "Công trình mới" }])}>
           {studio.map((item, i) => (
             <article key={i} className="adminbp-item">
               <div className="adminbp-grid">
@@ -1031,7 +1125,7 @@ export function MediaEditor() {
       <div className="adminbp-upload">
         <div>
           <h2>Tải ảnh / video</h2>
-          <p>JPG, PNG, WebP, MP4, PDF — ảnh poster được nén tự động; video tối đa 50MB.</p>
+          <p>JPG, PNG, WebP, PDF. Video hero trang chủ dùng link YouTube, không cần tải MP4.</p>
         </div>
         <label className="adminbp-upload-btn">
           Chọn file

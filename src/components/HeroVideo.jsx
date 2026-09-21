@@ -218,9 +218,9 @@ export default function HeroVideo() {
       <div className="hero-copy">
         <p className="kicker light">{home.kicker}</p>
         <h1>
-          {home.title1}
+          <span className="hero-line">{home.title1}</span>
           <br />
-          {home.title2}
+          <span className="hero-line">{home.title2}</span>
         </h1>
         <div className="cta-row">
           <Link className="btn" to="/lien-he">

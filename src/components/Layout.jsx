@@ -59,6 +59,7 @@ export default function Layout() {
     applySeo({
       ...pageSeoFromCms(location.pathname, {
         home: cmsHome,
+        album: cms.album,
         reviews: cms.reviews,
         findPost: (slug) => findPost(slug, cms),
         kindOf: (slug) => kindOf(slug, cms),

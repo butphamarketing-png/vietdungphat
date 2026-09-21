@@ -1499,6 +1499,23 @@ body:has(.vns-login) {
   line-height: 1.5;
 }
 
+.adminbp-field-hint {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.45;
+  color: #6e6e6e;
+}
+
+.adminbp-yt-preview {
+  width: 180px;
+  height: 101px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #111;
+  display: block;
+}
+
 .adminbp-image-field {
   display: grid;
   gap: 8px;
