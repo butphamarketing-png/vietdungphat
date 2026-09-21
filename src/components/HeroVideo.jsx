@@ -71,7 +71,11 @@ function fitHeroIframe(el) {
   el.style.width = `${w}px`;
   el.style.height = `${h}px`;
   const scale = Math.max(vw / w, vh / h);
-  el.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  el.style.transformOrigin = "center bottom";
+  el.style.top = "auto";
+  el.style.bottom = "0px";
+  el.style.left = "50%";
+  el.style.transform = `translateX(-50%) scale(${scale})`;
 }
 
 function forceHd(player) {

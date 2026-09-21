@@ -182,7 +182,8 @@ h1, h2, h3, blockquote {
 }
 .hero-embed .hero-video {
   inset: auto;
-  top: 50%;
+  top: auto;
+  bottom: 0;
   left: 50%;
   width: 1920px;
   height: 1080px;
@@ -190,8 +191,8 @@ h1, h2, h3, blockquote {
   min-height: 0;
   border: 0;
   filter: none;
-  transform: translate(-50%, -50%);
-  transform-origin: center center;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
 }
 .hero::after {
   content: "";
@@ -203,7 +204,7 @@ h1, h2, h3, blockquote {
 .hero-copy {
   position: absolute;
   left: 6vw;
-  bottom: 18%;
+  bottom: 22%;
   z-index: 2;
   max-width: min(92vw, 80rem);
   color: #fff;
@@ -1164,8 +1165,8 @@ body.is-popup-open .float-consult {
   .booking-visual > img { inset: 0; width: 100%; opacity: 0.22; }
   .booking-copy { padding-top: 2.4rem; }
   .stats div { border-right: 0; border-bottom: 1px solid var(--line); }
-  .hero { min-height: 78vh; }
-  .hero-copy { left: 5vw; bottom: 20%; max-width: min(90vw, 52rem); }
+  .hero { min-height: 100vh; min-height: 100dvh; }
+  .hero-copy { left: 5vw; bottom: 24%; max-width: min(90vw, 52rem); }
   .about-collage { min-height: 380px; }
   .about-collage .shot.c { height: 230px; top: 18%; }
   .service-card img { min-height: 240px; height: 240px; }
@@ -1198,8 +1199,8 @@ body.is-popup-open .float-consult {
   .album-photo img { height: 240px; }
   .album-video-list { max-height: none; }
   .price-photo { aspect-ratio: 5 / 4; }
-  .hero { min-height: 70vh; }
-  .hero-copy { bottom: 22%; max-width: 92vw; }
+  .hero { min-height: 100vh; min-height: 100dvh; }
+  .hero-copy { bottom: 26%; max-width: 92vw; }
   .hero-copy h1 { font-size: clamp(1.85rem, 7.2vw, 2.45rem); line-height: 1.24; }
   .hero-copy .hero-line { white-space: normal; }
 }
