@@ -32,16 +32,16 @@ export const defaultHome = {
   servicesKicker: "Dịch vụ",
   servicesTitle: "Thiết kế, xây dựng,\ncải tạo",
   servicesLead:
-    "Việt Dũng Phát đồng hành từ ý tưởng đến chìa khóa trao tay: thiết kế kiến trúc — nội thất, xây dựng nhà phố biệt thự, và cải tạo nhà hiện hữu. 20 năm kinh nghiệm tại TP.HCM và các tỉnh lân cận.",
+    "Việt Dũng Phát đồng hành từ ý tưởng đến chìa khóa trao tay: thiết kế kiến trúc — nội thất, xây dựng nhà phố biệt thự, và cải tạo nhà hiện hữu. Thành lập năm 2014, thi công tại TP.HCM và các tỉnh lân cận.",
   servicesCta: "Xem toàn bộ dịch vụ",
   projectsKicker: "Mẫu nhà",
   projectsTitle: "Công trình tiêu biểu",
   productsKicker: "Sản phẩm",
   productsTitle: "Nội thất và combo từ xưởng",
   aboutKicker: "Về chúng tôi",
-  aboutTitle: "20 năm kiến trúc\nvà xây dựng",
+  aboutTitle: "Thương hiệu của\nsự an tâm",
   aboutLead:
-    "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát, với 20 năm kinh nghiệm thiết kế và thi công tại Hồ Chí Minh và các tỉnh lân cận.",
+    "KIẾN TRÚC Việt Dũng Phát là thương hiệu kiến trúc – xây dựng của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát, thành lập năm 2014. Phương châm: Uy tín tạo niềm tin – Chất lượng tạo thương hiệu.",
   aboutImages: ["/villas/neo-02.jpg", "/villas/neo-06.jpg", "/villas/neo-11.jpg"],
   newsKicker: "Tin tức",
   newsTitle: "Góc chia sẻ",
@@ -53,21 +53,21 @@ export const defaultHome = {
   bookingLead:
     "Đội ngũ kiến trúc sư của Việt Dũng Phát sẵn sàng lắng nghe và đồng hành cùng bạn từ ý tưởng đến hiện thực.",
   bookingPoints: ["Tư vấn tận tâm", "Giải pháp tối ưu", "Đồng hành dài lâu"],
-  footerBlurb: "20 năm thiết kế, xây dựng và cải tạo nhà ở tại TP.HCM và các tỉnh lân cận.",
+  footerBlurb: "Thành lập năm 2014. Thiết kế, xây dựng và cải tạo nhà ở tại TP.HCM và các tỉnh lân cận.",
 };
 
 export const defaultStats = [
   { value: "900+", label: "Công trình" },
-  { value: "20+", label: "Năm kinh nghiệm" },
+  { value: "2014", label: "Năm thành lập" },
   { value: "200+", label: "Công nhân lành nghề" },
   { value: "6 năm", label: "Bảo hành" },
 ];
 
 export const defaultPages = {
   about: {
-    kicker: "Giới thiệu",
-    title: "20 năm kiến trúc,\nxây dựng và cải tạo",
-    lead: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng, cải tạo nhà ở tại TP.HCM và các tỉnh lân cận. Toàn bộ nội dung giới thiệu gốc được giữ nguyên bên dưới.",
+    kicker: "Hồ sơ năng lực 2026",
+    title: "Kiến trúc Xây dựng Việt Dũng Phát",
+    lead: "Thành lập năm 2014. Thương hiệu của sự an tâm. Phương châm “Uy tín tạo niềm tin – Chất lượng tạo thương hiệu”.",
     image: "/villas/neo-02.jpg",
   },
   services: {
@@ -83,7 +83,7 @@ export const defaultPages = {
   contact: {
     kicker: "Liên hệ",
     title: "Đặt lịch hẹn tư vấn",
-    lead: "Gửi yêu cầu bên dưới hoặc gọi trực tiếp. Thông tin liên hệ giữ nguyên từ website Việt Dũng Phát.",
+    lead: "Gửi yêu cầu bên dưới hoặc gọi trực tiếp. Mạng lưới văn phòng theo hồ sơ năng lực 2026.",
   },
   loban: {
     kicker: "Phong thủy",
@@ -289,7 +289,7 @@ export function getCms() {
   if (snapshot) return snapshot;
   const site = { ...defaultSite, ...(overlay.site || {}) };
   const deadPdf = !site.profilePdf || /\/upload\/files\/ho-so-nang-luc/i.test(String(site.profilePdf));
-  if (deadPdf) site.profilePdf = "/Ho-so-nang-luc-Viet-Dung-Phat.docx";
+  if (deadPdf) site.profilePdf = "/ho-so-nang-luc.pdf";
   const logo = String(site.logo || "");
   if (!logo || /upload\/hinhanh\/logo/i.test(logo) || /logo-3495/i.test(logo)) site.logo = "/logo.png";
   const aboutImage = String(site.aboutImage || "");

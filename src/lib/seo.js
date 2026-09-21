@@ -7,12 +7,12 @@ export const PAGE_SEO = {
   "/": {
     title: "Thiết kế xây nhà tân cổ điển TP.HCM | Việt Dũng Phát",
     description:
-      "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng phần thô, nhà trọn gói và cải tạo nhà ở tại TP.HCM. 20 năm kinh nghiệm, báo giá minh bạch.",
+      "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thiết kế, xây dựng phần thô, nhà trọn gói và cải tạo nhà ở tại TP.HCM. Thành lập năm 2014, báo giá minh bạch.",
     keywords:
       "thiết kế nhà tân cổ điển, xây nhà trọn gói tphcm, xây nhà phần thô, cải tạo nhà tphcm, việt dũng phát",
   },
   "/gioi-thieu": {
-    title: "Giới thiệu Việt Dũng Phát | 20 năm kiến trúc và xây dựng",
+    title: "Giới thiệu Việt Dũng Phát | Hồ sơ năng lực 2026",
     description:
       "Tìm hiểu Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát — thương hiệu thiết kế, thi công nhà phố, biệt thự tân cổ điển tại Hồ Chí Minh và các tỉnh lân cận.",
   },

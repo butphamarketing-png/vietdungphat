@@ -5,3 +5,8 @@ dist
 .env
 .env.local
 .env.*.local
+tmp-hsnl
+178*.jpg
+178*.mp4
+*.xlsx
+HSNL_VIETDUNGPHAT2026.pdf
