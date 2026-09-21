@@ -4,7 +4,7 @@ export const profile = {
   director: "Trần Đình Dũng",
   slogan: "Thương hiệu của sự an tâm",
   motto: "Uy tín tạo niềm tin – Chất lượng tạo thương hiệu",
-  pdf: "/ho-so-nang-luc.pdf",
+  pdf: "/files/ho-so-nang-luc.pdf",
   letter: [
     "Kính gửi Quý Khách hàng và Quý Đối tác,",
     "Lời đầu tiên, Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát xin gửi đến Quý Khách hàng và Quý Đối tác lời chúc sức khỏe, thành công cùng lời cảm ơn chân thành vì đã luôn tin tưởng, đồng hành và lựa chọn chúng tôi trong suốt thời gian qua.",

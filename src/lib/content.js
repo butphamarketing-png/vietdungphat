@@ -10,7 +10,7 @@ export const site = {
   aboutImage: "/villas/neo-10.jpg",
   profilePdf: (() => {
     const raw = String(cmsSite.profilePdf || "").replace(/^http:\/\//i, "https://");
-    if (!raw || /\/upload\/files\/ho-so-nang-luc/i.test(raw) || /\.docx$/i.test(raw)) return "/ho-so-nang-luc.pdf";
+    if (!raw || /\/upload\/files\/ho-so-nang-luc/i.test(raw) || /\.docx$/i.test(raw) || raw === "/ho-so-nang-luc.pdf") return "/files/ho-so-nang-luc.pdf";
     return raw;
   })(),
 };

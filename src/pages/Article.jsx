@@ -14,6 +14,10 @@ function toDateTime(date) {
 export default function Article() {
   const { slug } = useParams();
   const cms = useCms();
+  if (/^ho-so-nang-luc(\.pdf)?$/i.test(String(slug || ""))) {
+    if (typeof window !== "undefined") window.location.replace("/files/ho-so-nang-luc.pdf");
+    return null;
+  }
   const post = findPost(slug, cms);
   const meta = kindOf(slug, cms);
   const pool =

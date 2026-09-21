@@ -24,8 +24,19 @@
     }
   ],
   "rewrites": [
+    { "source": "/ho-so-nang-luc.pdf", "destination": "/files/ho-so-nang-luc.pdf" },
+    { "source": "/ho-so-nang-luc", "destination": "/files/ho-so-nang-luc.pdf" },
     { "source": "/adminbp", "destination": "/index.html" },
     { "source": "/adminbp/:path*", "destination": "/index.html" },
     { "source": "/((?!api/|assets/|files/|studio/)(?!.*\\.).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/files/ho-so-nang-luc.pdf",
+      "headers": [
+        { "key": "Content-Type", "value": "application/pdf" },
+        { "key": "Content-Disposition", "value": "inline; filename=\"Ho-so-nang-luc-Viet-Dung-Phat-2026.pdf\"" }
+      ]
+    }
   ]
 }

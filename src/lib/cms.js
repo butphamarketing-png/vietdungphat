@@ -289,7 +289,7 @@ export function getCms() {
   if (snapshot) return snapshot;
   const site = { ...defaultSite, ...(overlay.site || {}) };
   const deadPdf = !site.profilePdf || /\/upload\/files\/ho-so-nang-luc/i.test(String(site.profilePdf));
-  if (deadPdf) site.profilePdf = "/ho-so-nang-luc.pdf";
+  if (deadPdf || /\/ho-so-nang-luc\.pdf$/i.test(String(site.profilePdf))) site.profilePdf = "/files/ho-so-nang-luc.pdf";
   const logo = String(site.logo || "");
   if (!logo || /upload\/hinhanh\/logo/i.test(logo) || /logo-3495/i.test(logo)) site.logo = "/logo.png";
   const aboutImage = String(site.aboutImage || "");
