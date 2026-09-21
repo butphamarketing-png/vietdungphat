@@ -44,6 +44,54 @@
     <link rel="icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
+    <style>
+      .boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: #111;
+        transition: opacity 0.65s ease, visibility 0.65s ease;
+      }
+      .boot-loader.is-done {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .boot-loader-inner {
+        position: relative;
+        width: 118px;
+        height: 118px;
+        display: grid;
+        place-items: center;
+      }
+      .boot-loader-ring {
+        position: absolute;
+        inset: 0;
+        border: 1px solid rgba(201, 168, 76, 0.28);
+        border-top-color: #c9a84c;
+        border-radius: 50%;
+        animation: boot-spin 1s linear infinite;
+      }
+      .boot-loader img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        background: #c9a84c;
+        padding: 10px;
+        border-radius: 16px;
+        animation: boot-pulse 1.4s ease-in-out infinite;
+      }
+      @keyframes boot-spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes boot-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(0.94); opacity: 0.88; }
+      }
+      body.is-booting { overflow: hidden; }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://images.weserv.nl" />
@@ -98,7 +146,13 @@
       }
     </script>
   </head>
-  <body>
+  <body class="is-booting">
+    <div id="boot-loader" class="boot-loader" role="status" aria-label="Đang tải Việt Dũng Phát">
+      <div class="boot-loader-inner">
+        <span class="boot-loader-ring" aria-hidden="true"></span>
+        <img src="/logo.png" alt="Việt Dũng Phát" />
+      </div>
+    </div>
     <script>
       document.addEventListener("error", function (e) {
         const el = e.target;

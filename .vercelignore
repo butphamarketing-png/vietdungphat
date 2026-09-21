@@ -1,0 +1,14 @@
+0605.mp4
+178*.mp4
+178*.jpg
+*.xlsx
+HSNL_VIETDUNGPHAT2026.pdf
+Ho-so-nang-luc-Viet-Dung-Phat.docx
+tmp-hsnl
+.env
+.env.local
+.env*.local
+scripts/extract-hsnl.mjs
+scripts/extract-page7.mjs
+scripts/make-hoso-word.mjs
+scripts/pack-hsnl-pdf.mjs

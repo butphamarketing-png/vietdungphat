@@ -57,7 +57,9 @@ export default function Album() {
               <iframe
                 key={current.id}
                 title={current.title}
-                src={`https://www.youtube.com/embed/${current.id}?rel=0&modestbranding=1&playsinline=1`}
+                src={`https://www.youtube.com/embed/${current.id}?rel=0&modestbranding=1&playsinline=1&vq=hd1080`}
+                width="1280"
+                height="720"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -73,7 +75,14 @@ export default function Album() {
                 className={`album-video-item${video.id === current?.id ? " is-on" : ""}`}
                 onClick={() => setActive(video.id)}
               >
-                <img src={youtubeThumb(video.id)} alt="" />
+                <img
+                  src={youtubeThumb(video.id)}
+                  alt=""
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+                  }}
+                />
                 <span>{video.title}</span>
               </button>
             ))}

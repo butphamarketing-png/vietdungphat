@@ -10,7 +10,7 @@ export function youtubeId(url) {
 }
 
 export function youtubeThumb(id) {
-  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  return `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
 }
 
 export const defaultAlbumVideos = [

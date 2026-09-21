@@ -1,6 +1,7 @@
 import { NavLink, Outlet, Link, useLocation } from "react-router-dom";
 import FloatDock from "./FloatDock.jsx";
 import BookingPopup from "./BookingPopup.jsx";
+import SiteLoader from "./SiteLoader.jsx";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
 import { applySeo, pageSeoFromCms } from "../lib/seo.js";
 import { useScrollReveal } from "../lib/useScrollReveal.js";
@@ -148,6 +149,7 @@ export default function Layout() {
         </div>
         <p className="copy">© {new Date().getFullYear()} {site.name}</p>
       </footer>
+      <SiteLoader />
       <FloatDock />
       <BookingPopup />
     </>

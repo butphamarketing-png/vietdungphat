@@ -16,7 +16,7 @@ function youtubeId(url) {
 function youtubeEmbedSrc(id) {
   const q = new URLSearchParams({
     autoplay: "1",
-    mute: "0",
+    mute: "1",
     loop: "1",
     playlist: id,
     controls: "0",
@@ -28,6 +28,7 @@ function youtubeEmbedSrc(id) {
     fs: "0",
     cc_load_policy: "0",
     enablejsapi: "1",
+    vq: "hd1080",
   });
   if (typeof window !== "undefined") q.set("origin", window.location.origin);
   return `https://www.youtube.com/embed/${id}?${q.toString()}`;
@@ -57,15 +58,58 @@ function ensureYouTubeApi() {
   });
 }
 
-function playLoud(player) {
+function fitHeroIframe(el) {
+  if (!el) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const coverW = Math.max(vw, (vh * 16) / 9);
+  const w = Math.max(1920, Math.round(coverW * dpr));
+  const h = Math.round((w * 9) / 16);
+  el.width = String(w);
+  el.height = String(h);
+  el.style.width = `${w}px`;
+  el.style.height = `${h}px`;
+  const scale = Math.max(vw / w, vh / h);
+  el.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
+function forceHd(player) {
+  if (!player) return;
+  try {
+    const levels = player.getAvailableQualityLevels?.() || [];
+    const best = ["highres", "hd2160", "hd1440", "hd1080", "hd720"].find((q) => levels.includes(q)) || "hd1080";
+    player.setPlaybackQuality(best);
+    player.setPlaybackQualityRange?.(best, "highres");
+  } catch {
+    /* ignore */
+  }
+}
+
+function startPlay(player) {
+  if (!player) return;
+  try {
+    player.mute();
+    player.playVideo();
+    forceHd(player);
+  } catch {
+    /* ignore */
+  }
+}
+
+function tryUnmute(player) {
   if (!player) return;
   try {
     player.unMute();
     player.setVolume(100);
-    player.playVideo();
+    if (player.getPlayerState?.() !== 1) player.playVideo();
   } catch {
     /* ignore */
   }
+}
+
+function markHeroReady() {
+  window.dispatchEvent(new Event("vdp-hero-ready"));
 }
 
 export default function HeroVideo() {
@@ -77,40 +121,75 @@ export default function HeroVideo() {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
+    fitHeroIframe(iframe);
+    const onResize = () => fitHeroIframe(iframe);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [yt]);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
     let player;
     let cancelled = false;
+    let readySent = false;
+    const readyOnce = () => {
+      if (readySent) return;
+      readySent = true;
+      markHeroReady();
+    };
 
     ensureYouTubeApi().then((YT) => {
       if (cancelled || !iframeRef.current) return;
       player = new YT.Player(iframeRef.current, {
+        playerVars: { autoplay: 1, mute: 1, vq: "hd1080" },
         events: {
-          onReady: (event) => playLoud(event.target),
+          onReady: (event) => startPlay(event.target),
           onStateChange: (event) => {
-            if (event.data === YT.PlayerState.PLAYING) playLoud(event.target);
+            if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.BUFFERING) {
+              forceHd(event.target);
+              readyOnce();
+            }
+            if (event.data === YT.PlayerState.UNSTARTED || event.data === YT.PlayerState.CUED) {
+              startPlay(event.target);
+            }
+          },
+          onPlaybackQualityChange: (event) => {
+            const q = event.data;
+            if (q && !/hd|highres/.test(String(q))) forceHd(event.target);
           },
         },
       });
-      playLoud(player);
+      startPlay(player);
     });
 
     const command = (func, args = []) => {
       iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), "*");
     };
-    const fallbackLoud = () => {
+    const kick = () => {
+      command("mute");
+      command("playVideo");
+      command("setPlaybackQuality", ["hd1080"]);
+      startPlay(player);
+    };
+    const unmute = () => {
       command("unMute");
       command("setVolume", [100]);
       command("playVideo");
-      playLoud(player);
+      tryUnmute(player);
     };
-    iframe.addEventListener("load", fallbackLoud);
-    window.addEventListener("pointerdown", fallbackLoud);
-    window.addEventListener("keydown", fallbackLoud);
+    iframe.addEventListener("load", kick);
+    window.addEventListener("pointerdown", unmute);
+    window.addEventListener("keydown", unmute);
+
+    const fallbackReady = window.setTimeout(readyOnce, 2800);
 
     return () => {
       cancelled = true;
-      iframe.removeEventListener("load", fallbackLoud);
-      window.removeEventListener("pointerdown", fallbackLoud);
-      window.removeEventListener("keydown", fallbackLoud);
+      window.clearTimeout(fallbackReady);
+      iframe.removeEventListener("load", kick);
+      window.removeEventListener("pointerdown", unmute);
+      window.removeEventListener("keydown", unmute);
       try {
         player?.destroy?.();
       } catch {
@@ -128,6 +207,8 @@ export default function HeroVideo() {
           id="hero-yt"
           className="hero-video"
           title={label}
+          width="1920"
+          height="1080"
           src={youtubeEmbedSrc(yt)}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
