@@ -117,7 +117,12 @@ export function analyzeRankMath(draft) {
   const text = stripHtml(html);
   const words = wordCount(html);
   const kw = primary.toLowerCase();
-  const slugKw = kw.replace(/\s+/g, "-");
+  const slugKw = kw
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
   const firstChunk = words < 300 ? text : text.slice(0, Math.max(1, Math.floor(text.length * 0.1)));
   const density = words ? (countPhrase(text, primary) / words) * 100 : 0;
   const fullUrl = `https://www.vietdungphat.com/${slug}`;

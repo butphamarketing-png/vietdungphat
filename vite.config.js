@@ -9,6 +9,7 @@ import {
   excerptFromHtml,
   injectSeoIntoHtml,
   pageUrl,
+  seoDocumentTitle,
 } from "./src/lib/seo.js";
 
 const SPA_ROUTES = [
@@ -107,11 +108,10 @@ function spaFallbackHtml() {
           seenPost.add(post.slug);
           urls.push({
             loc: `/${post.slug}`,
-            title: /việt dũng phát/i.test((post.seoTitle || post.title || "").trim())
-              ? (post.seoTitle || post.title)
-              : `${(post.seoTitle || post.title || "").trim()} | Việt Dũng Phát`,
+            title: seoDocumentTitle(post.seoTitle || post.title),
             description: (post.seoDesc || post.desc || excerptFromHtml(post.html) || PAGE_SEO["/"].description).slice(0, 160),
             image: post.image || DEFAULT_OG,
+            imageAlt: post.imageAlt || post.seoKeyword || post.title,
             type: "article",
           });
         }

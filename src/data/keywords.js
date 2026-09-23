@@ -204,15 +204,15 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
       description: `${phrase} — khảo sát, thiết kế, báo giá và thi công tại TP.HCM cùng Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.`.slice(0, 158),
       faqs: [
         {
-          q: `${phrase} hết bao nhiêu tiền?`,
+          q: "Chi phí hết bao nhiêu tiền?",
           a: "Chi phí phụ thuộc diện tích, số tầng và phạm vi hạng mục. Việt Dũng Phát báo giá sau khảo sát; đơn giá phần thô 3.950.000đ/m² và trọn gói 5.950.000đ/m² xem tại trang Báo giá.",
         },
         {
-          q: `Khảo sát ${phrase} có mất phí không?`,
+          q: "Khảo sát có mất phí không?",
           a: "Khảo sát nhà tại TP.HCM được hỗ trợ theo lịch hẹn. Nên mang sổ hồng hoặc bản vẽ hiện trạng nếu có.",
         },
         {
-          q: `Việt Dũng Phát có nhận ${phrase} ngoài thành phố không?`,
+          q: "Có nhận thi công ngoài thành phố không?",
           a: "Có — TP.HCM và các tỉnh lân cận (Bình Dương, Đồng Nai, Long An…). Liên hệ hotline để xác nhận khu vực.",
         },
       ],

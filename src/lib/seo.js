@@ -94,6 +94,15 @@ export function absolutize(url) {
   return `${SITE_URL}${path}`;
 }
 
+/** Keep SERP titles ≤60: append brand only when it still fits. */
+export function seoDocumentTitle(rawTitle, brand = "Việt Dũng Phát") {
+  const raw = String(rawTitle || "").trim();
+  if (!raw) return brand;
+  if (raw.toLowerCase().includes(brand.toLowerCase())) return raw;
+  const withBrand = `${raw} | ${brand}`;
+  return withBrand.length <= 60 ? withBrand : raw;
+}
+
 export function excerptFromHtml(html, max = 158) {
   const text = String(html || "")
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
@@ -291,19 +300,22 @@ export function pageSeoFromCms(pathname, cms) {
     ? cms.kindOf(slug)
     : { label: "Bài viết", path: "/mau-nha" };
   const rawTitle = (post.seoTitle || post.title || "").trim();
-  const title = /việt dũng phát/i.test(rawTitle) ? rawTitle : `${rawTitle} | Việt Dũng Phát`;
+  const title = seoDocumentTitle(rawTitle);
   const description = (
     post.seoDesc ||
     post.desc ||
     excerptFromHtml(post.html) ||
     PAGE_SEO["/"].description
   ).slice(0, 160);
+  const keywords = [post.seoKeyword, post.seoKeywords].filter(Boolean).join(", ") || undefined;
 
   return {
     title,
     description,
+    keywords,
     path,
     image: post.image,
+    imageAlt: post.imageAlt || post.seoKeyword || post.title,
     type: "article",
     noindex: !!post.noindex,
     article: { title: post.title, datePublished: toIsoDate(post.date) },
@@ -316,7 +328,7 @@ export function pageSeoFromCms(pathname, cms) {
   };
 }
 
-export function injectSeoIntoHtml(html, { title, description, path, image, type = "website", noindex = false, keywords }) {
+export function injectSeoIntoHtml(html, { title, description, path, image, imageAlt, type = "website", noindex = false, keywords }) {
   const url = path ? pageUrl(path) : "";
   const img = absolutize(image);
   const esc = escapeAttr;
@@ -335,7 +347,7 @@ export function injectSeoIntoHtml(html, { title, description, path, image, type 
     ["property", "og:title", title],
     ["property", "og:description", description],
     ["property", "og:image", img],
-    ["property", "og:image:alt", title],
+    ["property", "og:image:alt", imageAlt || title],
     ["property", "og:image:width", "1200"],
     ["property", "og:image:height", "630"],
     ["name", "twitter:title", title],
@@ -401,7 +413,7 @@ export function seoArticleHtml({ title, keyword }) {
 <p><img src="/services/xay-dung.jpg" alt="Thi công ${kw} tại TP.HCM" /></p>`;
 }
 
-export function applySeo({ title, description, path, image, type = "website", noindex = false, breadcrumbs, article, site, faq, reviews, keywords }) {
+export function applySeo({ title, description, path, image, imageAlt, type = "website", noindex = false, breadcrumbs, article, site, faq, reviews, keywords }) {
   const url = pageUrl(path);
   const img = absolutize(image);
   document.title = title;
@@ -416,7 +428,7 @@ export function applySeo({ title, description, path, image, type = "website", no
   upsertMeta("property", "og:description", description);
   upsertMeta("property", "og:url", url);
   upsertMeta("property", "og:image", img);
-  upsertMeta("property", "og:image:alt", title);
+  upsertMeta("property", "og:image:alt", imageAlt || title);
   upsertMeta("property", "og:image:width", "1200");
   upsertMeta("property", "og:image:height", "630");
   upsertMeta("name", "twitter:card", "summary_large_image");
@@ -459,7 +471,11 @@ export function applySeo({ title, description, path, image, type = "website", no
       "@context": "https://schema.org",
       "@type": "Article",
       headline: article.title,
-      image: img,
+      description,
+      keywords: keywords || imageAlt || undefined,
+      image: imageAlt
+        ? { "@type": "ImageObject", url: img, caption: imageAlt, name: imageAlt }
+        : img,
       inLanguage: "vi-VN",
       datePublished: article.datePublished,
       dateModified: article.datePublished,

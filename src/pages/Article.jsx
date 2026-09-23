@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
-import { cleanArticleHtml, fullImage, uniqueImages } from "../lib/media.js";
+import { FALLBACK_IMAGE, cleanArticleHtml, fullImage, keywordAlt, uniqueImages } from "../lib/media.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
@@ -39,8 +39,9 @@ export default function Article() {
     );
   }
 
-  const cover = fullImage(post.image);
-  const body = cleanArticleHtml(post.html);
+  const kw = keywordAlt(post);
+  const cover = fullImage(post.image) || FALLBACK_IMAGE;
+  const body = cleanArticleHtml(post.html, kw);
   const gallery = /<img/i.test(body)
     ? []
     : uniqueImages(post.gallery || []).filter((src) => src !== cover);
@@ -58,15 +59,13 @@ export default function Article() {
         {post.date ? <time dateTime={toDateTime(post.date)}>{post.date}</time> : null}
       </PageHero>
       <div className="page-body article-wrap">
-        {cover ? (
-          <figure className="article-cover">
-            <SmartImg src={cover} alt={post.imageAlt || post.seoKeyword || post.title} loading="eager" fetchPriority="high" />
-          </figure>
-        ) : null}
+        <figure className="article-cover">
+          <SmartImg src={cover} alt={kw} loading="eager" fetchPriority="high" />
+        </figure>
         {gallery.length ? (
           <div className="article-gallery">
             {gallery.map((src) => (
-              <SmartImg key={src} src={src} alt={post.title} />
+              <SmartImg key={src} src={src} alt={kw} />
             ))}
           </div>
         ) : null}
@@ -82,7 +81,7 @@ export default function Article() {
             <div className="grid-3">
               {related.map((p) => (
                 <Link key={p.slug} to={`/${p.slug}`} className="card">
-                  <SmartImg src={p.image} alt={p.title} />
+                  <SmartImg src={p.image || cover} alt={keywordAlt(p)} />
                   <span>{p.title}</span>
                 </Link>
               ))}

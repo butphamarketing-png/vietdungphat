@@ -48,9 +48,26 @@ export function uniqueImages(list = []) {
   return out;
 }
 
-export function cleanArticleHtml(html = "") {
+export function keywordAlt(post = {}) {
+  return String(post.seoKeyword || post.imageAlt || "").trim() || String(post.title || "Công trình Việt Dũng Phát").trim();
+}
+
+export function applyKeywordAlts(html = "", keyword = "") {
+  const kw = String(keyword || "").trim();
+  if (!html || !kw) return html;
+  const safe = kw.replace(/"/g, "&quot;");
+  return html.replace(/<img\b([^>]*)>/gi, (full, attrs) => {
+    const match = attrs.match(/alt\s*=\s*(["'])([\s\S]*?)\1/i);
+    const current = match ? match[2] : "";
+    if (current.toLowerCase().includes(kw.toLowerCase())) return full;
+    if (match) return `<img${attrs.replace(/alt\s*=\s*(["'])[\s\S]*?\1/i, `alt="${safe}"`)}>`;
+    return `<img alt="${safe}"${attrs}>`;
+  });
+}
+
+export function cleanArticleHtml(html = "", keyword = "") {
   if (!html) return "";
-  return html
+  const cleaned = html
     .replace(/<div[^>]*class="[^"]*main-detail-carousel[^"]*"[\s\S]*?(?=<div class="box-desc-detail")/i, "")
     .replace(/href="[^"]*javascript:[^"]*"/gi, 'href="#"')
     .replace(/\ssrc=(["'])([^"']+)\1/gi, (_, q, src) => ` src=${q}${fullImage(src)}${q} referrerpolicy=${q}no-referrer${q} loading=${q}lazy${q}`)
@@ -58,5 +75,6 @@ export function cleanArticleHtml(html = "") {
     .replace(/20\s*năm kinh nghiệm/gi, "thành lập năm 2014")
     .replace(/<h1(\s[^>]*)?>/gi, "<h2$1>")
     .replace(/<\/h1>/gi, "</h2>")
-    .replace(/<img([^>]*?)alt=["']\s*["']/gi, `<img$1alt="Công trình Việt Dũng Phát"`);
+    .replace(/<img([^>]*?)alt=["']\s*["']/gi, `<img$1alt="${String(keyword || "Công trình Việt Dũng Phát").replace(/"/g, "&quot;")}"`);
+  return applyKeywordAlts(cleaned, keyword);
 }

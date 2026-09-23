@@ -6,6 +6,7 @@ import { KEYWORD_GROUPS } from "../data/keywords.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
+import { FALLBACK_IMAGE, keywordAlt } from "../lib/media.js";
 
 export default function ListPage({ kind }) {
   const cms = useCms();
@@ -63,7 +64,7 @@ export default function ListPage({ kind }) {
           {(kind === "news" ? filtered : productItems).map((p, idx) =>
             kind === "news" ? (
               <Link key={p.slug} to={`/${p.slug}`} className="news-card">
-                <SmartImg src={p.image} alt={p.title} />
+                <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
                 <div>
                   {p.date ? <time>{p.date}</time> : null}
                   <h3>{p.title}</h3>

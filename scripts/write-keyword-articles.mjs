@@ -1020,10 +1020,104 @@ const GROUP_DEEP = {
   "thuong-hieu": `Việt Dũng Phát là pháp nhân kiến trúc — xây dựng nhà ở: mẫu nhà thật, bảng giá công khai, giám sát hiện trường, xưởng nội thất. Hồ sơ năng lực gửi khi bạn yêu cầu, MST trùng hợp đồng. Không bán thầu khoán trắng; việc thuê khoan cọc hay kính vẫn do công ty quản. Không nhận cầu đường, xưởng công nghiệp. Khảo sát TP.HCM theo lịch được hỗ trợ; tỉnh lân cận xác nhận logistics trước.`,
 };
 
-function relatedLinks(item) {
+function relatedOf(item) {
   const same = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug).slice(0, 3);
   const others = KEYWORDS.filter((k) => k.group !== item.group).filter((_, i) => i % 17 === item.phrase.length % 17).slice(0, 2);
-  return [...same, ...others].map((k) => `<a href="${keywordNewsPath(k)}">${esc(k.phrase)}</a>`).join(", ");
+  return [...same, ...others];
+}
+
+function relatedLinks(item) {
+  return relatedOf(item)
+    .map((k) => `<a href="${keywordNewsPath(k)}">${esc(k.phrase)}</a>`)
+    .join(", ");
+}
+
+function splitParas(text) {
+  const parts = String(text || "")
+    .split(/(?<=\.)\s+/)
+    .filter(Boolean);
+  if (parts.length < 2) return [text];
+  const mid = Math.ceil(parts.length / 2);
+  return [parts.slice(0, mid).join(" "), parts.slice(mid).join(" ")];
+}
+
+function textOf(html) {
+  return String(html)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function countKw(html, kw) {
+  const t = textOf(html).toLowerCase();
+  const n = String(kw).toLowerCase();
+  let c = 0;
+  let i = 0;
+  while (n && (i = t.indexOf(n, i)) !== -1) {
+    c += 1;
+    i += n.length;
+  }
+  return c;
+}
+
+function replaceLastTextKw(html, kw, repl) {
+  const lower = html.toLowerCase();
+  const needle = String(kw).toLowerCase();
+  const start = html.indexOf('id="ky-thuat"');
+  let last = -1;
+  let search = 0;
+  while (needle) {
+    const i = lower.indexOf(needle, search);
+    if (i === -1) break;
+    const before = html.lastIndexOf("<", i);
+    const after = html.lastIndexOf(">", i);
+    const inTag = before > after;
+    if (!inTag && i > start) last = i;
+    search = i + needle.length;
+  }
+  if (last === -1) return html;
+  return html.slice(0, last) + repl + html.slice(last + kw.length);
+}
+
+function insertAfterId(html, id, para) {
+  const mark = `id="${id}"`;
+  const start = html.indexOf(mark);
+  if (start === -1) return `${html}\n<p>${para}</p>`;
+  const close = html.indexOf("</p>", start);
+  if (close === -1) return `${html}\n<p>${para}</p>`;
+  return `${html.slice(0, close + 4)}\n<p>${para}</p>${html.slice(close + 4)}`;
+}
+
+function tuneDensity(html, kw) {
+  const pads = [
+    ["chi-phi", `Đơn giá m² chỉ là mốc; từng hồ sơ <strong>${esc(kw)}</strong> vẫn đo lại móng, số tầng, hẻm.`],
+    ["sai-lam", `Hợp đồng nên ghi rõ phạm vi <strong>${esc(kw)}</strong>, vật tư và cách tính m² trước khi tạm ứng.`],
+    ["luu-y", `Gia chủ nên xem công trình đang làm trước khi chốt <strong>${esc(kw)}</strong>.`],
+    ["phu-hop", `Khảo sát <strong>${esc(kw)}</strong> tại TP.HCM theo lịch; mang sổ hồng hoặc ảnh hiện trạng nếu có.`],
+    ["quy-trinh", `Việt Dũng Phát gửi dự toán và tiến độ cho <strong>${esc(kw)}</strong> sau khi đo hiện trạng.`],
+    ["ky-thuat", `Nhật ký hiện trường giúp đối chiếu <strong>${esc(kw)}</strong> khi nghiệm thu hạng mục ẩn.`],
+    ["faq", `Hotline 098.4444.504 nếu cần trao đổi tiến độ <strong>${esc(kw)}</strong>.`],
+    ["tong-quan", `Phụ lục đá, mái, thang máy không gộp chung nếu chưa thống nhất trong gói <strong>${esc(kw)}</strong>.`],
+  ];
+  let out = html;
+  let pad = 0;
+  for (let i = 0; i < 16; i++) {
+    const words = textOf(out).split(/\s+/).filter(Boolean).length;
+    const n = countKw(out, kw);
+    const d = words ? (n / words) * 100 : 0;
+    if (d >= 1.05 && d <= 1.45) break;
+    if (d > 1.45) {
+      const next = replaceLastTextKw(out, kw, "hạng mục này");
+      if (next === out) break;
+      out = next;
+      continue;
+    }
+    if (pad >= pads.length) break;
+    out = insertAfterId(out, pads[pad][0], pads[pad][1]);
+    pad += 1;
+  }
+  return out;
 }
 
 function article(item, index) {
@@ -1033,8 +1127,10 @@ function article(item, index) {
   const img = (n) => IMGS[(index + n) % IMGS.length];
   const steps = c.steps.map((s, i) => `${i + 1}. ${s}`).join(" ");
   const rel = relatedLinks(item);
+  const related = relatedOf(item).slice(0, 2);
+  const deep = splitParas(GROUP_DEEP[item.group]);
 
-  return `<p><strong>${esc(kw)}</strong> — ${esc(c.lead)}</p>
+  const html = `<p><strong>${esc(kw)}</strong> — ${esc(c.lead)}</p>
 <nav class="toc"><strong>Mục lục</strong>
 <ol>
 <li><a href="#tong-quan">${esc(kw)}: việc cần hiểu</a></li>
@@ -1047,44 +1143,51 @@ function article(item, index) {
 <li><a href="#faq">Câu hỏi thường gặp</a></li>
 </ol>
 </nav>
+<p>Đọc theo mục lục phía trên để tới đúng phần quy trình, chi phí hoặc rủi ro.</p>
 <h2 id="tong-quan">${esc(kw)}: việc cần hiểu</h2>
 <p>${esc(c.gist)}</p>
-<p>Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thành lập năm 2014, nhận khảo sát, thiết kế và thi công nhà ở — không bán thầu. Bạn đang đọc đúng trang <strong>${esc(kw)}</strong>, không phải bài viết chung cho mọi dịch vụ.</p>
-<p>Gia chủ tìm <strong>${esc(kw)}</strong> thường đã có đất hoặc nhà hiện trạng, cần một đầu mối chịu bản vẽ, hiện trường và bảo hành. Việt Dũng Phát trả lời đúng phạm vi này, không nhận việc ngoài nhà ở dân dụng.</p>
-<h2 id="ky-thuat">Kỹ thuật và hiện trường khi làm ${esc(kw)}</h2>
-<p>${esc(GROUP_DEEP[item.group])}</p>
+<p>Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thành lập năm 2014: khảo sát, thiết kế và thi công nhà ở — không bán thầu. Bài này đi đúng việc <strong>${esc(kw)}</strong>, không viết chung cho mọi gói.</p>
+<h2 id="ky-thuat">Kỹ thuật và hiện trường</h2>
+${deep.map((p) => `<p>${esc(p)}</p>`).join("\n")}
 <p>${esc(c.extra)}</p>
-<p>Hiện trường ${esc(kw)} cần nhật ký: ảnh thép trước khi đổ, biên bản hạng mục ẩn, người phụ trách có tên. Không có các mốc này, gia chủ khó đối chiếu khi tường thấm hay lệch kích thước.</p>
+<p>Hiện trường cần nhật ký: ảnh thép trước khi đổ, biên bản hạng mục ẩn, người phụ trách có tên. Không có các mốc này, gia chủ khó đối chiếu khi tường thấm hay lệch kích thước.</p>
 <p><img src="${img(0)}" alt="${esc(kw)}" /></p>
-<h2 id="phu-hop">Khi nào nên triển khai ${esc(kw)}?</h2>
+<h2 id="phu-hop">Khi nào nên triển khai?</h2>
 <p>${esc(c.when)}</p>
-<p>Mang sổ hồng / giấy đất, ảnh hiện trạng và số người ở khi gặp KTS. Thiếu thông tin này, ${esc(kw)} chỉ là ước lượng trên giấy.</p>
-<p>Nếu ngân sách hoặc tiến độ chưa khớp, Việt Dũng Phát nói thẳng phần nào làm trước — không ép đủ gói. <strong>${esc(kw)}</strong> vẫn có thể tách giai đoạn khi hợp đồng ghi rõ mối nối.</p>
-<p><img src="${img(1)}" alt="${esc(kw)} — khảo sát hiện trạng Việt Dũng Phát" /></p>
-<h2 id="quy-trinh">Quy trình làm ${esc(kw)}</h2>
+<p>Mang sổ hồng / giấy đất, ảnh hiện trạng và số người ở khi gặp KTS. Thiếu thông tin này, dự toán chỉ là ước lượng trên giấy.</p>
+<p>Nếu ngân sách hoặc tiến độ chưa khớp, Việt Dũng Phát nói thẳng phần nào làm trước — không ép đủ gói. Có thể tách giai đoạn khi hợp đồng ghi rõ mối nối.</p>
+<p><img src="${img(1)}" alt="${esc(kw)}" /></p>
+<h2 id="quy-trinh">Quy trình làm việc</h2>
 <p>${esc(steps)}</p>
 <p>Từng mốc có biên bản. Đặt lịch tại <a href="/lien-he">trang liên hệ</a>, xem <a href="/mau-nha">mẫu nhà</a> và <a href="/gioi-thieu">giới thiệu công ty</a>. Dịch vụ liên quan: <a href="${item.to}">${esc(item.label)}</a>.</p>
-<p><img src="${img(2)}" alt="Thi công ${esc(kw)}" /></p>
-<h2 id="chi-phi">Chi phí ${esc(kw)}</h2>
+<p><img src="${img(2)}" alt="${esc(kw)}" /></p>
+<h2 id="chi-phi">Chi phí và cách tính</h2>
 <p>${esc(c.cost)}</p>
 <p>Đối chiếu <a href="/bao-gia">bảng giá xây dựng Việt Dũng Phát</a>. Nội thất xưởng xem <a href="/san-pham">combo nội thất</a>.</p>
-<p>Hai bên thống nhất cách tính m² (tim tường hay thông thủy) và danh mục nằm trong ${esc(kw)} trước khi tạm ứng. Phụ lục đá, mái, thang máy, tủ bếp không giấu vào đơn giá m².</p>
-<p><img src="${img(3)}" alt="Báo giá ${esc(kw)} minh bạch 2026" /></p>
-<h2 id="sai-lam">Sai lầm hay gặp khi tìm ${esc(kw)}</h2>
-<p>Chọn thầu chỉ vì giá thấp hơn thị trường 20–30% mà hợp đồng một trang A4. Với <strong>${esc(kw)}</strong>, thiếu BOQ và thương hiệu vật tư là nguồn phát sinh lớn nhất.</p>
+<p>Hai bên thống nhất cách tính m² (tim tường hay thông thủy) và danh mục trước khi tạm ứng. Phụ lục đá, mái, thang máy, tủ bếp không giấu vào đơn giá m².</p>
+<p><img src="${img(3)}" alt="${esc(kw)}" /></p>
+<h2 id="sai-lam">Sai lầm hay gặp</h2>
+<p>Chọn thầu chỉ vì giá thấp hơn thị trường 20–30% mà hợp đồng một trang A4. Thiếu BOQ và thương hiệu vật tư là nguồn phát sinh lớn nhất.</p>
 <p>Sai lầm thứ hai: chốt phối cảnh đẹp rồi bỏ qua phép, PCCC, hàng xóm. Việt Dũng Phát đối chiếu quy hoạch trước khi hứa mặt đứng. Sai lầm thứ ba: đổi gạch, sơn, công năng giữa chừng mà không ký phụ lục — tiến độ và giá sẽ lệch.</p>
-<h2 id="luu-y">Rủi ro khi làm ${esc(kw)}</h2>
-<p>Chốt phạm vi, vật tư và cách tính m² trước khi tạm ứng lớn. Giấy phép, PCCC, an toàn lao động không bỏ. Tra cứu thủ tục tại <a href="https://dichvucong.gov.vn">Cổng Dịch vụ công Quốc gia</a>.</p>
+${
+  related.length
+    ? `<p>Gia chủ xem thêm ${related.map((k) => `<a href="${keywordNewsPath(k)}">${esc(k.phrase)}</a>`).join(" và ")} nếu đang so gói liên quan.</p>`
+    : ""
+}
+<h2 id="luu-y">Rủi ro cần chốt trước</h2>
+<p>Chốt phạm vi, vật tư và cách tính m² trước khi tạm ứng lớn. Giấy phép, PCCC, an toàn lao động không bỏ.</p>
+<p>Tra cứu thủ tục tại <a href="https://dichvucong.gov.vn">Cổng Dịch vụ công Quốc gia</a>. Giữ 5–10% giá trị đến khi hết khiếm khuyết nhỏ.</p>
+<p>Trước khi ký: xem công trình đang làm, hỏi tên giám sát, đối chiếu MST trên hợp đồng, và ghi rõ móng — tum — cửa có nằm trong đơn giá m² hay phụ lục. Ảnh nghiệm thu ẩn nên gửi gia chủ trong tuần đổ sàn, không chờ đến lúc ốp gạch mới mở nhật ký.</p>
 <p>Bài cùng cụm: ${rel}.</p>
-<h2 id="faq">Câu hỏi thường gặp về ${esc(kw)}</h2>
+<h2 id="faq">Câu hỏi thường gặp</h2>
 <h3>${esc(c.faq[0])}</h3>
 <p>${esc(c.faq[1])}</p>
-${item.faqs
-  .map((f) => `<h3>${esc(f.q)}</h3>\n<p>${esc(f.a)}</p>`)
-  .join("\n")}
+${item.faqs.map((f) => `<h3>${esc(f.q)}</h3>\n<p>${esc(f.a)}</p>`).join("\n")}
 <h3>${esc(kw)} mất bao lâu?</h3>
-<p>Phụ thuộc phép, diện tích, số tầng và phạm vi. Sau khảo sát bạn nhận tiến độ theo giai đoạn cho ${esc(kw)} — không hứa ngày bàn giao khi chưa đo hiện trạng.</p>
+<p>Phụ thuộc phép, diện tích, số tầng và phạm vi. Sau khảo sát bạn nhận tiến độ theo giai đoạn — không hứa ngày bàn giao khi chưa đo hiện trạng.</p>
 <p>Cần trao đổi: <a href="/lien-he#dat-lich">đặt lịch hẹn</a> trên website Việt Dũng Phát.</p>`;
+
+  return tuneDensity(html, kw);
 }
 
 const out = {};

@@ -41,21 +41,33 @@ function dateOf(i) {
   return `${dd}/${mm}/${d.getUTCFullYear()}`;
 }
 
-const TITLE = [
-  (kw) => `${cap(kw)}: nên chọn nhà thầu uy tín 2026`,
-  (kw) => `${cap(kw)} — tránh sai lầm, giá minh bạch 2026`,
-  (kw) => `${cap(kw)}: quy trình tốt và chi phí 2026`,
-  (kw) => `${cap(kw)}: yên tâm thi công trọn gói 2026`,
-  (kw) => `${cap(kw)}: checklist nên biết trước khi làm 2026`,
-];
+function seoTitleOf(kw) {
+  const head = cap(kw);
+  const options = [
+    `${head}: nên chọn nhà uy tín 2026`,
+    `${head}: nên làm, giá uy tín 2026`,
+    `${head}: nên làm uy tín 2026`,
+    `${head}: nên uy tín 2026`,
+    `${head} — nên uy tín 2026`,
+  ];
+  const hasKw = (t) => t.toLowerCase().includes(kw.toLowerCase());
+  const inHalf = (t) => t.slice(0, Math.ceil(t.length / 2)).toLowerCase().includes(kw.toLowerCase());
+  const fit = options.filter((t) => t.length <= 60 && hasKw(t));
+  return fit.find(inHalf) || fit[0] || head.slice(0, 60);
+}
+
+function seoDescOf(kw) {
+  const head = cap(kw);
+  return `${head} — khảo sát, thiết kế, báo giá minh bạch 2026 tại Việt Dũng Phát. Tham khảo phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m².`.slice(0, 158);
+}
 
 const posts = KEYWORDS.map((item, index) => {
   const slug = newsSlug(item);
   const html = articles[item.slug];
   if (!html) throw new Error(`Missing article HTML for ${item.slug}`);
-  const title = TITLE[index % TITLE.length](item.phrase);
-  const seoTitle = /việt dũng phát/i.test(title) ? title : `${title} | Việt Dũng Phát`;
-  const desc = `${cap(item.phrase)} — kinh nghiệm, quy trình và chi phí tham khảo 2026 tại Việt Dũng Phát (phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m²).`.slice(0, 158);
+  const seoTitle = seoTitleOf(item.phrase);
+  const title = seoTitle;
+  const desc = seoDescOf(item.phrase);
   const related = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug)
     .slice(0, 2)
     .map((k) => k.phrase)
