@@ -42,11 +42,11 @@ function dateOf(i) {
 }
 
 const TITLE = [
-  (kw) => `${cap(kw)}: kinh nghiệm gia chủ TP.HCM 2026`,
-  (kw) => `${cap(kw)} — checklist trước khi chọn nhà thầu`,
-  (kw) => `Cập nhật ${kw}: quy trình, chi phí và lưu ý`,
-  (kw) => `${cap(kw)}: sai lầm hay gặp và cách xử lý`,
-  (kw) => `Gia chủ hỏi gì khi tìm ${kw}?`,
+  (kw) => `${cap(kw)}: nên chọn nhà thầu uy tín 2026`,
+  (kw) => `${cap(kw)} — tránh sai lầm, giá minh bạch 2026`,
+  (kw) => `${cap(kw)}: quy trình tốt và chi phí 2026`,
+  (kw) => `${cap(kw)}: yên tâm thi công trọn gói 2026`,
+  (kw) => `${cap(kw)}: checklist nên biết trước khi làm 2026`,
 ];
 
 const posts = KEYWORDS.map((item, index) => {
@@ -56,6 +56,10 @@ const posts = KEYWORDS.map((item, index) => {
   const title = TITLE[index % TITLE.length](item.phrase);
   const seoTitle = /việt dũng phát/i.test(title) ? title : `${title} | Việt Dũng Phát`;
   const desc = `${cap(item.phrase)} — kinh nghiệm, quy trình và chi phí tham khảo 2026 tại Việt Dũng Phát (phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m²).`.slice(0, 158);
+  const related = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug)
+    .slice(0, 2)
+    .map((k) => k.phrase)
+    .join(", ");
   return {
     slug,
     keywordSlug: item.slug,
@@ -68,6 +72,7 @@ const posts = KEYWORDS.map((item, index) => {
     html,
     gallery: [],
     seoKeyword: item.phrase,
+    seoKeywords: related,
     seoTitle,
     seoDesc: desc,
     desc,

@@ -871,7 +871,7 @@ const COPY = {
   },
   "cong-ty-viet-dung-phat": {
     lead: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thiết kế, thi công, cải tạo nhà ở tại TP.HCM và lân cận — thế mạnh nhà phố, tân cổ điển, không bán thầu.",
-    gist: "Hai mươi năm làm nhà dân dụng: khảo sát, hồ sơ, giám sát, xưởng nội thất. Gia chủ xem mẫu nhà, bảng giá, hồ sơ năng lực trên website rồi đặt lịch. Không phải tổng thầu công nghiệp.",
+    gist: "Thành lập năm 2014, làm nhà dân dụng: khảo sát, hồ sơ, giám sát, xưởng nội thất. Gia chủ xem mẫu nhà, bảng giá, hồ sơ năng lực trên website rồi đặt lịch. Không phải tổng thầu công nghiệp.",
     when: "Cần một pháp nhân cho nhà ở. Không phù hợp nếu bạn tìm thầu xưởng, cầu, hạ tầng.",
     steps: ["Xem giới thiệu", "Mẫu nhà", "Khảo sát", "Báo giá", "Hợp đồng thi công"],
     cost: "Niêm yết 3.950.000 / 5.950.000đ/m² + phụ lục. Khảo sát theo lịch, TP.HCM được hỗ trợ.",
@@ -905,6 +905,100 @@ const COPY = {
     extra: "Điều khoản HĐ: không chuyển nhượng HĐ không đồng ý bằng văn bản.",
     faq: ["Thuê đội phụ có phải bán thầu?", "Thuê khoan/cọc có quản lý khác khoán trắng cả nhà. Hỏi quyền điều phối."],
   },
+  "xay-nha-hoan-thien-tphcm": {
+    lead: "Xây nhà hoàn thiện TP.HCM là lớp sau phần thô: ốp lát, sơn, trần, cửa, thiết bị vệ sinh, điện nước nổi — để nhà ở được, chưa gồm tủ bếp đóng xưởng nếu không ghi phụ lục.",
+    gist: "Ranh giới hay lệch: có thầu gộp cửa gỗ vào hoàn thiện, có bên tính riêng đá bếp. Việt Dũng Phát tách danh mục hoàn thiện trước khi ốp: gạch, sơn, trần, thiết bị. Phào tân cổ điển, đá mặt tiền, thang máy không nằm trong đơn giá m² hoàn thiện trừ khi HĐ ghi. Nhà phố hẻm cần lịch vận chuyển gạch, tránh kẹt giờ cấm xe.",
+    when: "Đã có phần thô đạt (sàn phẳng, ống đúng), hoặc thuê Việt Dũng Phát làm tiếp sau đội khác — lúc đó phải khảo sát thô cũ, không nhận chìm lỗi.",
+    steps: ["Nghiệm thu phần thô", "Chốt mẫu gạch sơn cửa", "Chống thấm lại sàn ướt", "Ốp — sơn — trần", "Lắp thiết bị, vệ sinh, bàn giao"],
+    cost: "Mốc hoàn thiện tham khảo từ 1.300.000đ/m² (2026), chưa đá hoa, cửa gỗ gõ, thiết bị cao cấp. Cộng với thô 3.950.000đ ra gần gói trọn gói 5.950.000đ/m² nếu cùng phạm vi.",
+    extra: "Đổi mẫu giữa chừng là nguồn đội giá. Giữ mẫu gạch, mã sơn trong biên bản. Trần thạch cao ẩm nhà phố phải có khung chống võng.",
+    faq: ["Hoàn thiện có gồm nội thất không?", "Không. Tủ, giường, kệ tivi thuộc xưởng nội thất — phụ lục riêng."],
+  },
+  "biet-thu-tan-co-dien-mai-thai": {
+    lead: "Biệt thự tân cổ điển mái Thái kết hợp phào, cột, đế đá với mái dốc ngói — thoát nước mưa tốt, tỷ lệ mái phải khớp mặt đứng kẻo thành nhà hộp đội nón.",
+    gist: "Mái Thái không phải chỉ lợp tôn giả ngói. Việt Dũng Phát tính độ dốc, xà gồ hoặc BTCT + ngói, cách nhiệt, máng xối ẩn. Mặt tiền vẫn tân cổ điển: sảnh, con tiện, đèn vàng. Video giới thiệu trên website đúng dạng biệt thự sân vườn mái Thái — gia chủ xem tỷ lệ trước khi vẽ.",
+    when: "Lô đất đủ sâu để mái không đè lô bên, hoặc nhà vườn. Nhà phố hẹp 5 m ít khi đội mái Thái full vì tỷ lệ lệch.",
+    steps: ["Chốt độ dốc và vật liệu mái", "Phối cảnh 3D mặt đứng + mái", "Kết cấu vì kèo / sàn tum", "Phần thô", "Lợp, chống thấm, phào"],
+    cost: "Đơn giá m² cộng phụ lục mái ngói, xà, cách nhiệt. Đắt hơn mái tum bằng. Không so giá với nhà phố mái bằng.",
+    extra: "Gió bão và ngói rơi: liên kết ngói, gờ chắn. Trần giả dưới mái phải có thông gió, tránh nóng tầng trên.",
+    faq: ["Mái Thái có làm tân cổ điển được không?", "Được nếu tỷ lệ mái — thân — đế cân. KTS duyệt phối cảnh, không để thợ tự cắt độ dốc."],
+  },
+  "thiet-ke-biet-thu-tan-co-dien-2-tang": {
+    lead: "Thiết kế biệt thự tân cổ điển 2 tầng là bài tỷ lệ: sảnh, cột, tầng đế đá, tầng thân sơn, mái hoặc tum — không nhân đôi mặt nhà phố.",
+    gist: "Hai tầng biệt thự cần sảnh cao, cầu thang đại hoặc đôi, phòng khách thông, bếp tách. Việt Dũng Phát vẽ công năng rồi mới đắp phào: master trên, khách — bếp dưới, gara và kho phụ. 3D mặt đứng chốt trước khi xin phép, để khỏi cắt cột trên giấy.",
+    when: "Đất từ khoảng 8×16 hoặc 10×20, gia đình một thế hệ hoặc bố mẹ ở dưới. Ba tầng là bài khác.",
+    steps: ["Khảo sát đất và hướng", "Mặt bằng 2 tầng", "Phối cảnh tân cổ điển", "Hồ sơ phép + thi công", "Dự toán"],
+    cost: "Phí thiết kế theo m² sàn hoặc gói. Thi công sau đó theo thô / trọn gói. Biệt thự 2 tầng không lấy đơn giá nhà phố 5×20.",
+    extra: "Chừa thang máy nếu chủ nhà lớn tuổi. Ban công con tiện phải đủ cao quy chuẩn, không cắt sắt cho đẹp ảnh.",
+    faq: ["2 tầng có làm mansard không?", "Có — tầng áp mái tính công năng riêng, cách nhiệt kỹ. Không nhét phòng ngủ nếu quá nóng."],
+  },
+  "biet-thu-tan-co-dien-san-vuon": {
+    lead: "Biệt thự tân cổ điển sân vườn cần quy hoạch nhà — sân — hàng rào trước khi đào móng: lối đá, đèn, cây không được để máy móc xong rồi mới nghĩ.",
+    gist: "Sân trước làm tỷ lệ mặt tiền; sân sau bếp, phơi, kho. Việt Dũng Phát chừa lối xe công trường, làm hàng rào và cổng sau phần thô. Cột sảnh, đài, tượng chỉ đặt khi nền đủ. Thoát nước sân không đổ vào móng.",
+    when: "Lô đất còn chừa sân thật (không phải 50 cm hè). Nhà phố “biệt thự hóa” thì làm ngôn ngữ mặt đứng, không gọi là sân vườn.",
+    steps: ["Quy hoạch tổng mặt bằng", "Cốt sân và thoát nước", "Nhà phần thô", "Hàng rào — cổng", "Cảnh quan cuối"],
+    cost: "Nhà theo m²; sân, đá lối, hồ, hàng rào tính hạng mục. Đừng gộp vào đơn giá xây để rồi cắt cây.",
+    extra: "Cây lớn gần móng gây nứt. Tưới và đèn 12V âm đất chốt ống trước khi lát đá.",
+    faq: ["Làm sân trước hay nhà trước?", "Kết cấu nhà và cốt sân chốt cùng lúc; lát đá và cây làm cuối để xe ben còn vào."],
+  },
+  "xay-nha-thanh-pho-thu-duc": {
+    lead: "Xây nhà thành phố Thủ Đức (gồm khu Trường Thọ, Q9 cũ, Q2 cũ) khác nội thành ở đất nền, BQL khu dân cư, và đường ống hạ tầng chưa đồng đều.",
+    gist: "Việt Dũng Phát đặt văn phòng tại Thủ Đức, khảo sát gần: Kha Vạn Cân, Vinhomes Grand Park, Nguyễn Duy Trinh. Đất nền phải xem cốt, điện hạ thế, lộ giới đường mới. Nhà phố hẻm Thủ Đức vẫn tính bơm bê tông như Gò Vấp.",
+    when: "Sổ đỏ TP. Thủ Đức, hoặc nhà trong khu compound cần đăng ký giờ xe. Không nhận đất tranh chấp ranh.",
+    steps: ["Xem sổ và quy hoạch phường", "Khảo sát cốt và hẻm", "Thiết kế — phép", "Thi công", "Hoàn công nếu cần"],
+    cost: "Áp đơn giá m² thành phố + logistics. Khu xa trung tâm đôi khi rẻ vận chuyển cát đá hơn hẻm trung tâm.",
+    extra: "Grand Park và các khu có BQL: xin lịch cần cẩu, giờ ồn. Mang nội quy khu khi gặp KTS.",
+    faq: ["Thủ Đức có tính giá tỉnh không?", "Không — là TP.HCM. Giá sát bảng thành phố, khác Dĩ An / Biên Hòa ở phép."],
+  },
+  "xay-nha-quan-9": {
+    lead: "Xây nhà quận 9 (nay thuộc TP. Thủ Đức) vẫn là cụm gia chủ hay tìm: Long Trường, Long Phước, Long Thạnh Mỹ, Tăng Nhơn Phú — đất nền và nhà vườn nhiều hơn nhà ống trung tâm.",
+    gist: "Việt Dũng Phát nhận khảo sát Q9 cũ: xem cốt nền, điện, đường chưa trải. Showroom gần Vinhomes Grand Park tiện gặp chủ nhà khu này. Mặt tiền hay làm tân cổ điển hoặc mái Thái sân vườn.",
+    when: "Đất Q9/Thủ Đức đã có sổ, đường vào xe ben được hoặc chấp nhận bơm xa. Đất nông nghiệp chưa chuyển thì tư vấn pháp lý trước, không đào móng.",
+    steps: ["Đối chiếu địa chỉ mới (phường Thủ Đức)", "Khảo sát", "Hồ sơ phép đúng đơn vị", "Thi công", "Bàn giao"],
+    cost: "Đơn giá TP.HCM. Nhà vườn Q9 cộng hàng rào, sân, giếng — không gộp m² nhà.",
+    extra: "Tên phường đổi sau sáp nhập: giấy phép nộp đúng cơ quan mới. KTS kiểm trước khi vẽ.",
+    faq: ["Q9 còn tồn tại trên giấy tờ?", "Hành chính đã vào TP. Thủ Đức. Gia chủ vẫn tìm “xây nhà quận 9” — ta làm đúng địa chỉ mới trên phép."],
+  },
+  "xay-nha-long-an": {
+    lead: "Xây nhà Long An (Đức Hòa, Bến Lức, Cần Giuộc, Tân An…) cần tính nền yếu, triều, đường tỉnh và phép sở xây dựng tỉnh — không copy hồ sơ nhà phố Thủ Đức.",
+    gist: "Việt Dũng Phát nhận khi khảo sát logistics được: xe ben, trạm điện, khoảng cách đội. Móng cọc, cốt nền cao hơn TP.HCM là chuyện thường. Tân cổ điển vẫn làm được nếu KTS tính độ ẩm và muối.",
+    when: "Nhà ở, nhà vườn của gia chủ TP.HCM có đất Long An. Không nhận xưởng, trang trại ngoài năng lực dân dụng.",
+    steps: ["Khảo sát nền và đường", "Phép tỉnh / huyện", "Móng theo địa chất", "Thân nhà", "Hoàn thiện chịu ẩm"],
+    cost: "Đơn giá m² cộng đi lại, móng cọc, nâng cốt. Báo sau khảo sát, không chốt chat.",
+    extra: "Mùa mưa đường huyện ngập: tiến độ đổ sàn phải chừa buffer. Chống thấm chân tường quan trọng hơn nhà nội thành.",
+    faq: ["Có làm cả thiết kế không?", "Có. Hồ sơ phép theo quy định Long An, không nộp bản vẽ TP.HCM."],
+  },
+  "xuong-noi-that-thu-duc": {
+    lead: "Xưởng nội thất Thủ Đức của Việt Dũng Phát đóng tủ, giường, phào theo bản vẽ — gia chủ xem mẫu tại xưởng 1750 Nguyễn Duy Trinh trước khi sơn đại trà.",
+    gist: "Khác cửa hàng bán sẵn: đo tường thật, CNC phào tân cổ điển, sơn 2k. Căn hộ Grand Park / Thủ Đức gần xưởng, lắp nhanh hơn chở từ tỉnh. Nhà phố nội thành vẫn nhận, lịch xe tải theo giờ cấm.",
+    when: "Cần đóng theo tường, không mua tủ lệch 3 cm. Combo căn hộ hoặc biệt thự tân cổ điển.",
+    steps: ["Đo hiện trạng", "Shop drawing", "Duyệt mẫu sơn", "Sản xuất xưởng", "Lắp tại nhà"],
+    cost: "Báo theo mét dài / bộ. Không gộp vào đơn giá xây m².",
+    extra: "Giữ mẫu màu. Bảo hành ray, bản lề, sơn. Điện âm tủ phải chốt trước khi đóng.",
+    faq: ["Tham xưởng có hẹn không?", "Nên đặt lịch. Địa chỉ xưởng trên trang Liên hệ — không phải kho bán lẻ."],
+  },
+  "kien-truc-xay-dung-viet-dung-phat": {
+    lead: "Kiến trúc xây dựng Việt Dũng Phát là một pháp nhân ôm cả thiết kế và thi công nhà ở — KTS và hiện trường cùng chịu một hợp đồng, không đẩy lỗi qua lại.",
+    gist: "Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thành lập 2014: nhà phố, biệt thự tân cổ điển, phần thô, trọn gói, cải tạo, xưởng nội thất. Hồ sơ năng lực, mẫu nhà, bảng giá trên website. Không nhận cầu đường, nhà xưởng công nghiệp.",
+    when: "Gia chủ muốn một đầu mối từ ý tưởng đến chìa khóa. Tự tách KTS thuê ngoài + thầu xây vẫn được, nhưng mối nối do bạn chịu.",
+    steps: ["Xem giới thiệu và mẫu", "Khảo sát", "Thiết kế", "Thi công", "Bảo hành"],
+    cost: "Thiết kế tính gói hoặc m²; xây theo 3.950.000 / 5.950.000đ/m² + phụ lục. Khảo sát TP.HCM theo lịch được hỗ trợ.",
+    extra: "Hotline 098.4444.504. Văn phòng Thủ Đức, showroom Grand Park, xưởng Nguyễn Duy Trinh. MST trùng hợp đồng.",
+    faq: ["Khác công ty chỉ thiết kế?", "Có đội thi công và giám sát. Bản vẽ không bán rồi bỏ — hiện trường đọc đúng hồ sơ."],
+  },
+};
+
+const COPY_ALIAS = {
+  "xay-nha-1-tret-1-lau-tphcm": "xay-nha-1-tret-1-lau",
+  "xay-nha-1-tret-2-lau-tphcm": "xay-nha-1-tret-2-lau",
+  "xay-nha-khong-phat-sinh-chi-phi": "xay-nha-khong-phat-sinh",
+  "mau-biet-thu-tan-co-dien-2026": "mau-biet-thu-tan-co-dien",
+  "kien-truc-su-thiet-ke-nha-tphcm": "kien-truc-su-thiet-ke-nha",
+  "thi-cong-noi-that-tron-goi-tphcm": "thi-cong-noi-that-tron-goi",
+  "gia-xay-nha-phan-tho-2026": "gia-xay-nha-phan-tho-3-950-000",
+  "gia-xay-nha-tron-goi-2026": "gia-xay-nha-tron-goi-5-950-000",
+  "thu-tuc-cap-phep-xay-dung-tphcm": "thu-tuc-cap-phep-xay-dung",
+  "chong-tham-nha-pho-tphcm": "chong-tham-nha-pho",
 };
 
 function esc(s) {
@@ -921,7 +1015,7 @@ const GROUP_DEEP = {
   "cai-tao": `Cải tạo khác xây mới ở hạng mục ẩn: nứt, mối, thấm, điện cũ, móng cấp 4. Khảo sát trước, đập sau. Việt Dũng Phát ưu tiên xử lý gốc chống thấm và kết cấu, rồi mới sơn ốp mặt tiền. Nâng tầng phải đủ phép và đủ tải — hai điều độc lập. Sửa trong hẻm Gò Vấp, Bình Thạnh, Thủ Đức cần giờ ồn, xe ba gác, biên bản nhà liền kề. Ở vừa sửa thì chừa bếp WC tạm, cuốn chiếu từng khu.`,
   "noi-that": `Nội thất nhà phố và biệt thự đóng theo tường thật, không mua tủ sẵn rồi che khe 3 cm. Trình tự: phần ướt xong → trần → sàn → tủ → đá bếp. Xưởng Việt Dũng Phát đọc shop drawing, CNC phào tân cổ điển, sơn 2k hoặc melamine tùy chỗ ẩm. Căn hộ dùng combo gọn, xin lịch ban quản lý. Bảo hành ray, bản lề, sơn; giữ mẫu màu. Điện lạnh âm trần phải chốt trước khi đóng trần.`,
   "bao-gia": `Mọi con số m² chỉ đúng khi cùng quy ước đo (tim tường / thông thủy), cùng danh mục thô hay hoàn thiện, cùng năm niêm yết. Mốc 2026: 3.950.000đ phần thô và 5.950.000đ trọn gói — chưa cọc đặc biệt, đá hoa, thang máy, tủ bếp xưởng. Cải tạo không dùng một đơn giá m² cho mọi nhà. Nhà 5×20 ba tầng là ~300 m² sàn, không phải 100 m² đất. Hợp đồng ghi thời điểm chốt thép xi măng.`,
-  "khu-vuc": `Mỗi quận huyện khác hẻm, nền, phép và giờ xe ben. Thủ Đức, Q7, Bình Tân hay gặp đất nền và BQL; Gò Vấp, Tân Bình, Tân Phú là nhà ống hẻm; Nhà Bè, Bình Chánh, một phần Bình Thạnh phải tính triều và cốt; Dĩ An, Thuận An, Biên Hòa là phép tỉnh. Việt Dũng Phát khảo sát tại chỗ trước khi nhận — không khoán trắng xã xa. Hàng xóm, lộ giới, trạm điện nước nằm trong checklist, không chỉ đơn giá m².`,
+  "khu-vuc": `Mỗi quận huyện khác hẻm, nền, phép và giờ xe ben. Thủ Đức — kể cả Q9 cũ và Grand Park — hay gặp đất nền và BQL; Gò Vấp, Tân Bình, Tân Phú là nhà ống hẻm; Nhà Bè, Bình Chánh, một phần Bình Thạnh phải tính triều và cốt; Dĩ An, Biên Hòa, Long An là phép tỉnh và nền yếu. Việt Dũng Phát khảo sát tại chỗ trước khi nhận — không khoán trắng xã xa. Hàng xóm, lộ giới, trạm điện nước nằm trong checklist, không chỉ đơn giá m².`,
   "phong-thuy": `Phong thủy và giấy phép là hai lớp: tuổi, hướng, lỗ ban do gia chủ chọn; kết cấu, PCCC, số tầng do luật và KTS chốt. Dung hòa bằng cửa, bậc, vị trí thờ, màu — không xoay nhà trên đất 5 m trái chỉ giới. Thước lỗ ban online miễn phí trên web. Xin phép nhà phố TP.HCM qua hồ sơ đúng quy hoạch, theo dõi Cổng Dịch vụ công. Đổ bê tông vẫn phải tránh mưa lớn, dù ngày đẹp.`,
   "thuong-hieu": `Việt Dũng Phát là pháp nhân kiến trúc — xây dựng nhà ở: mẫu nhà thật, bảng giá công khai, giám sát hiện trường, xưởng nội thất. Hồ sơ năng lực gửi khi bạn yêu cầu, MST trùng hợp đồng. Không bán thầu khoán trắng; việc thuê khoan cọc hay kính vẫn do công ty quản. Không nhận cầu đường, xưởng công nghiệp. Khảo sát TP.HCM theo lịch được hỗ trợ; tỉnh lân cận xác nhận logistics trước.`,
 };
@@ -934,7 +1028,7 @@ function relatedLinks(item) {
 
 function article(item, index) {
   const kw = item.phrase;
-  const c = COPY[item.slug];
+  const c = COPY[item.slug] || COPY[COPY_ALIAS[item.slug]];
   if (!c) throw new Error(`Missing COPY for ${item.slug}`);
   const img = (n) => IMGS[(index + n) % IMGS.length];
   const steps = c.steps.map((s, i) => `${i + 1}. ${s}`).join(" ");
@@ -948,20 +1042,24 @@ function article(item, index) {
 <li><a href="#phu-hop">Khi nào nên làm</a></li>
 <li><a href="#quy-trinh">Quy trình tại Việt Dũng Phát</a></li>
 <li><a href="#chi-phi">Chi phí và hợp đồng</a></li>
+<li><a href="#sai-lam">Sai lầm hay gặp</a></li>
 <li><a href="#luu-y">Rủi ro hay gặp</a></li>
 <li><a href="#faq">Câu hỏi thường gặp</a></li>
 </ol>
 </nav>
 <h2 id="tong-quan">${esc(kw)}: việc cần hiểu</h2>
 <p>${esc(c.gist)}</p>
-<p>Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát nhận khảo sát, thiết kế và thi công nhà ở — không bán thầu. Bạn đang đọc đúng trang <strong>${esc(kw)}</strong>, không phải bài viết chung cho mọi dịch vụ.</p>
+<p>Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thành lập năm 2014, nhận khảo sát, thiết kế và thi công nhà ở — không bán thầu. Bạn đang đọc đúng trang <strong>${esc(kw)}</strong>, không phải bài viết chung cho mọi dịch vụ.</p>
+<p>Gia chủ tìm <strong>${esc(kw)}</strong> thường đã có đất hoặc nhà hiện trạng, cần một đầu mối chịu bản vẽ, hiện trường và bảo hành. Việt Dũng Phát trả lời đúng phạm vi này, không nhận việc ngoài nhà ở dân dụng.</p>
 <h2 id="ky-thuat">Kỹ thuật và hiện trường khi làm ${esc(kw)}</h2>
 <p>${esc(GROUP_DEEP[item.group])}</p>
 <p>${esc(c.extra)}</p>
+<p>Hiện trường ${esc(kw)} cần nhật ký: ảnh thép trước khi đổ, biên bản hạng mục ẩn, người phụ trách có tên. Không có các mốc này, gia chủ khó đối chiếu khi tường thấm hay lệch kích thước.</p>
 <p><img src="${img(0)}" alt="${esc(kw)}" /></p>
 <h2 id="phu-hop">Khi nào nên triển khai ${esc(kw)}?</h2>
 <p>${esc(c.when)}</p>
 <p>Mang sổ hồng / giấy đất, ảnh hiện trạng và số người ở khi gặp KTS. Thiếu thông tin này, ${esc(kw)} chỉ là ước lượng trên giấy.</p>
+<p>Nếu ngân sách hoặc tiến độ chưa khớp, Việt Dũng Phát nói thẳng phần nào làm trước — không ép đủ gói. <strong>${esc(kw)}</strong> vẫn có thể tách giai đoạn khi hợp đồng ghi rõ mối nối.</p>
 <p><img src="${img(1)}" alt="${esc(kw)} — khảo sát hiện trạng Việt Dũng Phát" /></p>
 <h2 id="quy-trinh">Quy trình làm ${esc(kw)}</h2>
 <p>${esc(steps)}</p>
@@ -970,7 +1068,11 @@ function article(item, index) {
 <h2 id="chi-phi">Chi phí ${esc(kw)}</h2>
 <p>${esc(c.cost)}</p>
 <p>Đối chiếu <a href="/bao-gia">bảng giá xây dựng Việt Dũng Phát</a>. Nội thất xưởng xem <a href="/san-pham">combo nội thất</a>.</p>
+<p>Hai bên thống nhất cách tính m² (tim tường hay thông thủy) và danh mục nằm trong ${esc(kw)} trước khi tạm ứng. Phụ lục đá, mái, thang máy, tủ bếp không giấu vào đơn giá m².</p>
 <p><img src="${img(3)}" alt="Báo giá ${esc(kw)} minh bạch 2026" /></p>
+<h2 id="sai-lam">Sai lầm hay gặp khi tìm ${esc(kw)}</h2>
+<p>Chọn thầu chỉ vì giá thấp hơn thị trường 20–30% mà hợp đồng một trang A4. Với <strong>${esc(kw)}</strong>, thiếu BOQ và thương hiệu vật tư là nguồn phát sinh lớn nhất.</p>
+<p>Sai lầm thứ hai: chốt phối cảnh đẹp rồi bỏ qua phép, PCCC, hàng xóm. Việt Dũng Phát đối chiếu quy hoạch trước khi hứa mặt đứng. Sai lầm thứ ba: đổi gạch, sơn, công năng giữa chừng mà không ký phụ lục — tiến độ và giá sẽ lệch.</p>
 <h2 id="luu-y">Rủi ro khi làm ${esc(kw)}</h2>
 <p>Chốt phạm vi, vật tư và cách tính m² trước khi tạm ứng lớn. Giấy phép, PCCC, an toàn lao động không bỏ. Tra cứu thủ tục tại <a href="https://dichvucong.gov.vn">Cổng Dịch vụ công Quốc gia</a>.</p>
 <p>Bài cùng cụm: ${rel}.</p>
