@@ -305,6 +305,15 @@ export function getCms() {
   if (!aboutImage || /upload\/hinhanh\/about/i.test(aboutImage) || /about-8486/i.test(aboutImage)) {
     site.aboutImage = "/villas/neo-10.jpg";
   }
+  if (!site.facebook || /facebook\.com\/(vietdungphat\/?$|110692747859454|nội|n%)/i.test(site.facebook)) {
+    site.facebook = defaultSite.facebook;
+  }
+  if (!site.youtube || /@vietdungphat7073/i.test(site.youtube)) {
+    site.youtube = defaultSite.youtube;
+  }
+  if (!site.messenger || /m\.me\/vietdungphat\/?$/i.test(site.messenger)) {
+    site.messenger = defaultSite.messenger;
+  }
   const projects = withHouseCovers(mergePosts("projects"));
   const products = withProductCovers(mergePosts("products"));
   const services = mergePosts("services");

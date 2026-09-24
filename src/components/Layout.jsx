@@ -131,18 +131,22 @@ export default function Layout() {
             </div>
             <div className="socials">
               {site.facebook ? (
-                <a href={site.facebook} target="_blank" rel="noopener noreferrer">
-                  Facebook
-                </a>
-              ) : null}
-              {site.zalo ? (
-                <a href={site.zalo} target="_blank" rel="noopener noreferrer">
-                  Zalo
+                <a href={site.facebook} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Fanpage Facebook" title="Fanpage Facebook">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1z" />
+                  </svg>
                 </a>
               ) : null}
               {site.youtube ? (
-                <a href={site.youtube} target="_blank" rel="noopener noreferrer">
-                  YouTube
+                <a href={site.youtube} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="YouTube" title="YouTube">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.2C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.2c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.2A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.8 15.5v-7l6.3 3.5-6.3 3.5z" />
+                  </svg>
+                </a>
+              ) : null}
+              {site.zalo ? (
+                <a href={site.zalo} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Zalo" title="Zalo">
+                  Zalo
                 </a>
               ) : null}
             </div>

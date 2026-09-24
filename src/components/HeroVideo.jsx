@@ -58,8 +58,24 @@ function ensureYouTubeApi() {
   });
 }
 
+function isPhoneHero() {
+  return window.matchMedia("(max-width: 980px)").matches;
+}
+
 function fitHeroIframe(el) {
   if (!el) return;
+  if (isPhoneHero()) {
+    el.width = "1920";
+    el.height = "1080";
+    el.style.width = "118%";
+    el.style.height = "118%";
+    el.style.top = "50%";
+    el.style.bottom = "auto";
+    el.style.left = "50%";
+    el.style.transformOrigin = "center center";
+    el.style.transform = "translate(-50%, -50%)";
+    return;
+  }
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const vw = window.innerWidth;
   const vh = window.innerHeight;

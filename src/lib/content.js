@@ -4,8 +4,9 @@ export const { site: cmsSite, projects, products, services, news, extras = [] } 
 
 export const site = {
   ...cmsSite,
-  facebook: "https://www.facebook.com/vietdungphat/",
-  messenger: "https://m.me/vietdungphat",
+  facebook: "https://www.facebook.com/vietdungphatphat/",
+  messenger: "https://m.me/vietdungphatphat",
+  youtube: "https://www.youtube.com/@ConstructionVietdungphat",
   logo: "/logo.png",
   aboutImage: "/villas/neo-10.jpg",
   profilePdf: (() => {
