@@ -22,9 +22,9 @@ export const PAGE_SEO = {
       "Thiết kế kiến trúc — nội thất, xây nhà trọn gói và cải tạo nhà cũ tại TP.HCM. Hồ sơ thi công đầy đủ, giám sát tại công trình.",
   },
   "/mau-nha": {
-    title: "Mẫu nhà tân cổ điển và công trình thực tế | Việt Dũng Phát",
+    title: "Mẫu nhà theo phong cách | Việt Dũng Phát",
     description:
-      "Xem mẫu biệt thự, nhà phố tân cổ điển và các công trình Việt Dũng Phát đã thiết kế, thi công tại TP.HCM và nhiều tỉnh thành.",
+      "8 phong cách mẫu nhà: tân cổ điển, hiện đại, mái Thái, mái Nhật, nhà phố, cấp 4 — mỗi phong cách khoảng 20 mẫu của Việt Dũng Phát.",
   },
   "/album": {
     title: "Album video và ảnh công trình | Việt Dũng Phát",

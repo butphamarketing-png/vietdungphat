@@ -32,7 +32,12 @@ export function kindOf(slug) {
 }
 
 export const lists = {
-  projects: { title: "Mẫu nhà", kicker: "Mẫu nhà", items: projects, intro: "Công trình tiêu biểu từ tư liệu mới và các dự án đã thiết kế, thi công." },
+  projects: {
+    title: "Mẫu nhà",
+    kicker: "Mẫu nhà",
+    items: projects,
+    intro: "Chọn phong cách — mỗi mục là danh sách mẫu (khoảng 20 ảnh). Công trình theo dự án xem tại Album.",
+  },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },
   news: {

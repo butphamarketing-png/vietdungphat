@@ -1,4 +1,5 @@
 import { uniqueImages } from "./media.js";
+import { isHouseStyleSlug } from "./studio.js";
 
 export function youtubeId(url) {
   const raw = String(url || "").trim();
@@ -58,7 +59,7 @@ export function albumProjectsFrom(projects = []) {
   const skip = /phong\s*thủy|kiến\s*thức|động\s*thổ|plaster\s*fun/i;
   const out = [];
   for (const post of projects || []) {
-    if (post.slug === "biet-thu-tan-co-dien") continue;
+    if (post.houseStyle || isHouseStyleSlug(post.slug)) continue;
     if (skip.test(post.title || "")) continue;
     const photos = photosFromPost(post);
     if (photos.length < 3) continue;

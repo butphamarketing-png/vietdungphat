@@ -92,36 +92,109 @@ export function uniqueHouses(list = studio) {
 
 export const HOUSE_STYLE_SLUG = "biet-thu-tan-co-dien";
 
+/** 8 phong cách mẫu nhà — khác với album công trình tiêu biểu theo dự án. */
+export const HOUSE_STYLES = [
+  {
+    slug: "biet-thu-tan-co-dien",
+    title: "Biệt thự tân cổ điển",
+    desc: "20 mẫu mặt tiền cột, mái Mansard, sảnh và sân vườn.",
+    lead: "Biệt thự tân cổ điển của Việt Dũng Phát — phào chỉ, cột cổ điển, mái Mansard và sân vườn.",
+  },
+  {
+    slug: "nha-hien-dai",
+    title: "Nhà hiện đại",
+    desc: "20 mẫu khối vuông, kính lớn, ban công và tum hiện đại.",
+    lead: "Nhà hiện đại: mặt tiền tối giản, cửa kính lớn, ban công và tum phẳng.",
+  },
+  {
+    slug: "nha-mai-thai",
+    title: "Nhà mái Thái",
+    desc: "20 mẫu mái Thái 1–3 tầng, nhà phố và biệt thự.",
+    lead: "Nhà mái Thái — dốc hai phía, phù hợp khí hậu miền Nam, nhà phố và biệt thự.",
+  },
+  {
+    slug: "nha-mai-nhat",
+    title: "Nhà mái Nhật",
+    desc: "20 mẫu mái Nhật thấp tầng, hiên rộng và sân trước.",
+    lead: "Nhà mái Nhật: mái dốc vừa, hiên rộng, sân trước thoáng — ấm cúng và dễ thi công.",
+  },
+  {
+    slug: "nha-pho",
+    title: "Nhà phố",
+    desc: "20 mẫu nhà ống mặt tiền hẹp, 1 trệt 2–3 lầu.",
+    lead: "Nhà phố / nhà ống TP.HCM: mặt tiền hẹp, công năng tầng rõ, giếng trời lấy sáng.",
+  },
+  {
+    slug: "nha-cap-4",
+    title: "Nhà cấp 4",
+    desc: "20 mẫu nhà cấp 4 sân vườn, 2–4 phòng ngủ.",
+    lead: "Nhà cấp 4: một tầng, sân trước rộng, bố trí 2–4 phòng ngủ — tối ưu chi phí.",
+  },
+  {
+    slug: "biet-thu-co-dien",
+    title: "Biệt thự cổ điển",
+    desc: "20 mẫu biệt thự cổ điển châu Âu, sảnh lớn và tháp góc.",
+    lead: "Biệt thự cổ điển: sảnh lớn, cột đôi, tháp góc và chi tiết phào châu Âu.",
+  },
+  {
+    slug: "nha-1-tret-1-lau",
+    title: "Nhà 1 trệt 1 lầu",
+    desc: "20 mẫu 1 trệt 1 lầu cho đất trung bình, 3–5 phòng ngủ.",
+    lead: "Nhà 1 trệt 1 lầu: gara và khách dưới, ngủ trên — phù hợp đất 5×16 đến 8×20.",
+  },
+];
+
+export const HOUSE_STYLE_SLUGS = new Set(HOUSE_STYLES.map((s) => s.slug));
+
+function styleSamples(offset = 0, count = 20, label = "Mẫu nhà") {
+  const pool = studio.length ? studio : [{ src: "/villas/neo-01.jpg", title: label }];
+  const out = [];
+  for (let i = 0; i < count; i += 1) {
+    const item = pool[(offset + i) % pool.length];
+    out.push({
+      src: item.src,
+      title: `${label} ${String(i + 1).padStart(2, "0")}`,
+    });
+  }
+  return out;
+}
+
 export function houseStylePosts() {
-  const houses = uniqueHouses(studio);
-  const samples = houses.slice(0, 20);
-  const cover = samples[0]?.src || "/villas/neo-01.jpg";
-  const figures = samples
-    .map(
-      (item) =>
-        `<figure><img src="${item.src}" alt="${item.title}" /><figcaption>${item.title}</figcaption></figure>`,
-    )
-    .join("");
-  return [
-    {
-      slug: HOUSE_STYLE_SLUG,
-      title: "Biệt thự tân cổ điển",
+  return HOUSE_STYLES.map((style, index) => {
+    const samples = styleSamples(index * 6, 20, style.title);
+    const cover = samples[0]?.src || "/villas/neo-01.jpg";
+    const figures = samples
+      .map(
+        (item) =>
+          `<figure><img src="${item.src}" alt="${item.title}" /><figcaption>${item.title}</figcaption></figure>`,
+      )
+      .join("");
+    return {
+      slug: style.slug,
+      title: style.title,
       image: cover,
-      imageAlt: "Biệt thự tân cổ điển",
-      desc: "20 mẫu biệt thự tân cổ điển: mặt tiền, mái Mansard, sân vườn và phối cảnh Việt Dũng Phát.",
-      html: `<p>Biệt thự tân cổ điển của Việt Dũng Phát. Dưới đây là 20 mẫu mặt tiền, sảnh cột, mái Mansard và sân vườn.</p><div class="article-gallery">${figures}</div>`,
+      imageAlt: style.title,
+      desc: style.desc,
+      html: `<p>${style.lead}</p><div class="article-gallery">${figures}</div>`,
       gallery: [],
-    },
-  ];
+      houseStyle: true,
+    };
+  });
+}
+
+export function isHouseStyleSlug(slug) {
+  return HOUSE_STYLE_SLUGS.has(String(slug || ""));
 }
 
 export function homeNeoCards() {
-  return houseStylePosts().map((item) => ({
-    src: item.image,
-    title: item.title,
-    desc: item.desc,
-    slug: `/${item.slug}`,
-  }));
+  return houseStylePosts()
+    .slice(0, 8)
+    .map((item) => ({
+      src: item.image,
+      title: item.title,
+      desc: item.desc,
+      slug: `/${item.slug}`,
+    }));
 }
 
 export const villaSrcs = studio.map((item) => item.src);

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
-import { isWorkshopProduct } from "../lib/studio.js";
+import { houseStylePosts, isHouseStyleSlug, isWorkshopProduct } from "../lib/studio.js";
 import { KEYWORD_GROUPS } from "../data/keywords.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -15,6 +15,11 @@ export default function ListPage({ kind }) {
   const [group, setGroup] = useState("all");
   const newsItems = data.items || [];
   const productItems = kind === "products" ? (data.items || []).filter(isWorkshopProduct) : data.items;
+  const styleItems = useMemo(() => {
+    if (!projects) return [];
+    const fromCms = (data.items || []).filter((p) => p.houseStyle || isHouseStyleSlug(p.slug));
+    return fromCms.length ? fromCms : houseStylePosts();
+  }, [projects, data.items]);
   const filtered = useMemo(() => {
     if (kind !== "news" || group === "all") return newsItems;
     if (group === "goc") return newsItems.filter((p) => p.source !== "keyword");
@@ -49,25 +54,39 @@ export default function ListPage({ kind }) {
             </button>
           </div>
         ) : null}
-        <div className={kind === "news" || projects || kind === "products" ? "news-grid list" : "grid-3"}>
-          {(kind === "news" ? filtered : productItems).map((p) =>
-            kind === "news" || projects || kind === "products" ? (
-              <Link key={p.slug} to={`/${p.slug}`} className="news-card">
+        {projects ? (
+          <div className="style-grid">
+            {styleItems.map((p) => (
+              <Link key={p.slug} to={`/${p.slug}`} className="style-card">
                 <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
-                <div>
-                  {p.date ? <time>{p.date}</time> : null}
+                <div className="style-card-copy">
                   <h3>{p.title}</h3>
                   {p.desc ? <p>{p.desc}</p> : null}
                 </div>
               </Link>
-            ) : (
-              <Link key={p.slug} to={`/${p.slug}`} className="card">
-                <SmartImg src={p.image} alt={p.title} />
-                <span>{p.title}</span>
-              </Link>
-            ),
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className={kind === "news" || kind === "products" ? "news-grid list" : "grid-3"}>
+            {(kind === "news" ? filtered : productItems).map((p) =>
+              kind === "news" || kind === "products" ? (
+                <Link key={p.slug} to={`/${p.slug}`} className="news-card">
+                  <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
+                  <div>
+                    {p.date ? <time>{p.date}</time> : null}
+                    <h3>{p.title}</h3>
+                    {p.desc ? <p>{p.desc}</p> : null}
+                  </div>
+                </Link>
+              ) : (
+                <Link key={p.slug} to={`/${p.slug}`} className="card">
+                  <SmartImg src={p.image} alt={p.title} />
+                  <span>{p.title}</span>
+                </Link>
+              ),
+            )}
+          </div>
+        )}
       </div>
       <BookingCta />
     </article>

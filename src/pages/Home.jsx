@@ -64,11 +64,11 @@ export default function Home() {
             Xem thêm mẫu nhà
           </Link>
         </div>
-        <div className="news-grid list homes-articles">
+        <div className="style-grid">
           {neoHomes.map((p) => (
-            <Link key={p.slug} to={p.slug} className="news-card">
+            <Link key={p.slug} to={p.slug} className="style-card">
               <SmartImg src={p.src} alt={p.title} />
-              <div>
+              <div className="style-card-copy">
                 <h3>{p.title}</h3>
                 {p.desc ? <p>{p.desc}</p> : null}
               </div>

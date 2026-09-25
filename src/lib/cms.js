@@ -36,7 +36,7 @@ export const defaultHome = {
     "Việt Dũng Phát đồng hành từ ý tưởng đến chìa khóa trao tay: thiết kế kiến trúc — nội thất, xây dựng nhà phố biệt thự, và cải tạo nhà hiện hữu. Thành lập năm 2014, thi công tại TP.HCM và các tỉnh lân cận.",
   servicesCta: "Xem toàn bộ dịch vụ",
   projectsKicker: "Mẫu nhà",
-  projectsTitle: "Công trình tiêu biểu",
+  projectsTitle: "Theo phong cách",
   productsKicker: "Sản phẩm",
   productsTitle: "Nội thất và combo từ xưởng",
   aboutKicker: "Về chúng tôi",
@@ -324,6 +324,12 @@ export function getCms() {
   const listsMeta = overlay.listsMeta || {};
   const home = { ...defaultHome, ...(overlay.home || {}) };
   if (!home.video || /hero\.mp4/i.test(String(home.video))) home.video = defaultHome.video;
+  if (/công trình tiêu biểu/i.test(String(home.projectsTitle || ""))) {
+    home.projectsTitle = defaultHome.projectsTitle;
+  }
+  if (!home.projectsKicker || /công trình/i.test(String(home.projectsKicker || ""))) {
+    home.projectsKicker = defaultHome.projectsKicker;
+  }
   if (/kiến tạo không gian/i.test(String(home.title1 || ""))) {
     home.title1 = defaultHome.title1;
     home.title2 = defaultHome.title2;
