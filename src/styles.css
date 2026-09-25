@@ -1197,8 +1197,8 @@ body.is-popup-open .float-consult {
     top: 50%;
     left: 50%;
     bottom: auto;
-    width: 145%;
-    height: 145%;
+    width: 140%;
+    height: 140%;
     transform: translate(-50%, -50%);
     transform-origin: center center;
   }
@@ -1224,7 +1224,15 @@ body.is-popup-open .float-consult {
     background: var(--paper);
     border-color: var(--ink);
   }
-  .hero::after { display: none; }
+  .hero::after {
+    inset: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(180deg, rgba(8,8,8,0.28) 0%, transparent 22%);
+  }
   .header.on-hero {
     background: #fff;
     color: var(--ink);

@@ -67,8 +67,8 @@ function fitHeroIframe(el) {
   if (isPhoneHero()) {
     el.width = "1920";
     el.height = "1080";
-    el.style.width = "145%";
-    el.style.height = "145%";
+    el.style.width = "140%";
+    el.style.height = "140%";
     el.style.top = "50%";
     el.style.bottom = "auto";
     el.style.left = "50%";
