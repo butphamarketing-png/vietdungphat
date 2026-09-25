@@ -1,3 +1,5 @@
+import { HOUSE_STYLE_MEDIA, styleSamples } from "./house-style-media.js";
+
 export const studio = [
   { src: "/villas/khach-01.jpg", title: "Biệt thự tân cổ điển đèn đêm đài phun" },
   { src: "/villas/khach-02.jpg", title: "Biệt thự tân cổ điển sảnh tròn tượng sư" },
@@ -92,198 +94,38 @@ export function uniqueHouses(list = studio) {
 
 export const HOUSE_STYLE_SLUG = "biet-thu-tan-co-dien";
 
-function yt(id) {
-  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-}
-
-function rangeBai(prefix, count = 5) {
-  return Array.from({ length: count }, (_, i) => `/bai/${prefix}-${i + 1}.png`);
-}
-
-function pack(srcs, label) {
-  return srcs.filter(Boolean).map((src, i) => ({
-    src,
-    title: `${label} ${String(i + 1).padStart(2, "0")}`,
-  }));
-}
-
-function fillTo(list, extras, count = 20) {
-  const out = [...list];
-  let i = 0;
-  while (out.length < count && extras.length) {
-    const src = extras[i % extras.length];
-    out.push({ src, title: list[0]?.title?.replace(/\s\d+$/, "") || "Mẫu" });
-    i += 1;
-    if (i > count * 3) break;
-  }
-  return out.slice(0, count).map((item, idx) => ({
-    ...item,
-    title: `${String(item.title || "Mẫu").replace(/\s\d{2}$/, "").trim()} ${String(idx + 1).padStart(2, "0")}`,
-  }));
-}
-
-/** 8 phong cách — mỗi phong cách dùng ảnh đúng kiểu (không dùng chung biệt thự tân cổ cho tất cả). */
-export const HOUSE_STYLES = [
-  {
-    slug: "biet-thu-tan-co-dien",
-    title: "Biệt thự tân cổ điển",
-    desc: "20 mẫu mặt tiền cột, mái Mansard, sảnh và sân vườn.",
-    lead: "Biệt thự tân cổ điển của Việt Dũng Phát — phào chỉ, cột cổ điển, mái Mansard và sân vườn.",
-    cover: "/villas/neo-01.jpg",
-    samples() {
-      return pack(
-        [
-          "/villas/neo-01.jpg",
-          "/villas/neo-02.jpg",
-          "/villas/neo-05.jpg",
-          "/villas/neo-06.jpg",
-          "/villas/neo-07.jpg",
-          "/villas/neo-11.jpg",
-          "/villas/neo-16.jpg",
-          "/villas/villa-mansard-rong.jpg",
-          "/villas/villa-goc-lon.jpg",
-          "/villas/villa-cong-lon.jpg",
-          ...studio.slice(0, 10).map((s) => s.src),
-        ],
-        this.title,
-      );
-    },
+export const HOUSE_STYLES = HOUSE_STYLE_MEDIA.map((style) => ({
+  ...style,
+  cover: `/mau-nha/${style.folder}/01.png`,
+  samples() {
+    return styleSamples(style);
   },
-  {
-    slug: "nha-hien-dai",
-    title: "Nhà hiện đại",
-    desc: "20 mẫu khối vuông, kính lớn, ban công và tum hiện đại.",
-    lead: "Nhà hiện đại: mặt tiền tối giản, cửa kính lớn, ban công và tum phẳng.",
-    cover: "/mau-nha/hien-dai/01.png",
-    samples() {
-      return pack(["/mau-nha/hien-dai/01.png","/mau-nha/hien-dai/02.png","/mau-nha/hien-dai/03.png","/mau-nha/hien-dai/04.png","/mau-nha/hien-dai/05.png","/mau-nha/hien-dai/06.png","/mau-nha/hien-dai/07.png","/mau-nha/hien-dai/08.png","/mau-nha/hien-dai/09.png","/mau-nha/hien-dai/10.png","/mau-nha/hien-dai/11.png","/mau-nha/hien-dai/12.png","/mau-nha/hien-dai/13.png","/mau-nha/hien-dai/14.png","/mau-nha/hien-dai/15.png","/mau-nha/hien-dai/16.png","/mau-nha/hien-dai/17.png","/mau-nha/hien-dai/18.png","/mau-nha/hien-dai/19.png","/mau-nha/hien-dai/20.png"], this.title);
-    },
-  },
-  {
-    slug: "nha-mai-thai",
-    title: "Nhà mái Thái",
-    desc: "20 mẫu mái Thái 1–3 tầng, nhà phố và biệt thự.",
-    lead: "Nhà mái Thái — dốc hai phía, phù hợp khí hậu miền Nam, nhà phố và biệt thự.",
-    cover: "/mau-nha/mai-thai/01.png",
-    samples() {
-      return pack(["/mau-nha/mai-thai/01.png","/mau-nha/mai-thai/02.png","/mau-nha/mai-thai/03.png","/mau-nha/mai-thai/04.png","/mau-nha/mai-thai/05.png","/mau-nha/mai-thai/06.png","/mau-nha/mai-thai/07.png","/mau-nha/mai-thai/08.png","/mau-nha/mai-thai/09.png","/mau-nha/mai-thai/10.png","/mau-nha/mai-thai/11.png","/mau-nha/mai-thai/12.png","/mau-nha/mai-thai/13.png","/mau-nha/mai-thai/14.png","/mau-nha/mai-thai/15.png","/mau-nha/mai-thai/16.png","/mau-nha/mai-thai/17.png","/mau-nha/mai-thai/18.png","/mau-nha/mai-thai/19.png","/mau-nha/mai-thai/20.png"], this.title);
-    },
-  },
-  {
-    slug: "nha-mai-nhat",
-    title: "Nhà mái Nhật",
-    desc: "20 mẫu mái Nhật thấp tầng, hiên rộng và sân trước.",
-    lead: "Nhà mái Nhật: mái dốc vừa, hiên rộng, sân trước thoáng — ấm cúng và dễ thi công.",
-    cover: "/mau-nha/mai-nhat/01.png",
-    samples() {
-      return pack(["/mau-nha/mai-nhat/01.png","/mau-nha/mai-nhat/02.png","/mau-nha/mai-nhat/03.png","/mau-nha/mai-nhat/04.png","/mau-nha/mai-nhat/05.png","/mau-nha/mai-nhat/06.png","/mau-nha/mai-nhat/07.png","/mau-nha/mai-nhat/08.png","/mau-nha/mai-nhat/09.png","/mau-nha/mai-nhat/10.png","/mau-nha/mai-nhat/11.png","/mau-nha/mai-nhat/12.png","/mau-nha/mai-nhat/13.png","/mau-nha/mai-nhat/14.png","/mau-nha/mai-nhat/15.png","/mau-nha/mai-nhat/16.png","/mau-nha/mai-nhat/17.png","/mau-nha/mai-nhat/18.png","/mau-nha/mai-nhat/19.png","/mau-nha/mai-nhat/20.png"], this.title);
-    },
-  },
-  {
-    slug: "nha-pho",
-    title: "Nhà phố",
-    desc: "20 mẫu nhà ống mặt tiền hẹp, 1 trệt 2–3 lầu.",
-    lead: "Nhà phố / nhà ống TP.HCM: mặt tiền hẹp, công năng tầng rõ, giếng trời lấy sáng.",
-    cover: "/mau-nha/nha-pho-cover.png",
-    samples() {
-      return fillTo(
-        pack(
-          [
-            ...rangeBai("thiet-ke-nha-pho-tphcm"),
-            ...rangeBai("nha-pho-tan-co-dien"),
-            ...rangeBai("mat-tien-nha-pho-tan-co-dien"),
-            ...rangeBai("thi-cong-nha-pho-tphcm"),
-          ],
-          this.title,
-        ),
-        [...rangeBai("thiet-ke-mat-tien-nha-pho"), ...rangeBai("nha-pho-1-tret-2-lau-tan-co-dien")],
-      );
-    },
-  },
-  {
-    slug: "nha-cap-4",
-    title: "Nhà cấp 4",
-    desc: "20 mẫu nhà cấp 4 sân vườn, 2–4 phòng ngủ.",
-    lead: "Nhà cấp 4: một tầng, sân trước rộng, bố trí 2–4 phòng ngủ — tối ưu chi phí.",
-    cover: "/mau-nha/cap-4/01.png",
-    samples() {
-      return pack(["/mau-nha/cap-4/01.png","/mau-nha/cap-4/02.png","/mau-nha/cap-4/03.png","/mau-nha/cap-4/04.png","/mau-nha/cap-4/05.png","/mau-nha/cap-4/06.png","/mau-nha/cap-4/07.png","/mau-nha/cap-4/08.png","/mau-nha/cap-4/09.png","/mau-nha/cap-4/10.png","/mau-nha/cap-4/11.png","/mau-nha/cap-4/12.png","/mau-nha/cap-4/13.png","/mau-nha/cap-4/14.png","/mau-nha/cap-4/15.png","/mau-nha/cap-4/16.png","/mau-nha/cap-4/17.png","/mau-nha/cap-4/18.png","/mau-nha/cap-4/19.png","/mau-nha/cap-4/20.png"], this.title);
-    },
-  },
-  {
-    slug: "biet-thu-co-dien",
-    title: "Biệt thự cổ điển",
-    desc: "20 mẫu biệt thự cổ điển châu Âu, sảnh lớn và tháp góc.",
-    lead: "Biệt thự cổ điển: sảnh lớn, cột đôi, tháp góc và chi tiết phào châu Âu.",
-    cover: "/villas/neo-17.jpg",
-    samples() {
-      return pack(
-        [
-          "/villas/neo-17.jpg",
-          "/villas/neo-21.jpg",
-          "/villas/neo-33.jpg",
-          "/villas/neo-45.jpg",
-          "/villas/neo-16.jpg",
-          "/villas/neo-07.jpg",
-          "/villas/khach-02.jpg",
-          "/villas/khach-04.jpg",
-          "/villas/neo-08.jpg",
-          "/villas/neo-31.jpg",
-          "/villas/neo-03.jpg",
-          "/villas/neo-26.jpg",
-          "/villas/neo-34.jpg",
-          "/villas/neo-47.jpg",
-          "/villas/villa-mansard-rong.jpg",
-          "/villas/neo-14.jpg",
-          "/villas/neo-23.jpg",
-          "/villas/neo-27.jpg",
-          "/villas/neo-35.jpg",
-          "/villas/neo-42.jpg",
-        ],
-        this.title,
-      );
-    },
-  },
-  {
-    slug: "nha-1-tret-1-lau",
-    title: "Nhà 1 trệt 1 lầu",
-    desc: "20 mẫu 1 trệt 1 lầu cho đất trung bình, 3–5 phòng ngủ.",
-    lead: "Nhà 1 trệt 1 lầu: gara và khách dưới, ngủ trên — phù hợp đất 5×16 đến 8×20.",
-    cover: "/mau-nha/1-tret-1-lau-cover.png",
-    samples() {
-      return fillTo(
-        pack(
-          [
-            ...rangeBai("thiet-ke-nha-1-tret-1-lau"),
-            ...rangeBai("thiet-ke-nha-4x16"),
-            ...rangeBai("thiet-ke-nha-5x20"),
-            "/mau-nha/nha-1-tret-yt.jpg",
-          ],
-          this.title,
-        ),
-        [...rangeBai("thiet-ke-nha-1-tret-1-lau"), ...rangeBai("thiet-ke-nha-4x16")],
-      );
-    },
-  },
-];
+}));
 
 export const HOUSE_STYLE_SLUGS = new Set(HOUSE_STYLES.map((s) => s.slug));
 
+function escAttr(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
 export function houseStylePosts() {
   return HOUSE_STYLES.map((style) => {
-    const samples = fillTo(style.samples(), [style.cover], 20);
+    const samples = styleSamples(style).slice(0, 20);
     const cover = style.cover || samples[0]?.src || "/villas/neo-01.jpg";
     const figures = samples
       .map(
         (item) =>
-          `<figure><img src="${item.src}" alt="${item.title}" /><figcaption>${item.title}</figcaption></figure>`,
+          `<figure><img src="${item.src}" alt="${escAttr(item.alt)}" /><figcaption>${escAttr(item.alt)}</figcaption></figure>`,
       )
       .join("");
     return {
       slug: style.slug,
       title: style.title,
       image: cover,
-      imageAlt: style.title,
+      imageAlt: samples[0]?.alt || style.title,
       desc: style.desc,
       html: `<p>${style.lead}</p><div class="article-gallery">${figures}</div>`,
       gallery: [],

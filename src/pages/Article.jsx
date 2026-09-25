@@ -45,7 +45,7 @@ export default function Article() {
   const cover = parsed?.cover || fullImage(post.image) || FALLBACK_IMAGE;
   const body = parsed
     ? parsed.body
-    : cleanArticleHtml(post.html, kw);
+    : cleanArticleHtml(post.html, post.houseStyle ? "" : kw);
   const gallery = parsed
     ? parsed.gallery
     : /<img/i.test(body)
