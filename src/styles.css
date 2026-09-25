@@ -1174,18 +1174,26 @@ h1, h2, h3, blockquote {
 .article-body > h1:first-child { display: none; }
 .article-gallery {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.8rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
   margin: 0 0 2rem;
 }
+.article-gallery figure { margin: 0; }
 .article-gallery img {
   width: 100%;
-  height: 280px;
+  height: 240px;
   object-fit: cover;
   object-position: center;
   border-radius: 12px;
   margin: 0;
   background: #eee;
+}
+.article-body .article-gallery { margin-top: 1.2rem; }
+.article-body .article-gallery figcaption {
+  margin: 0.4rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
 }
 .article-body + .article-gallery {
   margin-top: 1.6rem;

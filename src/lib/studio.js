@@ -154,22 +154,9 @@ export const HOUSE_STYLES = [
     title: "Nhà hiện đại",
     desc: "20 mẫu khối vuông, kính lớn, ban công và tum hiện đại.",
     lead: "Nhà hiện đại: mặt tiền tối giản, cửa kính lớn, ban công và tum phẳng.",
-    cover: "/mau-nha/nha-hien-dai.jpg",
+    cover: "/mau-nha/hien-dai/01.png",
     samples() {
-      return fillTo(
-        pack(
-          [
-            "/mau-nha/nha-hien-dai.jpg",
-            yt("e_ITM5pwxh8"),
-            yt("ZyFu2jaZrts"),
-            yt("jsequBt9M8g"),
-            ...rangeBai("thiet-ke-nha-ong-hep"),
-            ...rangeBai("phoi-canh-3d-nha-pho"),
-          ],
-          this.title,
-        ),
-        [...rangeBai("thiet-ke-nha-ong-hep"), ...rangeBai("phoi-canh-3d-nha-pho"), "/mau-nha/nha-hien-dai.jpg"],
-      );
+      return pack(["/mau-nha/hien-dai/01.png","/mau-nha/hien-dai/02.png","/mau-nha/hien-dai/03.png","/mau-nha/hien-dai/04.png","/mau-nha/hien-dai/05.png","/mau-nha/hien-dai/06.png","/mau-nha/hien-dai/07.png","/mau-nha/hien-dai/08.png","/mau-nha/hien-dai/09.png","/mau-nha/hien-dai/10.png","/mau-nha/hien-dai/11.png","/mau-nha/hien-dai/12.png","/mau-nha/hien-dai/13.png","/mau-nha/hien-dai/14.png","/mau-nha/hien-dai/15.png","/mau-nha/hien-dai/16.png","/mau-nha/hien-dai/17.png","/mau-nha/hien-dai/18.png","/mau-nha/hien-dai/19.png","/mau-nha/hien-dai/20.png"], this.title);
     },
   },
   {
@@ -177,15 +164,9 @@ export const HOUSE_STYLES = [
     title: "Nhà mái Thái",
     desc: "20 mẫu mái Thái 1–3 tầng, nhà phố và biệt thự.",
     lead: "Nhà mái Thái — dốc hai phía, phù hợp khí hậu miền Nam, nhà phố và biệt thự.",
-    cover: "/mau-nha/nha-mai-thai.jpg",
+    cover: "/mau-nha/mai-thai/01.png",
     samples() {
-      return fillTo(
-        pack(
-          ["/mau-nha/nha-mai-thai.jpg", "/mau-nha/nha-mai-thai-b.jpg", "/mau-nha/nha-1-tret-yt.jpg", "/mau-nha/nha-cap-4b.jpg"],
-          this.title,
-        ),
-        ["/mau-nha/nha-mai-thai.jpg", "/mau-nha/nha-mai-thai-b.jpg", "/mau-nha/nha-1-tret-yt.jpg", "/mau-nha/nha-cap-4b.jpg"],
-      );
+      return pack(["/mau-nha/mai-thai/01.png","/mau-nha/mai-thai/02.png","/mau-nha/mai-thai/03.png","/mau-nha/mai-thai/04.png","/mau-nha/mai-thai/05.png","/mau-nha/mai-thai/06.png","/mau-nha/mai-thai/07.png","/mau-nha/mai-thai/08.png","/mau-nha/mai-thai/09.png","/mau-nha/mai-thai/10.png","/mau-nha/mai-thai/11.png","/mau-nha/mai-thai/12.png","/mau-nha/mai-thai/13.png","/mau-nha/mai-thai/14.png","/mau-nha/mai-thai/15.png","/mau-nha/mai-thai/16.png","/mau-nha/mai-thai/17.png","/mau-nha/mai-thai/18.png","/mau-nha/mai-thai/19.png","/mau-nha/mai-thai/20.png"], this.title);
     },
   },
   {
@@ -193,15 +174,9 @@ export const HOUSE_STYLES = [
     title: "Nhà mái Nhật",
     desc: "20 mẫu mái Nhật thấp tầng, hiên rộng và sân trước.",
     lead: "Nhà mái Nhật: mái dốc vừa, hiên rộng, sân trước thoáng — ấm cúng và dễ thi công.",
-    cover: "/mau-nha/nha-mai-nhat.jpg",
+    cover: "/mau-nha/mai-nhat/01.png",
     samples() {
-      return fillTo(
-        pack(
-          ["/mau-nha/nha-mai-nhat.jpg", "/mau-nha/nha-hien-dai.jpg", "/mau-nha/nha-1-tret-yt.jpg", yt("jsequBt9M8g")],
-          this.title,
-        ),
-        ["/mau-nha/nha-mai-nhat.jpg", "/mau-nha/nha-hien-dai.jpg", "/mau-nha/nha-1-tret-yt.jpg"],
-      );
+      return pack(["/mau-nha/mai-nhat/01.png","/mau-nha/mai-nhat/02.png","/mau-nha/mai-nhat/03.png","/mau-nha/mai-nhat/04.png","/mau-nha/mai-nhat/05.png","/mau-nha/mai-nhat/06.png","/mau-nha/mai-nhat/07.png","/mau-nha/mai-nhat/08.png","/mau-nha/mai-nhat/09.png","/mau-nha/mai-nhat/10.png","/mau-nha/mai-nhat/11.png","/mau-nha/mai-nhat/12.png","/mau-nha/mai-nhat/13.png","/mau-nha/mai-nhat/14.png","/mau-nha/mai-nhat/15.png","/mau-nha/mai-nhat/16.png","/mau-nha/mai-nhat/17.png","/mau-nha/mai-nhat/18.png","/mau-nha/mai-nhat/19.png","/mau-nha/mai-nhat/20.png"], this.title);
     },
   },
   {
@@ -209,7 +184,7 @@ export const HOUSE_STYLES = [
     title: "Nhà phố",
     desc: "20 mẫu nhà ống mặt tiền hẹp, 1 trệt 2–3 lầu.",
     lead: "Nhà phố / nhà ống TP.HCM: mặt tiền hẹp, công năng tầng rõ, giếng trời lấy sáng.",
-    cover: "/bai/thiet-ke-nha-pho-tphcm-1.png",
+    cover: "/mau-nha/nha-pho-cover.png",
     samples() {
       return fillTo(
         pack(
@@ -230,12 +205,9 @@ export const HOUSE_STYLES = [
     title: "Nhà cấp 4",
     desc: "20 mẫu nhà cấp 4 sân vườn, 2–4 phòng ngủ.",
     lead: "Nhà cấp 4: một tầng, sân trước rộng, bố trí 2–4 phòng ngủ — tối ưu chi phí.",
-    cover: "/mau-nha/nha-cap-4.jpg",
+    cover: "/mau-nha/cap-4/01.png",
     samples() {
-      return fillTo(
-        pack(["/mau-nha/nha-cap-4.jpg", "/mau-nha/nha-cap-4b.jpg", "/mau-nha/nha-cap-4c.jpg", yt("e_ITM5pwxh8")], this.title),
-        ["/mau-nha/nha-cap-4.jpg", "/mau-nha/nha-cap-4b.jpg", "/mau-nha/nha-cap-4c.jpg", yt("e_ITM5pwxh8")],
-      );
+      return pack(["/mau-nha/cap-4/01.png","/mau-nha/cap-4/02.png","/mau-nha/cap-4/03.png","/mau-nha/cap-4/04.png","/mau-nha/cap-4/05.png","/mau-nha/cap-4/06.png","/mau-nha/cap-4/07.png","/mau-nha/cap-4/08.png","/mau-nha/cap-4/09.png","/mau-nha/cap-4/10.png","/mau-nha/cap-4/11.png","/mau-nha/cap-4/12.png","/mau-nha/cap-4/13.png","/mau-nha/cap-4/14.png","/mau-nha/cap-4/15.png","/mau-nha/cap-4/16.png","/mau-nha/cap-4/17.png","/mau-nha/cap-4/18.png","/mau-nha/cap-4/19.png","/mau-nha/cap-4/20.png"], this.title);
     },
   },
   {
@@ -277,7 +249,7 @@ export const HOUSE_STYLES = [
     title: "Nhà 1 trệt 1 lầu",
     desc: "20 mẫu 1 trệt 1 lầu cho đất trung bình, 3–5 phòng ngủ.",
     lead: "Nhà 1 trệt 1 lầu: gara và khách dưới, ngủ trên — phù hợp đất 5×16 đến 8×20.",
-    cover: "/bai/thiet-ke-nha-1-tret-1-lau-1.png",
+    cover: "/mau-nha/1-tret-1-lau-cover.png",
     samples() {
       return fillTo(
         pack(
