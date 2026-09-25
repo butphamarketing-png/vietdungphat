@@ -27,9 +27,9 @@ export const PAGE_SEO = {
       "8 phong cách mẫu nhà: tân cổ điển, hiện đại, mái Thái, mái Nhật, nhà phố, cấp 4 — mỗi phong cách khoảng 20 mẫu của Việt Dũng Phát.",
   },
   "/album": {
-    title: "Album video và ảnh công trình | Việt Dũng Phát",
+    title: "Album công trình tiêu biểu | Việt Dũng Phát",
     description:
-      "Album video thi công và hình ảnh mẫu nhà tân cổ điển của Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.",
+      "Album video thi công và ảnh công trình theo dự án của Việt Dũng Phát. Mẫu nhà theo phong cách xem tại /mau-nha.",
   },
   "/du-an": {
     title: "Dự án và mẫu nhà | Việt Dũng Phát",

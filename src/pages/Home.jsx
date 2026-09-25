@@ -67,7 +67,7 @@ export default function Home() {
         <div className="style-grid">
           {neoHomes.map((p) => (
             <Link key={p.slug} to={p.slug} className="style-card">
-              <SmartImg src={p.src} alt={p.title} />
+              <SmartImg src={p.src} alt={p.imageAlt || p.title} />
               <div className="style-card-copy">
                 <h3>{p.title}</h3>
                 {p.desc ? <p>{p.desc}</p> : null}

@@ -95,8 +95,8 @@ export const defaultPages = {
 
 export const defaultAlbum = {
   kicker: "Album",
-  title: "Album công trình",
-  lead: "Video thi công và hình ảnh mẫu nhà tân cổ điển của Việt Dũng Phát.",
+  title: "Công trình tiêu biểu",
+  lead: "Video thi công và album ảnh theo từng dự án thực tế của Việt Dũng Phát. Xem mẫu theo phong cách tại mục Mẫu nhà.",
   videos: defaultAlbumVideos,
 };
 
@@ -347,6 +347,10 @@ export function getCms() {
     lead: albumRaw.lead || defaultAlbum.lead,
     videos: albumVideos.length ? albumVideos : defaultAlbumVideos,
   };
+  if (/^album công trình$/i.test(String(album.title || "").trim()) || /mẫu nhà tân cổ/i.test(String(album.lead || ""))) {
+    album.title = defaultAlbum.title;
+    album.lead = defaultAlbum.lead;
+  }
   const studioList = overlay.studio || [];
   const studioSeen = new Set();
   const studio = [];

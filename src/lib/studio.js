@@ -126,6 +126,8 @@ export function houseStylePosts() {
       title: style.title,
       image: cover,
       imageAlt: samples[0]?.alt || style.title,
+      seoKeyword: samples[0]?.alt || style.title,
+      seoKeywords: samples.map((item) => item.alt).join(", "),
       desc: style.desc,
       html: `<p>${style.lead}</p><div class="article-gallery">${figures}</div>`,
       gallery: [],
@@ -145,6 +147,7 @@ export function homeNeoCards() {
       src: item.image,
       title: item.title,
       desc: item.desc,
+      imageAlt: item.imageAlt || item.title,
       slug: `/${item.slug}`,
     }));
 }

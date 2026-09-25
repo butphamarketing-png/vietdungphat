@@ -47,9 +47,9 @@ export default function Album() {
             <Link to="/">Trang chủ</Link> / {album?.kicker || "Album"}
           </>
         }
-        title={album?.title || "Album công trình"}
+        title={album?.title || "Công trình tiêu biểu"}
       >
-        <p>{album?.lead || "Video YouTube và album ảnh theo từng dự án đã thi công của Việt Dũng Phát."}</p>
+        <p>{album?.lead || "Video YouTube và album ảnh theo từng dự án đã thi công. Mẫu theo phong cách xem tại Mẫu nhà."}</p>
       </PageHero>
 
       <div className="page-body album-split">
