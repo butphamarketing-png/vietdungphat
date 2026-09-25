@@ -36,6 +36,24 @@ const SLUGS = [
   "xay-biet-thu-san-vuon",
   "noi-that-biet-thu-tan-co-dien",
   "thiet-ke-noi-that-biet-thu",
+  // batch xây dựng còn lại
+  "cong-ty-xay-dung-nha-o-tphcm",
+  "xay-nha-phan-tho-tphcm",
+  "xay-nha-chia-khoa-trao-tay",
+  "xay-nha-1-tret-1-lau-tphcm",
+  "xay-nha-1-tret-2-lau-tphcm",
+  "xay-nha-3-tang-tphcm",
+  "xay-nha-4-tang-tphcm",
+  "xay-nha-ong-tphcm",
+  "nha-thau-xay-dung-uy-tin-tphcm",
+  "xay-nha-khong-phat-sinh-chi-phi",
+  "cong-ty-xay-nha-tron-goi-tphcm",
+  "xay-nha-pho-5x20",
+  "thi-cong-nha-o-dan-dung-tphcm",
+  "xay-nha-hoan-thien-tphcm",
+  // batch thiết kế
+  "thiet-ke-kien-truc-ho-chi-minh",
+  "kien-truc-su-thiet-ke-nha-tphcm",
 ];
 
 const phraseOf = Object.fromEntries(KEYWORDS.map((k) => [k.slug, k.phrase]));

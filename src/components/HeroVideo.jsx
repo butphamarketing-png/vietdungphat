@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 
 function youtubeId(url) {
@@ -286,22 +285,6 @@ export default function HeroVideo() {
             )}
           </span>
         </button>
-      </div>
-      <div className="hero-copy">
-        <p className="kicker light">{home.kicker}</p>
-        <h1>
-          <span className="hero-line">{home.title1}</span>
-          <br />
-          <span className="hero-line">{home.title2}</span>
-        </h1>
-        <div className="cta-row">
-          <Link className="btn" to="/lien-he">
-            {home.cta1}
-          </Link>
-          <Link className="btn ghost" to="/mau-nha">
-            {home.cta2}
-          </Link>
-        </div>
       </div>
     </section>
   );
