@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
-import { FALLBACK_IMAGE, cleanArticleHtml, fullImage, keywordAlt, uniqueImages } from "../lib/media.js";
+import { FALLBACK_IMAGE, articleContent, cleanArticleHtml, fullImage, keywordAlt, uniqueImages } from "../lib/media.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
@@ -39,12 +39,18 @@ export default function Article() {
     );
   }
 
-  const kw = keywordAlt(post);
-  const cover = fullImage(post.image) || FALLBACK_IMAGE;
-  const body = cleanArticleHtml(post.html, kw);
-  const gallery = /<img/i.test(body)
-    ? []
-    : uniqueImages(post.gallery || []).filter((src) => src !== cover);
+  const shopLike = /product-briefing|product-detail-gallery|MagicZoom|box-product-detail|Mô tả sản phẩm/i.test(post.html || "");
+  const parsed = shopLike || meta.kind === "products" ? articleContent(post) : null;
+  const kw = parsed?.kw || keywordAlt(post);
+  const cover = parsed?.cover || fullImage(post.image) || FALLBACK_IMAGE;
+  const body = parsed
+    ? parsed.body
+    : cleanArticleHtml(post.html, kw);
+  const gallery = parsed
+    ? parsed.gallery
+    : /<img/i.test(body)
+      ? []
+      : uniqueImages(post.gallery || []).filter((src) => src !== cover);
 
   return (
     <article className="page article">
@@ -57,23 +63,24 @@ export default function Article() {
         title={post.title}
       >
         {post.date ? <time dateTime={toDateTime(post.date)}>{post.date}</time> : null}
+        {post.desc && meta.kind === "products" ? <p>{post.desc}</p> : null}
       </PageHero>
       <div className="page-body article-wrap">
         <figure className="article-cover">
-          <SmartImg src={cover} alt={kw} loading="eager" fetchPriority="high" />
+          <SmartImg src={cover} alt={kw || post.title} loading="eager" fetchPriority="high" />
         </figure>
-        {gallery.length ? (
-          <div className="article-gallery">
-            {gallery.map((src) => (
-              <SmartImg key={src} src={src} alt={kw} />
-            ))}
-          </div>
-        ) : null}
         {body ? (
           <div className="prose article-body" dangerouslySetInnerHTML={{ __html: body }} />
         ) : (
           <p className="muted">Đang tải nội dung gốc từ kho dữ liệu Việt Dũng Phát.</p>
         )}
+        {gallery.length ? (
+          <div className="article-gallery" aria-label="Hình ảnh sản phẩm">
+            {gallery.map((src, idx) => (
+              <SmartImg key={src + idx} src={src} alt={`${kw || post.title} – ảnh ${idx + 1}`} />
+            ))}
+          </div>
+        ) : null}
         {related.length ? (
           <div className="related">
             <p className="kicker lined">Xem thêm</p>

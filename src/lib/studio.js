@@ -90,8 +90,33 @@ export function uniqueHouses(list = studio) {
   return out;
 }
 
+export const HOUSE_STYLE_SLUG = "biet-thu-tan-co-dien";
+
+export function houseStylePosts() {
+  const houses = uniqueHouses(studio);
+  const samples = houses.slice(0, 20);
+  const cover = samples[0]?.src || "/villas/neo-01.jpg";
+  const figures = samples
+    .map(
+      (item) =>
+        `<figure><img src="${item.src}" alt="${item.title}" /><figcaption>${item.title}</figcaption></figure>`,
+    )
+    .join("");
+  return [
+    {
+      slug: HOUSE_STYLE_SLUG,
+      title: "Biệt thự tân cổ điển",
+      image: cover,
+      imageAlt: "Biệt thự tân cổ điển",
+      desc: "20 mẫu biệt thự tân cổ điển: mặt tiền, mái Mansard, sân vườn và phối cảnh Việt Dũng Phát.",
+      html: `<p>Biệt thự tân cổ điển của Việt Dũng Phát. Dưới đây là 20 mẫu mặt tiền, sảnh cột, mái Mansard và sân vườn.</p><div class="article-gallery">${figures}</div>`,
+      gallery: [],
+    },
+  ];
+}
+
 export function homeNeoCards() {
-  return uniqueHouses(studio.slice(0, 19));
+  return uniqueHouses(studio.slice(0, 19)).map((item) => ({ ...item, slug: `/${HOUSE_STYLE_SLUG}` }));
 }
 
 export const villaSrcs = studio.map((item) => item.src);

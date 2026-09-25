@@ -78,3 +78,37 @@ export function cleanArticleHtml(html = "", keyword = "") {
     .replace(/<img([^>]*?)alt=["']\s*["']/gi, `<img$1alt="${String(keyword || "Công trình Việt Dũng Phát").replace(/"/g, "&quot;")}"`);
   return applyKeywordAlts(cleaned, keyword);
 }
+
+/** Strip shop chrome and keep readable SEO body + photo list for product/project posts. */
+export function articleContent(post = {}) {
+  const kw = keywordAlt(post);
+  const raw = String(post.html || "");
+  const fromHtml = [...raw.matchAll(/<img\b[^>]*src=(["'])([^"']+)\1[^>]*>/gi)].map((m) => m[2]);
+  const isShop = /product-briefing|product-detail-gallery|MagicZoom|box-product-detail|Mô tả sản phẩm/i.test(raw);
+
+  let bodyHtml = raw;
+  if (isShop) {
+    const descIdx = raw.search(/Mô tả sản phẩm\s*:?/i);
+    const chunk = descIdx >= 0 ? raw.slice(descIdx) : raw;
+    const paras = [...chunk.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+      .map((m) => m[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim())
+      .filter((t) => t && !/^mô tả sản phẩm/i.test(t) && !/còn hàng|mã sp|₫/i.test(t) && t.length > 40);
+    bodyHtml = paras.map((t) => `<p>${t}</p>`).join("\n");
+    if (!bodyHtml) {
+      const plain = chunk
+        .replace(/<[^>]+>/g, " ")
+        .replace(/Mô tả sản phẩm\s*:?/gi, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (plain.length > 60) bodyHtml = `<p>${plain.slice(0, 1200)}</p>`;
+    }
+  }
+
+  const body = cleanArticleHtml(bodyHtml, kw)
+    .replace(/(<p>\s*<\/p>\s*)+/gi, "")
+    .trim();
+
+  const cover = fullImage(post.image) || FALLBACK_IMAGE;
+  const gallery = uniqueImages([...(post.gallery || []), ...fromHtml]).filter((src) => src !== cover);
+  return { kw, cover, body, gallery, isShop };
+}

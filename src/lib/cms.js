@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
 import { albumVideosFrom, defaultAlbumVideos } from "./album.js";
-import { studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
+import { houseStylePosts, studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
 import { withNewsCovers } from "./news-media.js";
 import {
   coreServices as defaultCoreServices,
@@ -314,7 +314,9 @@ export function getCms() {
   if (!site.messenger || /m\.me\/vietdungphat\/?$/i.test(site.messenger)) {
     site.messenger = defaultSite.messenger;
   }
-  const projects = withHouseCovers(mergePosts("projects"));
+  const projectPosts = withHouseCovers(mergePosts("projects"));
+  const styleSlugs = new Set(houseStylePosts().map((item) => item.slug));
+  const projects = [...houseStylePosts(), ...projectPosts.filter((item) => !styleSlugs.has(item.slug))];
   const products = withProductCovers(mergePosts("products"));
   const services = mergePosts("services");
   const news = withNewsCovers(mergePosts("news"));

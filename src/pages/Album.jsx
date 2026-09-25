@@ -1,29 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
-import { uniqueHouses } from "../lib/studio.js";
-import { youtubeThumb } from "../lib/album.js";
+import { albumProjectsFrom, youtubeThumb } from "../lib/album.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
 export default function Album() {
-  const { studio, album } = useCms();
+  const { album, projects } = useCms();
   const videos = useMemo(() => album?.videos || [], [album]);
-  const photos = useMemo(() => uniqueHouses(studio), [studio]);
+  const albums = useMemo(() => albumProjectsFrom(projects), [projects]);
   const [active, setActive] = useState(videos[0]?.id || "");
+  const [projectSlug, setProjectSlug] = useState("");
   const [lightbox, setLightbox] = useState(-1);
+
+  const project = albums.find((item) => item.slug === projectSlug) || null;
+  const projectPhotos = project?.photos || [];
 
   useEffect(() => {
     if (!videos.some((v) => v.id === active) && videos[0]) setActive(videos[0].id);
   }, [videos, active]);
 
   useEffect(() => {
-    if (lightbox < 0) return;
+    if (lightbox < 0 || !projectPhotos.length) return;
     const onKey = (e) => {
       if (e.key === "Escape") setLightbox(-1);
-      if (e.key === "ArrowRight") setLightbox((i) => (i + 1) % photos.length);
-      if (e.key === "ArrowLeft") setLightbox((i) => (i - 1 + photos.length) % photos.length);
+      if (e.key === "ArrowRight") setLightbox((i) => (i + 1) % projectPhotos.length);
+      if (e.key === "ArrowLeft") setLightbox((i) => (i - 1 + projectPhotos.length) % projectPhotos.length);
     };
     window.addEventListener("keydown", onKey);
     document.body.classList.add("is-popup-open");
@@ -31,10 +34,10 @@ export default function Album() {
       window.removeEventListener("keydown", onKey);
       document.body.classList.remove("is-popup-open");
     };
-  }, [lightbox, photos.length]);
+  }, [lightbox, projectPhotos.length]);
 
   const current = videos.find((v) => v.id === active) || videos[0];
-  const lightPhoto = lightbox >= 0 ? photos[lightbox] : null;
+  const lightPhoto = lightbox >= 0 ? projectPhotos[lightbox] : null;
 
   return (
     <article className="page">
@@ -46,7 +49,7 @@ export default function Album() {
         }
         title={album?.title || "Album công trình"}
       >
-        <p>{album?.lead || "Video thi công và hình ảnh mẫu nhà tân cổ điển của Việt Dũng Phát."}</p>
+        <p>{album?.lead || "Video YouTube và album ảnh theo từng dự án đã thi công của Việt Dũng Phát."}</p>
       </PageHero>
 
       <div className="page-body album-split">
@@ -89,35 +92,72 @@ export default function Album() {
           </div>
         </section>
 
-        <section className="album-col album-photos" aria-label="Ảnh">
-          <p className="kicker lined">Ảnh</p>
-          <div className="album-photo-grid">
-            {photos.map((photo, idx) => (
-              <button
-                key={photo.src + idx}
-                type="button"
-                className="album-photo"
-                onClick={() => setLightbox(idx)}
-              >
-                <SmartImg src={photo.src} alt={photo.title} />
-                <span>{photo.title}</span>
-              </button>
-            ))}
-          </div>
+        <section className="album-col album-photos" aria-label="Album ảnh">
+          <p className="kicker lined">Album ảnh</p>
+          {project ? (
+            <div className="album-project-view">
+              <div className="album-project-head">
+                <button type="button" className="text-link" onClick={() => { setProjectSlug(""); setLightbox(-1); }}>
+                  ← Tất cả dự án
+                </button>
+                <h2>{project.title}</h2>
+                <p>{project.count} ảnh</p>
+              </div>
+              <div className="album-photo-grid">
+                {projectPhotos.map((src, idx) => (
+                  <button
+                    key={src + idx}
+                    type="button"
+                    className="album-photo"
+                    onClick={() => setLightbox(idx)}
+                  >
+                    <SmartImg src={src} alt={`${project.title} – ảnh ${idx + 1}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="album-project-grid">
+              {albums.map((item) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  className="album-project-card"
+                  onClick={() => setProjectSlug(item.slug)}
+                >
+                  <SmartImg src={item.cover} alt={item.title} />
+                  <span className="album-project-count">{item.count} ảnh</span>
+                  <span className="album-project-name">{item.title}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </section>
       </div>
 
-      {lightPhoto ? (
-        <div className="album-lightbox" role="dialog" aria-modal="true" aria-label={lightPhoto.title}>
+      {lightPhoto && project ? (
+        <div className="album-lightbox" role="dialog" aria-modal="true" aria-label={project.title}>
           <button type="button" className="album-lightbox-bg" aria-label="Đóng" onClick={() => setLightbox(-1)} />
-          <button type="button" className="album-lightbox-nav prev" aria-label="Ảnh trước" onClick={() => setLightbox((i) => (i - 1 + photos.length) % photos.length)}>
+          <button
+            type="button"
+            className="album-lightbox-nav prev"
+            aria-label="Ảnh trước"
+            onClick={() => setLightbox((i) => (i - 1 + projectPhotos.length) % projectPhotos.length)}
+          >
             ‹
           </button>
           <figure>
-            <SmartImg src={lightPhoto.src} alt={lightPhoto.title} />
-            <figcaption>{lightPhoto.title}</figcaption>
+            <SmartImg src={lightPhoto} alt={`${project.title} – ảnh ${lightbox + 1}`} />
+            <figcaption>
+              {project.title} · {lightbox + 1}/{projectPhotos.length}
+            </figcaption>
           </figure>
-          <button type="button" className="album-lightbox-nav next" aria-label="Ảnh sau" onClick={() => setLightbox((i) => (i + 1) % photos.length)}>
+          <button
+            type="button"
+            className="album-lightbox-nav next"
+            aria-label="Ảnh sau"
+            onClick={() => setLightbox((i) => (i + 1) % projectPhotos.length)}
+          >
             ›
           </button>
           <button type="button" className="album-lightbox-close" aria-label="Đóng" onClick={() => setLightbox(-1)}>
