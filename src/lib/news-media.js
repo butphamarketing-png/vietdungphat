@@ -10,9 +10,14 @@ const IMG = {
   mansard: "/villas/villa-mansard-rong.jpg",
   thai: "/villas/villa-goc-lon.jpg",
   pho4: "/villas/villa-cong-lon.jpg",
-  living: "/interior/noi-that-tan-co-dien.jpg",
-  combo: "/interior/combo-can-ho.jpg",
-  wardrobe: "/interior/tu-quan-ao.jpg",
+  living: "/interior/noi-that-tan-co-dien.png",
+  combo: "/interior/combo-noi-that-danh-cho-can-ho.png",
+  wardrobe: "/interior/tu-quan-ao.png",
+  bed: "/interior/giuong-doi-lon-18.png",
+  indochine: "/interior/combo-noi-that-indochine.png",
+  loft: "/interior/noi-that-loft-industrial.png",
+  jp: "/interior/noi-that-phong-cach-nhat.png",
+  villa: "/interior/noi-that-luxury-modern-villa.png",
 };
 
 const GROUP_POOLS = {
@@ -20,7 +25,7 @@ const GROUP_POOLS = {
   "tan-co-dien": villaSrcs,
   "thiet-ke": [IMG.thietKe, ...villaSrcs],
   "cai-tao": [IMG.caiTao, IMG.phanTho, ...villaSrcs],
-  "noi-that": [IMG.living, IMG.combo, IMG.wardrobe],
+  "noi-that": [IMG.living, IMG.combo, IMG.wardrobe, IMG.bed, IMG.indochine, IMG.loft, IMG.jp, IMG.villa],
   "bao-gia": [IMG.baoGia, IMG.thietKe, ...villaSrcs.slice(0, 6)],
   "khu-vuc": [IMG.tronGoi, IMG.phanTho, ...villaSrcs],
   "phong-thuy": [IMG.phongThuy, IMG.thietKe, IMG.baoGia],
@@ -30,12 +35,12 @@ const GROUP_POOLS = {
 const HOME_NEWS = [
   { slug: "xay-nha-tron-goi-tphcm", image: IMG.tronGoi },
   { slug: "thiet-ke-nha-tan-co-dien", image: IMG.thietKe },
-  { slug: "thiet-ke-noi-that-nha-pho", image: IMG.living },
+  { slug: "thiet-ke-noi-that-nha-pho", image: "/bai/thiet-ke-noi-that-nha-pho-1.png" },
 ];
 
 function keepNewsPhoto(src = "") {
   const url = String(src);
-  if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/villas/") || url.startsWith("/media/")) return true;
+  if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/villas/") || url.startsWith("/media/") || url.startsWith("/bai/")) return true;
   return /supabase\.co|r2\.dev|cloudflarestorage/i.test(url);
 }
 

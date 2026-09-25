@@ -180,10 +180,10 @@ export function preferNeoClassic(list = []) {
 }
 
 const INTERIOR = {
-  living: "/interior/noi-that-tan-co-dien.jpg",
-  combo: "/interior/combo-can-ho.jpg",
-  wardrobe: "/interior/tu-quan-ao.jpg",
-  tv: "/interior/ke-tivi.jpg",
+  living: "/interior/noi-that-tan-co-dien.png",
+  combo: "/interior/combo-noi-that-danh-cho-can-ho.png",
+  wardrobe: "/interior/tu-quan-ao.png",
+  tv: "/interior/ke-tivi.png",
 };
 
 const HOME_WORKSHOP_SLUGS = [
@@ -212,6 +212,7 @@ export function isWorkshopProduct(item = {}) {
 
 export function productCover(item = {}) {
   if (keepProductPhoto(item.image)) return item.image;
+  if (item.slug) return `/interior/${item.slug}.png`;
   const hay = `${item.slug || ""} ${item.title || ""}`.toLowerCase();
   if (/tu-quan|tủ quần/.test(hay)) return INTERIOR.wardrobe;
   if (/ke-tivi|kệ tivi|tab-dau|tab đầu/.test(hay)) return INTERIOR.tv;
