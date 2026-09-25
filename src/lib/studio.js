@@ -116,7 +116,12 @@ export function houseStylePosts() {
 }
 
 export function homeNeoCards() {
-  return uniqueHouses(studio.slice(0, 19)).map((item) => ({ ...item, slug: `/${HOUSE_STYLE_SLUG}` }));
+  return houseStylePosts().map((item) => ({
+    src: item.image,
+    title: item.title,
+    desc: item.desc,
+    slug: `/${item.slug}`,
+  }));
 }
 
 export const villaSrcs = studio.map((item) => item.src);

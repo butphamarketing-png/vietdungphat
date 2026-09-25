@@ -788,6 +788,13 @@ h1, h2, h3, blockquote {
   height: 360px;
   object-position: center 80%;
 }
+.homes-articles {
+  margin-top: 0.4rem;
+}
+.homes-articles .news-card img {
+  height: 180px;
+  object-position: center 70%;
+}
 .card:hover img { transform: scale(1.04); }
 .card span {
   display: block;
