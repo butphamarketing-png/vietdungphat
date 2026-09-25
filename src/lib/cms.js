@@ -335,6 +335,10 @@ export function getCms() {
     home.title2 = defaultHome.title2;
     if (!home.kicker || /thiết kế · xây dựng/i.test(String(home.kicker))) home.kicker = defaultHome.kicker;
   }
+  if (/20\s*năm/i.test(String(home.aboutTitle || ""))) home.aboutTitle = defaultHome.aboutTitle;
+  if (/20\s*năm/i.test(String(home.aboutLead || ""))) home.aboutLead = defaultHome.aboutLead;
+  if (/20\s*năm/i.test(String(home.servicesLead || ""))) home.servicesLead = defaultHome.servicesLead;
+  if (/20\s*năm/i.test(String(home.footerBlurb || ""))) home.footerBlurb = defaultHome.footerBlurb;
   if ((home.aboutImages || []).some((src) => /\/studio\//.test(String(src)))) {
     home.aboutImages = defaultHome.aboutImages;
   }
