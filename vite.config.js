@@ -51,7 +51,7 @@ function writeHtml(file, html) {
 function spaFallbackHtml() {
   return {
     name: "spa-fallback-html",
-    closeBundle() {
+    async closeBundle() {
       const dist = path.join(process.cwd(), "dist");
       const index = path.join(dist, "index.html");
       if (!existsSync(index)) return;
@@ -98,6 +98,36 @@ function spaFallbackHtml() {
         keywordNews = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/keyword-news.json"), "utf8"));
       } catch {
         keywordNews = [];
+      }
+
+      let houseStyles = [];
+      try {
+        const mod = await import(pathToFileURL(path.join(process.cwd(), "src/lib/house-style-media.js")).href);
+        houseStyles = mod.HOUSE_STYLE_MEDIA || [];
+      } catch {
+        houseStyles = [];
+      }
+
+      for (const style of houseStyles) {
+        if (!style?.slug || reserved.has(style.slug)) continue;
+        urls.push({
+          loc: `/${style.slug}`,
+          title: seoDocumentTitle(style.title),
+          description: (style.desc || style.lead || PAGE_SEO["/"].description).slice(0, 160),
+          image: `/mau-nha/${style.folder}/01.png`,
+          imageAlt: style.alts?.[0] || style.title,
+          type: "article",
+        });
+      }
+
+      if (!reserved.has("album")) {
+        urls.push({
+          loc: "/album",
+          title: seoDocumentTitle("Album công trình"),
+          description: PAGE_SEO["/mau-nha"]?.description || PAGE_SEO["/"].description,
+          image: DEFAULT_OG,
+          type: "website",
+        });
       }
 
       for (const kind of ["projects", "products", "services", "news", "extras"]) {
