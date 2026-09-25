@@ -92,8 +92,8 @@ export default function Album() {
           </div>
         </section>
 
-        <section className="album-col album-photos" aria-label="Album ảnh">
-          <p className="kicker lined">Album ảnh</p>
+        <section className="album-col album-photos" aria-label="Công trình tiêu biểu">
+          <p className="kicker lined">Công trình tiêu biểu</p>
           {project ? (
             <div className="album-project-view">
               <div className="album-project-head">
