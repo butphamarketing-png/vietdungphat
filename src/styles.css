@@ -194,6 +194,36 @@ h1, h2, h3, blockquote {
   transform: translateX(-50%);
   transform-origin: center bottom;
 }
+.hero-video-toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hero-video-toggle-icon {
+  position: absolute;
+  right: 1.15rem;
+  bottom: 1.15rem;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+.hero-video-toggle:hover .hero-video-toggle-icon,
+.hero-video-toggle:focus-visible .hero-video-toggle-icon {
+  background: rgba(0, 0, 0, 0.78);
+}
+.hero-video-toggle.is-paused {
+  background: rgba(0, 0, 0, 0.18);
+}
 .hero::after {
   content: "";
   position: absolute;

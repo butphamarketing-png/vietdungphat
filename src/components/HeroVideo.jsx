@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 
@@ -135,8 +135,33 @@ function markHeroReady() {
 export default function HeroVideo() {
   const { home } = useCms();
   const iframeRef = useRef(null);
+  const playerRef = useRef(null);
+  const pausedRef = useRef(false);
+  const [paused, setPaused] = useState(false);
   const yt = youtubeId(home.video) || "8DbWI_IjhqE";
   const label = `${home.title1 || ""} ${home.title2 || ""}`.trim() || "Video giới thiệu Việt Dũng Phát";
+
+  const sendCommand = (func, args = []) => {
+    iframeRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), "*");
+  };
+
+  const togglePlayback = () => {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setPaused(next);
+    const player = playerRef.current;
+    try {
+      if (next) {
+        player?.pauseVideo?.();
+        sendCommand("pauseVideo");
+      } else {
+        player?.playVideo?.();
+        sendCommand("playVideo");
+      }
+    } catch {
+      /* ignore */
+    }
+  };
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -161,16 +186,22 @@ export default function HeroVideo() {
 
     ensureYouTubeApi().then((YT) => {
       if (cancelled || !iframeRef.current) return;
-      player = new YT.Player(iframeRef.current, {
+      playerRef.current = player = new YT.Player(iframeRef.current, {
         playerVars: { autoplay: 1, mute: 1, vq: "hd1080" },
         events: {
-          onReady: (event) => startPlay(event.target),
+          onReady: (event) => {
+            playerRef.current = event.target;
+            if (!pausedRef.current) startPlay(event.target);
+          },
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.BUFFERING) {
               forceHd(event.target);
               readyOnce();
             }
-            if (event.data === YT.PlayerState.UNSTARTED || event.data === YT.PlayerState.CUED) {
+            if (
+              !pausedRef.current &&
+              (event.data === YT.PlayerState.UNSTARTED || event.data === YT.PlayerState.CUED)
+            ) {
               startPlay(event.target);
             }
           },
@@ -187,12 +218,14 @@ export default function HeroVideo() {
       iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), "*");
     };
     const kick = () => {
+      if (pausedRef.current) return;
       command("mute");
       command("playVideo");
       command("setPlaybackQuality", ["hd1080"]);
       startPlay(player);
     };
-    const unmute = () => {
+    const unmute = (event) => {
+      if (pausedRef.current || event?.target?.closest?.(".hero-video-toggle")) return;
       command("unMute");
       command("setVolume", [100]);
       command("playVideo");
@@ -210,6 +243,7 @@ export default function HeroVideo() {
       iframe.removeEventListener("load", kick);
       window.removeEventListener("pointerdown", unmute);
       window.removeEventListener("keydown", unmute);
+      playerRef.current = null;
       try {
         player?.destroy?.();
       } catch {
@@ -234,6 +268,24 @@ export default function HeroVideo() {
           referrerPolicy="strict-origin-when-cross-origin"
           tabIndex={-1}
         />
+        <button
+          type="button"
+          className={`hero-video-toggle${paused ? " is-paused" : ""}`}
+          aria-label={paused ? "Phát video" : "Tạm dừng video"}
+          onClick={togglePlayback}
+        >
+          <span className="hero-video-toggle-icon" aria-hidden="true">
+            {paused ? (
+              <svg viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="18" height="18">
+                <path fill="currentColor" d="M6 5h4v14H6zM14 5h4v14h-4z" />
+              </svg>
+            )}
+          </span>
+        </button>
       </div>
       <div className="hero-copy">
         <p className="kicker light">{home.kicker}</p>
