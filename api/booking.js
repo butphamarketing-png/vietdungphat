@@ -1,5 +1,6 @@
 import { getOverlay, isSupabaseConfigured, setOverlay } from "../lib/api/supabase.js";
 import { methodNotAllowed, readJson, send } from "../lib/api/http.js";
+import { notifyBooking } from "../lib/api/notify.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return methodNotAllowed(res, "POST");
@@ -24,7 +25,15 @@ export default async function handler(req, res) {
       ...(overlay.bookings || []),
     ];
     await setOverlay({ ...overlay, bookings });
-    send(res, 200, { ok: true });
+    let mailed = false;
+    try {
+      const mail = await notifyBooking({ ...entry, id: bookings[0].id });
+      mailed = mail.ok;
+      if (!mail.ok) console.error("booking notify:", mail.message || "failed");
+    } catch (error) {
+      console.error("booking notify:", error.message);
+    }
+    send(res, 200, { ok: true, mailed });
   } catch (error) {
     send(res, 500, { ok: false, error: error.message });
   }
