@@ -82,6 +82,41 @@ function articleParagraphs(html) {
   return out.slice(0, 5);
 }
 
+const REGIONS = [
+  ["Thủ Đức", /thủ đức/],
+  ["Bình Dương", /bình dương|dĩ an/],
+  ["Đồng Nai", /đồng nai|biên hòa|bien hoa/],
+  ["Bình Thuận", /bình thuận/],
+  ["Vũng Tàu", /vũng tàu/],
+  ["Long An", /long an/],
+  ["Hồ Chí Minh", /hồ chí minh|quận\s*\d|gò vấp|bình thạnh|tp\.?\s*hcm/],
+];
+
+export function projectRegion(title) {
+  const text = String(title || "").toLowerCase();
+  for (const [label, re] of REGIONS) if (re.test(text)) return label;
+  return "";
+}
+
+export function projectKind(title) {
+  const text = String(title || "").toLowerCase();
+  if (/biệt thự/.test(text)) return "biet-thu";
+  if (/nhà phố/.test(text)) return "nha-pho";
+  return "nha-o";
+}
+
+function cardTitle(title) {
+  const clean = cleanProjectTitle(title);
+  const head = clean.split(/\s+[–—]\s+/)[0] || clean;
+  const text = head.replace(/^dự\s*án\s*/i, "").trim();
+  const letters = text.replace(/[^\p{L}]/gu, "");
+  const upper = letters.replace(/[^\p{Lu}]/gu, "");
+  if (letters && upper.length / letters.length > 0.55) {
+    return text.toLowerCase().replace(/(^|\s)(\p{L})/gu, (_, space, ch) => space + ch.toUpperCase());
+  }
+  return text;
+}
+
 function articleFacts(title, paragraphs) {
   const blob = paragraphs.join(" ");
   const parts = String(title || "").split(/\s+[–—-]\s+/).map((part) => part.trim()).filter(Boolean);
@@ -108,6 +143,9 @@ export function albumProjectsFrom(projects = []) {
     out.push({
       slug: post.slug,
       title,
+      cardTitle: cardTitle(post.title),
+      place: projectRegion(post.title),
+      kind: projectKind(post.title),
       cover: photos[0],
       photos,
       count: photos.length,

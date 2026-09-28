@@ -280,6 +280,111 @@ button.text-link {
 .page-hero time { display: block; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.75rem; color: var(--accent); }
 .page-body { padding: 2.6rem 6vw 4rem; }
 
+.catalog-banner {
+  position: relative;
+  min-height: 280px;
+  margin: -5.6rem 0 0;
+  padding: 8.2rem 8vw 4.2rem;
+  color: #fff;
+  background: #243036 center / cover no-repeat;
+  border-radius: 0 0 32px 32px;
+  overflow: hidden;
+}
+.catalog-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(16, 22, 26, 0.72), rgba(16, 22, 26, 0.28));
+}
+.catalog-banner .kicker,
+.catalog-banner h1 { position: relative; z-index: 1; color: #fff; }
+.catalog-banner .kicker { letter-spacing: 0.04em; }
+.catalog-banner .kicker a { color: #fff; }
+.catalog-banner h1 { margin: 0.7rem 0 0; font-size: clamp(1.8rem, 3vw, 2.7rem); max-width: 18em; }
+.catalog-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 280px));
+  gap: 1rem;
+  justify-content: center;
+  margin: 0 auto 2rem;
+}
+.catalog-filters select {
+  height: 52px;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: #f3f3f3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") right 1.1rem center no-repeat;
+  padding: 0 2.4rem 0 1.2rem;
+  color: #4b4b4b;
+  font: inherit;
+  font-size: 0.98rem;
+  appearance: none;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.35rem 1.15rem;
+}
+.catalog-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #e8e8e8;
+  cursor: pointer;
+  text-align: left;
+}
+.catalog-card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  object-fit: cover;
+}
+.catalog-card-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 3.4rem 1rem 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  color: #fff;
+}
+.catalog-card-copy em {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+  font-style: normal;
+  font-size: 0.86rem;
+}
+.catalog-card-copy svg { width: 14px; height: 14px; fill: #3ddc84; flex-shrink: 0; }
+.catalog-card-copy strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.catalog-pages {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.8rem;
+}
+.catalog-pages button {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+.catalog-pages button.is-on { background: #186e4c; color: #fff; border-color: #186e4c; }
+.catalog-videos { margin-top: 3rem; }
 .album-split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1642,12 +1747,12 @@ body.is-popup-open .float-consult {
   .header { top: 8px; left: 10px; right: 10px; height: 62px; padding: 0 8px 0 10px; }
   .header-phone { min-height: 40px; padding: 0 0.75rem; font-size: 0.82rem; }
   .brand strong { font-size: 0.78rem; }
-  .news-grid.list, .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .news-grid.list, .product-grid, .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 720px) {
-  .grid-4, .policy-grid, .field-grid, .office-grid, .hsnl-works, .product-grid, .news-grid.list { grid-template-columns: 1fr; }
+  .grid-4, .policy-grid, .field-grid, .office-grid, .hsnl-works, .product-grid, .news-grid.list, .catalog-grid, .catalog-filters { grid-template-columns: 1fr; }
   .grid-3.homes { grid-template-columns: 1fr; }
   .grid-3.homes .card img { height: 260px; }
   .float-dock { right: 10px; bottom: 78px; gap: 12px; }
