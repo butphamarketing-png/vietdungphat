@@ -78,6 +78,26 @@ const SERVICE_PHOTOS = {
   "cai-tao": "/villas/khach-08.jpg",
 };
 
+const SERVICE_ARTICLE_COVERS = {
+  "bao-gia-sua-chu-nha-tron-goi-2025": "/news/news-cai-tao.jpg",
+  "bang-bao-gia-sua-chua-nha-nam-2022": "/news/news-bao-gia.jpg",
+  "don-gia-thiet-ke-xay-dung-nha-tai-binh-duong": "/news/news-thiet-ke.jpg",
+  "don-gia-xay-dung-nha-tron-goi-tai-tp-hcm-nam-2022": "/news/news-tron-goi.jpg",
+  "chung-ta-hieu-gi-ve-phong-cach-toi-gian": "/interior/noi-that-phong-cach-nhat.png",
+  "thiet-ke-noi-that-nha-o": "/interior/noi-that-tan-co-dien.png",
+  "thiet-ke-kien-truc-ho-chi-minh": "/bai/thiet-ke-kien-truc-ho-chi-minh-1.png",
+  "xay-dung-nha-tron-goi-tai-ho-chi-minh": "/bai/xay-nha-tron-goi-tphcm-1.png",
+};
+
+export function withServiceArticleCovers(list = []) {
+  return list.map((item) => {
+    const src = String(item.image || "");
+    if (/supabase\.co|r2\.dev|\/media\//i.test(src) || src.startsWith("/")) return item;
+    const cover = SERVICE_ARTICLE_COVERS[item.slug];
+    return cover ? { ...item, image: cover } : item;
+  });
+}
+
 export function withServicePhotos(list = coreServices) {
   return list.map((item) => {
     const src = String(item.image || "");

@@ -11,6 +11,7 @@ import {
   reviews as defaultReviews,
   site as defaultSite,
   withServicePhotos,
+  withServiceArticleCovers,
   withPricePhotos,
 } from "./content.js";
 
@@ -318,7 +319,7 @@ export function getCms() {
   const styleSlugs = new Set(houseStylePosts().map((item) => item.slug));
   const projects = [...houseStylePosts(), ...projectPosts.filter((item) => !styleSlugs.has(item.slug))];
   const products = withProductCovers(mergePosts("products"));
-  const services = mergePosts("services");
+  const services = withServiceArticleCovers(mergePosts("services"));
   const news = withNewsCovers(mergePosts("news"));
   const extras = mergePosts("extras");
   const listsMeta = overlay.listsMeta || {};
