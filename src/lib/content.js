@@ -36,7 +36,7 @@ export const lists = {
     title: "Mẫu nhà",
     kicker: "Mẫu nhà",
     items: projects,
-    intro: "Chọn phong cách — mỗi mục là danh sách mẫu (khoảng 20 ảnh). Công trình theo dự án xem tại Album.",
+    intro: "Chọn phong cách — mỗi mục là danh sách mẫu (khoảng 20 ảnh). Công trình theo dự án xem tại mục Dự án.",
   },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },

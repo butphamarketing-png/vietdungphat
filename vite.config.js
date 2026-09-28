@@ -123,7 +123,7 @@ function spaFallbackHtml() {
       if (!reserved.has("album")) {
         urls.push({
           loc: "/album",
-          title: seoDocumentTitle("Album công trình"),
+          title: seoDocumentTitle("Dự án công trình"),
           description: PAGE_SEO["/mau-nha"]?.description || PAGE_SEO["/"].description,
           image: DEFAULT_OG,
           type: "website",

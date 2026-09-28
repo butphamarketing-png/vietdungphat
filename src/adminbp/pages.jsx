@@ -30,14 +30,14 @@ const QUICK = [
 
 const LINKS = [
   { href: "/adminbp/trang-chu", label: "Trang chủ", desc: "Hero YouTube, intro, thống kê" },
-  { href: "/adminbp/album", label: "Album", desc: "Video YouTube + ảnh công trình" },
+  { href: "/adminbp/album", label: "Dự án", desc: "Video YouTube + ảnh công trình" },
   { href: "/adminbp/mau-nha", label: "Mẫu nhà", desc: "Công trình / bài viết" },
   { href: "/adminbp/san-pham", label: "Sản phẩm", desc: "Nội thất xưởng" },
   { href: "/adminbp/bao-gia", label: "Báo giá", desc: "Gói thi công" },
   { href: "/adminbp/dich-vu", label: "Dịch vụ", desc: "Nhóm dịch vụ + bài viết" },
   { href: "/adminbp/tin-tuc", label: "Tin tức", desc: "Bài viết SEO" },
   { href: "/adminbp/trang", label: "Trang nội dung", desc: "Giới thiệu, liên hệ" },
-  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Ảnh cột phải trang Album" },
+  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Ảnh cột phải trang Dự án" },
   { href: "/adminbp/kho-anh", label: "Kho ảnh", desc: "Supabase Storage" },
   { href: "/adminbp/truy-cap", label: "Lượt truy cập", desc: "Khách xem website" },
 ];
@@ -200,7 +200,7 @@ export function Dashboard() {
         <article className="adminbp-status-card is-ok">
           <small>Nội dung</small>
           <strong>
-            {cms.counts.projects} mẫu · {cms.counts.news} tin · {cms.counts.album || 0} video Album
+            {cms.counts.projects} mẫu · {cms.counts.news} tin · {cms.counts.album || 0} video dự án
           </strong>
           <span>{cms.counts.bookings} yêu cầu đặt lịch</span>
         </article>
@@ -861,7 +861,7 @@ export function PagesEditor() {
     <>
       <div className="adminbp-page-head">
         <h1>Trang nội dung</h1>
-        <p>Hero và mô tả các trang tĩnh. Trang Album chỉnh riêng tại mục Album.</p>
+        <p>Hero và mô tả các trang tĩnh. Trang Dự án chỉnh riêng tại mục Dự án.</p>
       </div>
       <div className="adminbp-form">
         {keys.map(([key, label]) => (
@@ -922,7 +922,7 @@ export function AlbumEditor() {
   return (
     <>
       <div className="adminbp-page-head">
-        <h1>Album</h1>
+        <h1>Dự án</h1>
         <p>
           Trang <a href="/album" target="_blank" rel="noreferrer">/album</a>: cột trái là video YouTube, cột phải lấy ảnh từ{" "}
           <Link to="/adminbp/thu-vien">Thư viện ảnh</Link>.
@@ -968,7 +968,7 @@ export function AlbumEditor() {
               (album.videos || []).map((item) => ({ id: item.id || item.url, title: item.title })),
             );
             patchCms({ album: { ...album, videos } });
-            setMessage("Đã lưu Album");
+            setMessage("Đã lưu Dự án");
           }}
         />
       </div>
@@ -989,7 +989,7 @@ export function StudioEditor() {
       <div className="adminbp-page-head">
         <h1>Thư viện ảnh</h1>
         <p>
-          Ảnh cột phải trang <Link to="/adminbp/album">Album</Link>, collage trang chủ và Mẫu nhà.
+          Ảnh cột phải trang <Link to="/adminbp/album">Dự án</Link>, collage trang chủ và Mẫu nhà.
         </p>
       </div>
       <div className="adminbp-form">

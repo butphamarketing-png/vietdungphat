@@ -44,12 +44,12 @@ export default function Album() {
       <PageHero
         kicker={
           <>
-            <Link to="/">Trang chủ</Link> / {album?.kicker || "Album"}
+            <Link to="/">Trang chủ</Link> / {album?.kicker || "Dự án"}
           </>
         }
         title={album?.title || "Công trình tiêu biểu"}
       >
-        <p>{album?.lead || "Video YouTube và album ảnh theo từng dự án đã thi công. Mẫu theo phong cách xem tại Mẫu nhà."}</p>
+        <p>{album?.lead || "Video YouTube và ảnh theo từng dự án đã thi công. Mẫu theo phong cách xem tại Mẫu nhà."}</p>
       </PageHero>
 
       <div className="page-body album-split">
