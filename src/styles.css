@@ -1003,17 +1003,36 @@ button.text-link {
   padding: 0;
 }
 .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
-.news-grid.list { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.news-grid.list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .news-card {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 0;
+  display: flex;
+  flex-direction: column;
   background: #fff;
   border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
 }
-.news-card img { width: 100%; height: 150px; object-fit: cover; }
-.news-card div { padding: 0.8rem 1rem 1rem; }
-.news-card p { margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.45; }
+.news-card-photo { position: relative; display: block; }
+.news-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.news-card-desc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(18, 24, 28, 0.82), rgba(18, 24, 28, 0.08));
+  color: #fff;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.news-card:hover .news-card-desc,
+.news-card:focus-visible .news-card-desc { opacity: 1; }
+.news-card-copy { padding: 0.85rem 1rem 1rem; }
+.news-card-copy h3 { margin: 0; font-size: 1.12rem; line-height: 1.35; }
+.news-card-copy time { margin-top: 0.35rem; padding: 0; }
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1609,13 +1628,12 @@ body.is-popup-open .float-consult {
   .price-script { display: none; }
   .header { padding: 0.7rem 4vw; }
   .brand strong { font-size: 0.78rem; }
-  .news-card { grid-template-columns: 1fr; }
-  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .news-grid.list, .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 720px) {
-  .grid-4, .policy-grid, .field-grid, .office-grid, .hsnl-works, .product-grid { grid-template-columns: 1fr; }
+  .grid-4, .policy-grid, .field-grid, .office-grid, .hsnl-works, .product-grid, .news-grid.list { grid-template-columns: 1fr; }
   .grid-3.homes { grid-template-columns: 1fr; }
   .grid-3.homes .card img { height: 260px; }
   .float-dock { right: 10px; bottom: 78px; gap: 12px; }

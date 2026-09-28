@@ -7,6 +7,21 @@ import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 import { FALLBACK_IMAGE, keywordAlt } from "../lib/media.js";
+import { excerptFromHtml } from "../lib/seo.js";
+
+function newsBlurb(post) {
+  const ready = String(post.desc || post.seoDesc || "").trim();
+  if (ready) return ready;
+  let text = excerptFromHtml(post.html, 500);
+  const title = String(post.title || "").trim().toLowerCase();
+  let guard = 0;
+  while (title && text.toLowerCase().startsWith(title) && guard < 3) {
+    text = text.slice(title.length).trim();
+    guard += 1;
+  }
+  if (!text) return "";
+  return text.length > 150 ? `${text.slice(0, 149).trim()}…` : text;
+}
 
 export default function ListPage({ kind }) {
   const cms = useCms();
@@ -68,28 +83,31 @@ export default function ListPage({ kind }) {
           </div>
         ) : (
           <div className={kind === "news" ? "news-grid list" : kind === "products" ? "product-grid" : "grid-3"}>
-            {(kind === "news" ? filtered : productItems).map((p) =>
-              kind === "products" ? (
+            {(kind === "news" ? filtered : productItems).map((p) => {
+              const blurb = kind === "news" ? newsBlurb(p) : "";
+              return kind === "products" ? (
                 <Link key={p.slug} to={`/${p.slug}`} className="product-card">
                   <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
                   <h3>{p.title}</h3>
                 </Link>
               ) : kind === "news" ? (
                 <Link key={p.slug} to={`/${p.slug}`} className="news-card">
-                  <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
-                  <div>
-                    {p.date ? <time>{p.date}</time> : null}
+                  <span className="news-card-photo">
+                    <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
+                    {blurb ? <span className="news-card-desc">{blurb}</span> : null}
+                  </span>
+                  <span className="news-card-copy">
                     <h3>{p.title}</h3>
-                    {p.desc ? <p>{p.desc}</p> : null}
-                  </div>
+                    {p.date ? <time>{p.date}</time> : null}
+                  </span>
                 </Link>
               ) : (
                 <Link key={p.slug} to={`/${p.slug}`} className="card">
                   <SmartImg src={p.image} alt={p.title} />
                   <span>{p.title}</span>
                 </Link>
-              ),
-            )}
+              );
+            })}
           </div>
         )}
       </div>
