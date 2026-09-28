@@ -67,9 +67,14 @@ export default function ListPage({ kind }) {
             ))}
           </div>
         ) : (
-          <div className={kind === "news" || kind === "products" ? "news-grid list" : "grid-3"}>
+          <div className={kind === "news" ? "news-grid list" : kind === "products" ? "product-grid" : "grid-3"}>
             {(kind === "news" ? filtered : productItems).map((p) =>
-              kind === "news" || kind === "products" ? (
+              kind === "products" ? (
+                <Link key={p.slug} to={`/${p.slug}`} className="product-card">
+                  <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
+                  <h3>{p.title}</h3>
+                </Link>
+              ) : kind === "news" ? (
                 <Link key={p.slug} to={`/${p.slug}`} className="news-card">
                   <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
                   <div>
