@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 import { profile } from "../lib/profile.js";
 import PageHero from "../components/PageHero.jsx";
-import StatsBar from "../components/StatsBar.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
@@ -66,7 +65,7 @@ const articles = [
 ];
 
 export default function About() {
-  const { coreServices, site } = useCms();
+  const { coreServices, site, stats } = useCms();
   const { hash } = useLocation();
   const navigate = useNavigate();
   const current = articles.find((item) => item.id === hash.slice(1)) || null;
@@ -77,46 +76,79 @@ export default function About() {
 
   return (
     <article className="page">
-      <PageHero kicker="Hồ sơ năng lực 2026" title={current?.title || "Kiến trúc Xây dựng Việt Dũng Phát"}>
-        {current ? (
-          <p>
-            <button type="button" className="text-link" onClick={() => navigate("/gioi-thieu")}>
-              ← Tất cả bài giới thiệu
-            </button>
-          </p>
-        ) : (
-          <p>
-            Thành lập năm {profile.founded}. {profile.slogan}. Phương châm “{profile.motto}”.
-          </p>
-        )}
-        <div className="cta-row">
-          <a className="btn with-arrow" href={profile.pdf} target="_blank" rel="noreferrer">
-            Tải hồ sơ năng lực PDF
-          </a>
-          <Link className="text-link" to="/lien-he">
-            Liên hệ tư vấn
-          </Link>
-        </div>
-      </PageHero>
-
-      <div className="page-body about-profile">
-        {current ? <ArticleBody id={current.id} coreServices={coreServices} site={site} /> : (
-          <div className="about-articles">
-            {articles.map((item) => (
-              <button key={item.id} type="button" className="about-article-card" onClick={() => openArticle(item.id)}>
-                <SmartImg src={item.image} alt={item.title} />
-                <span>
-                  <small>{item.kicker}</small>
-                  <strong>{item.title}</strong>
-                  <em>{item.excerpt}</em>
-                  <b>Xem bài viết</b>
-                </span>
+      {current ? (
+        <>
+          <PageHero kicker="Giới thiệu" title={current.title}>
+            <p>
+              <button type="button" className="text-link" onClick={() => navigate("/gioi-thieu")}>
+                ← Tất cả bài giới thiệu
               </button>
-            ))}
+            </p>
+          </PageHero>
+          <div className="page-body about-profile">
+            <ArticleBody id={current.id} coreServices={coreServices} site={site} />
           </div>
-        )}
-      </div>
-      <StatsBar />
+        </>
+      ) : (
+        <>
+          <header className="catalog-banner" style={{ backgroundImage: "url(/villas/villa-cong-lon.jpg)" }}>
+            <p className="kicker">
+              <Link to="/">Trang chủ</Link> · Giới thiệu
+            </p>
+            <h1>Giới thiệu</h1>
+          </header>
+          <div className="page-body about-landing">
+            <section className="about-lead">
+              <div>
+                <span className="about-pill">Việt Dũng Phát</span>
+                <h2>Đồng hành thiết kế và thi công từ năm {profile.founded}</h2>
+                <p>{profile.intro[0]}</p>
+                <p>{profile.intro[2]}</p>
+                <button type="button" className="about-more" onClick={() => openArticle("chung-toi")}>
+                  Về chúng tôi
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+              <div className="about-stat-grid">
+                {(stats || []).slice(0, 4).map((item) => (
+                  <article key={item.label}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="about-values">
+              <div>
+                <span className="about-pill">Cam kết</span>
+                <h2>Khách hàng chọn Việt Dũng Phát vì những giá trị này</h2>
+                <p>Phương châm “{profile.motto}”.</p>
+              </div>
+              <ul>
+                {profile.policies.map((item) => (
+                  <li key={item.title}>
+                    <strong>{item.title}</strong>
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="about-posts">
+              <div className="about-posts-grid">
+                {articles.map((item) => (
+                  <button key={item.id} type="button" className="about-post" onClick={() => openArticle(item.id)}>
+                    <SmartImg src={item.image} alt={item.title} />
+                    <span className="about-pill">Giới thiệu</span>
+                    <strong>{item.title}</strong>
+                  </button>
+                ))}
+              </div>
+            </section>
+          </div>
+        </>
+      )}
       <BookingCta />
     </article>
   );
