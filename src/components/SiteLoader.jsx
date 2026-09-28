@@ -21,7 +21,8 @@ export default function SiteLoader() {
     };
 
     window.addEventListener("vdp-hero-ready", hide);
-    const fallback = window.setTimeout(hide, pathname === "/" ? 3200 : 900);
+    const delay = pathname.startsWith("/adminbp") ? 0 : pathname === "/" ? 3200 : 900;
+    const fallback = window.setTimeout(hide, delay);
     return () => {
       window.removeEventListener("vdp-hero-ready", hide);
       window.clearTimeout(fallback);
