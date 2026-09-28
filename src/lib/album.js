@@ -55,6 +55,46 @@ function photosFromPost(post) {
   return uniqueImages([post?.image, ...(post?.gallery || []), ...fromHtml]);
 }
 
+function decodeText(value) {
+  return String(value || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .trim();
+}
+
+function articleParagraphs(html) {
+  const skip = /công ty tnhh|chi nhánh|bài viết liên quan|kha vạn cân|showroom|vinhomes grandpark|nguyễn duy trinh/i;
+  const seen = new Set();
+  const out = [];
+  for (const match of String(html || "").matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)) {
+    const text = decodeText(match[1]).replace(/\s+/g, " ").trim();
+    if (text.length < 24 || skip.test(text)) continue;
+    const key = text.slice(0, 90).toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(text);
+  }
+  return out.slice(0, 5);
+}
+
+function articleFacts(title, paragraphs) {
+  const blob = paragraphs.join(" ");
+  const parts = String(title || "").split(/\s+[–—-]\s+/).map((part) => part.trim()).filter(Boolean);
+  const area = (blob.match(/diện tích(?:\s+xây dựng)?\s*[:：]?\s*([0-9][0-9.,]*\s*m2)/i) || [])[1] || "";
+  const style = (blob.match(/phong cách\s+(.+?)(?=\s+công năng|[.]|$)/i) || [])[1]?.trim() || "";
+  return [
+    ["Công trình", parts[0] || ""],
+    ["Địa điểm", parts.slice(1).join(" – ")],
+    ["Diện tích", area.replace(/\s+/g, "")],
+    ["Phong cách", style],
+  ].filter(([, value]) => String(value || "").trim().length > 1);
+}
+
 export function albumProjectsFrom(projects = []) {
   const skip = /phong\s*thủy|kiến\s*thức|động\s*thổ|plaster\s*fun/i;
   const out = [];
@@ -63,12 +103,17 @@ export function albumProjectsFrom(projects = []) {
     if (skip.test(post.title || "")) continue;
     const photos = photosFromPost(post);
     if (photos.length < 3) continue;
+    const title = cleanProjectTitle(post.title) || "Công trình Việt Dũng Phát";
+    const paragraphs = articleParagraphs(post.html);
     out.push({
       slug: post.slug,
-      title: cleanProjectTitle(post.title) || "Công trình Việt Dũng Phát",
+      title,
       cover: photos[0],
       photos,
       count: photos.length,
+      paragraphs,
+      facts: articleFacts(title, paragraphs),
+      excerpt: paragraphs[0] || "",
     });
   }
   return out;

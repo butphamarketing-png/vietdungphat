@@ -92,42 +92,61 @@ export default function Album() {
           </div>
         </section>
 
-        <section className="album-col album-photos" aria-label="Công trình tiêu biểu">
-          <p className="kicker lined">Công trình tiêu biểu</p>
+        <section className="album-col album-photos" aria-label="Bài viết công trình">
+          <p className="kicker lined">Bài viết công trình</p>
           {project ? (
-            <div className="album-project-view">
-              <div className="album-project-head">
-                <button type="button" className="text-link" onClick={() => { setProjectSlug(""); setLightbox(-1); }}>
-                  ← Tất cả dự án
-                </button>
-                <h2>{project.title}</h2>
-                <p>{project.count} ảnh</p>
-              </div>
-              <div className="album-photo-grid">
+            <article className="album-article">
+              <button type="button" className="text-link" onClick={() => { setProjectSlug(""); setLightbox(-1); }}>
+                ← Tất cả dự án
+              </button>
+              <h2>{project.title}</h2>
+              {project.facts?.length ? (
+                <table className="album-specs">
+                  <tbody>
+                    {project.facts.map(([label, value]) => (
+                      <tr key={label}>
+                        <th scope="row">{label}</th>
+                        <td>{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : null}
+              {project.paragraphs?.length ? (
+                <div className="album-article-copy">
+                  {project.paragraphs.map((text) => (
+                    <p key={text.slice(0, 48)}>{text}</p>
+                  ))}
+                </div>
+              ) : null}
+              <div className="album-article-photos">
                 {projectPhotos.map((src, idx) => (
                   <button
                     key={src + idx}
                     type="button"
-                    className="album-photo"
+                    className="album-article-photo"
                     onClick={() => setLightbox(idx)}
                   >
                     <SmartImg src={src} alt={`${project.title} – ảnh ${idx + 1}`} />
                   </button>
                 ))}
               </div>
-            </div>
+            </article>
           ) : (
-            <div className="album-project-grid">
+            <div className="album-article-list">
               {albums.map((item) => (
                 <button
                   key={item.slug}
                   type="button"
-                  className="album-project-card"
+                  className="album-article-card"
                   onClick={() => setProjectSlug(item.slug)}
                 >
                   <SmartImg src={item.cover} alt={item.title} />
-                  <span className="album-project-count">{item.count} ảnh</span>
-                  <span className="album-project-name">{item.title}</span>
+                  <span className="album-article-card-body">
+                    <strong>{item.title}</strong>
+                    {item.excerpt ? <span>{item.excerpt}</span> : <span>{item.count} ảnh công trình</span>}
+                    <em>Xem bài viết</em>
+                  </span>
                 </button>
               ))}
             </div>
