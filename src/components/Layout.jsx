@@ -90,9 +90,14 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <Link className="header-cta" to="/lien-he#dat-lich" onClick={() => setOpen(false)}>
-          Đặt lịch
-        </Link>
+        <div className="header-actions">
+          <Link className="header-cta" to="/lien-he#dat-lich" onClick={() => setOpen(false)}>
+            Đặt lịch
+          </Link>
+          <a className="header-phone" href={`tel:${String(site.phone || "").replace(/\D/g, "")}`}>
+            {site.phone}
+          </a>
+        </div>
       </header>
       {open ? <button className="nav-mask" aria-label="Đóng menu" onClick={() => setOpen(false)} /> : null}
       <main id="noi-dung">
