@@ -1,7 +1,7 @@
 import { fullImage, uniqueImages } from "./media.js";
 import { isHouseStyleSlug } from "./studio.js";
 
-const FOOTER = /công ty tnhh|kiến trúc xây dựng việt dũng phát|kha vạn cân|vinhomes grandpark|nguyễn duy trinh|bài viết liên quan|liên hệ với chúng tôi để nhận tư vấn|thương hiệu của sự an tâm|showroom:|chi nhánh\s*\d|địa chỉ\s*:|hotline\s*:|email\s*:|website\s*:/i;
+const FOOTER = /công ty tnhh|kiến trúc xây dựng việt dũng phát|kha vạn cân|vinhomes grandpark|nguyễn duy trinh|bài viết liên quan|liên hệ với chúng tôi để nhận tư vấn|thương hiệu của sự an tâm|showroom:|chi nhánh\s*\d|hotline\s*:|email\s*:|website\s*:/i;
 
 function esc(value) {
   return String(value || "")
@@ -63,6 +63,7 @@ function sourceLines(html) {
     if (/bài viết liên quan/i.test(line)) break;
     line = line.replace(/[ \t]+/g, " ").trim();
     line = line.replace(/\s+,/g, ",").replace(/,(\S)/g, ", $1").replace(/(\p{L})\.(\d)/gu, "$1, $2");
+    line = line.replace(/(\d)\s*,\s*(\d)(?=\s*[*x×])/g, "$1,$2");
     line = line.replace(/tháng\s*(\d+)\s*[_./]\s*(\d{4})\s*\)?/i, "tháng $1/$2");
     if (line.length < 8 || FOOTER.test(line)) continue;
     if (/^dự\s*án\b/i.test(line) && line.length < 100) continue;
@@ -126,7 +127,7 @@ function clientAndPlace(title) {
   const parts = clean.split(/\s*[-–—]\s*/).map((part) => part.trim()).filter(Boolean);
   const clientMatch = tidy(clean).match(/(?:^|[^\p{L}])((?:anh|chị|cô|chú|bác|ông|bà)\s+\p{L}+(?:\s+\p{L}+){0,3})/iu);
   let client = clientMatch ? tidy(clientMatch[1]) : "";
-  client = client.replace(/\s+(đường|phường|quận|tp|tại|khu).*$/i, "").trim();
+  client = client.replace(/\s+(đường|phường|quận|tp|tại|khu|diện tích|m2).*$/i, "").trim();
   let place = tidyPlace(parts.slice(1).join(", "));
   if (client) place = tidyPlace(place.replace(new RegExp(client, "ig"), ""));
   if (!place) {
@@ -141,8 +142,6 @@ function clientAndPlace(title) {
   if (quan && place && !place.toLowerCase().includes(quan[0].toLowerCase())) {
     place = tidyPlace([place, tidy(quan[0])].filter(Boolean).join(", "));
   }
-  const district = place.match(/quận\s*\d+/i);
-  if (district && /đường/i.test(place)) place = tidy(district[0]);
   return { client, place };
 }
 
@@ -153,7 +152,7 @@ function tidyPlace(raw) {
   const seen = new Set();
   const out = [];
   for (const part of parts) {
-    const short = part.replace(/^(phường|p\.|tp\.?|thành phố|tỉnh)\s+/i, "").trim();
+    const short = part.replace(/^(phường|p\.|tp\.?|thành phố|tỉnh|đường)\s+/i, "").trim();
     const key = short.toLowerCase();
     if (!key || key === "tp" || seen.has(key)) continue;
     seen.add(key);
@@ -184,7 +183,8 @@ export function projectFacts(post = {}) {
   const styleStop = String.raw`(?=\s+công\b|\s+-\s*tầng|[.]|$)`;
   const styleMatch = spec.match(new RegExp(`phong cách\\s+(.+?)${styleStop}`, "i")) || blob.match(new RegExp(`phong cách\\s+(.+?)${styleStop}`, "i"));
   let style = styleMatch ? styleMatch[1].replace(/\s+/g, " ").trim() : "";
-  style = style.replace(/\s+(pha|chút|hơi|với|và)$/i, "");
+  style = style.split(/\s+(?:pha|hơi|chút|hướng)\b/i)[0].trim();
+  style = style.replace(/\s+(với|và)$/i, "");
   if (style.length > 40) style = style.split(/\s+/).slice(0, 4).join(" ");
   const roofMatch = spec.match(/mái\s+(btct|thái|nhật|bằng|ngói|tôn)/i);
   const floors = parseFloors(spec);
@@ -216,8 +216,10 @@ function prettyArea(value) {
 }
 
 function footprintOf(text) {
-  const found = String(text || "").match(/(\d+(?:[.,]\d+)?)\s*[*x×]\s*(\d+(?:[.,]\d+)?)\s*m\b/i);
-  return found ? `${found[1]}x${found[2]}m` : "";
+  const found = String(text || "").match(/(\d+)\s*,\s*(\d+)\s*[*x×]\s*(\d+(?:[.,]\d+)?)\s*m\b/i)
+    || String(text || "").match(/(\d+(?:[.,]\d+)?)\s*[*x×]\s*(\d+(?:[.,]\d+)?)\s*m\b/i);
+  if (!found) return "";
+  return found[3] ? `${found[1]},${found[2]}x${found[3]}m` : `${found[1]}x${found[2]}m`;
 }
 
 function jobWhen(text) {
@@ -240,8 +242,13 @@ function jobService(text) {
 }
 
 function jobUse(paragraphs) {
-  const direct = paragraphs.find((line) => /^công năng\b/i.test(line) && line.replace(/^công năng\s*:?\s*/i, "").trim().length > 6);
-  if (direct) return direct.replace(/^công năng\s*:?\s*/i, "").replace(/^[-–]\s*/, "").trim();
+  const idx = paragraphs.findIndex((line) => /^[·•*\s]*công năng\b/i.test(line));
+  if (idx >= 0) {
+    let text = paragraphs[idx].replace(/^[·•*\s]*công năng\s*:?\s*/i, "").replace(/^sử dụng\s+/i, "").replace(/^[-–]\s*/, "").trim();
+    const next = paragraphs[idx + 1] || "";
+    if (text && !/phòng/i.test(text) && /phòng/i.test(next)) text = `${text} ${next}`.trim();
+    if (text.length > 6) return text;
+  }
   const floors = paragraphs
     .filter((line) => /tầng\s*\d+\s*:/i.test(line))
     .map((line) => line.replace(/^[-–]\s*/, "").trim());
@@ -258,13 +265,49 @@ function normalizeLevel(text) {
     .replace(/một|hai|ba|bốn/g, (word) => ({ một: "1", hai: "2", ba: "3", bốn: "4" }[word]));
 }
 
-function scaleOf(facts, title) {
-  const fromTitle = String(title || "").match(/(\d+|một|hai|ba|bốn)\s*trệt(?:\s*,?\s*(\d+|một|hai|ba|bốn)\s*lầu)?(?:\s*,?\s*(\d+|một)\s*sân\s*thượng)?/i);
+function scaleOf(facts, title, paragraphs) {
+  const list = Array.isArray(paragraphs) ? paragraphs : [];
+  const blob = list.join(" ");
+  const stated = labeled(list, "quy mô");
+  if (stated) return stated;
+  const levelRe = /(\d+|một|hai|ba|bốn)\s*trệt(?:\s*,?\s*(\d+|một|hai|ba|bốn)\s*lầu)?(?:\s*,?\s*(\d+|một)\s*sân\s*thượng)?/i;
+  const fromBody = blob.match(levelRe);
+  const fromTitle = String(title || "").match(levelRe);
+  if (fromBody) return normalizeLevel(fromBody[0]);
   if (facts.levelText) return normalizeLevel(facts.levelText);
   if (fromTitle) return normalizeLevel(fromTitle[0]);
+  const floors = `${title || ""} ${blob}`.match(/(?:nhà phố|biệt thự|căn hộ|nhà|project)\s+(\d+)\s*tầng/i);
+  if (floors) return `${floors[1]} tầng`;
   if (facts.floorCount && facts.type !== "Nhà cấp 4") return `${facts.floorCount} tầng`;
   if (facts.type && facts.type !== "Nhà") return facts.type;
   return "";
+}
+
+function labeled(paragraphs, name) {
+  const list = Array.isArray(paragraphs) ? paragraphs : String(paragraphs || "").split(/\n/);
+  const re = new RegExp(`^[·•*\\s]*${name}\\s*:\\s*(.+)$`, "i");
+  const line = list.find((item) => re.test(item));
+  return line ? line.match(re)[1].replace(/\s+/g, " ").trim() : "";
+}
+
+function niceName(value) {
+  const text = String(value || "").replace(/^[·•*]\s*/, "").trim();
+  if (!text) return "";
+  if (mostlyCaps(text) || text === text.toLowerCase()) return titleCase(text);
+  return text;
+}
+
+function knownPlace(text) {
+  const re = /hiệp bình chánh|quận\s*\d+|thủ đức|biên hòa|vũng tàu|đồng nai|bình dương|long an|bình thạnh|gò vấp|tân bình|bình chánh|dĩ an|trảng dài|trảng bom|phú nhuận|tây ninh|long khánh|nhà bè|cần giờ|hồ chí minh|đà nẵng|bình thuận|tiền giang|quảng ngãi|lâm đồng|kiên giang|ninh thuận|buôn ma thuột|phú yên|bình định|cà mau/gi;
+  const seen = new Set();
+  const out = [];
+  for (const match of String(text || "").matchAll(re)) {
+    const key = match[0].toLowerCase().replace(/\s+/g, " ");
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(tidy(match[0]));
+  }
+  return out.slice(0, 2).join(", ");
 }
 
 export function projectBrief(post = {}) {
@@ -274,34 +317,39 @@ export function projectBrief(post = {}) {
   const blob = paragraphs.join(" ");
   const thin = /nội dung đang cập nhật/i.test(blob) && !facts.area && !facts.span && !facts.floorCount && !facts.levelText;
   if (thin) return null;
-  const scale = scaleOf(facts, post.title);
-  const foot = facts.span || footprintOf(blob);
+  const scale = scaleOf(facts, post.title, paragraphs);
+  const scaleShown = scale && !/^(nhà phố|căn hộ|biệt thự|cải tạo|nhà cấp 4)$/i.test(scale) ? scale : "";
+  const statedArea = labeled(paragraphs, "diện tích").replace(/(\d)\s*,\s*(\d)/g, "$1,$2");
+  const loose = (paragraphs.find((line) => /^nhà\s+[0-9]/i.test(line) && /m2/i.test(line)) || "").match(/([0-9][0-9.,]*)\s*m2/i);
+  const foot = statedArea || facts.span || footprintOf(blob);
+  const built = foot || facts.area || (loose ? `${loose[1]}m2` : "");
   const tret = (blob.match(/diện tích trệt\s*[:：]?\s*([0-9][0-9.,]*)\s*m2/i) || [])[1];
   const when = jobWhen(blob);
   const months = jobMonths(blob);
   const use = jobUse(paragraphs);
   const service = jobService(blob);
-  const areaChip = foot ? prettyArea(foot) : facts.area ? prettyArea(facts.area) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
+  if (!built && !when && !use && !scaleShown) return null;
+  const areaChip = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
   const chips = [
-    scale ? { key: "scale", label: "Quy mô", value: scale } : null,
+    scaleShown ? { key: "scale", label: "Quy mô", value: scaleShown } : null,
     areaChip ? { key: "area", label: "Diện tích", value: areaChip } : null,
     when ? { key: "date", label: "Ngày khởi công", value: when } : null,
   ].filter(Boolean);
-  const sizeRow = foot
-    ? prettyArea(foot)
-    : facts.area
-      ? prettyArea(facts.area)
-      : tret
-        ? `Trệt ${prettyArea(`${tret}m2`)}`
-        : "";
-  const scope = scale && facts.type && facts.type !== "Nhà" && !scale.toLowerCase().includes(facts.type.toLowerCase())
-    ? `${facts.type} ${scale}`
-    : scale;
+  const sizeRow = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
+  const scope = scaleShown && facts.type && facts.type !== "Nhà" && !scaleShown.toLowerCase().includes(facts.type.toLowerCase())
+    ? `${facts.type} ${scaleShown}`
+    : scaleShown;
+  const client = niceName(labeled(paragraphs, "chủ đầu tư") || facts.client);
+  const statedPlace = labeled(paragraphs, "địa chỉ");
+  let place = statedPlace || facts.place;
+  if (!statedPlace && (!place || /trệt|lầu|\d+\s*tầng/i.test(place) || place.split(/\s+/).length > 5)) {
+    place = knownPlace(`${post.title} ${blob}`);
+  }
   const rows = [
-    facts.client ? ["Chủ đầu tư", facts.client] : null,
-    facts.place ? ["Địa chỉ", facts.place] : null,
+    client ? ["Chủ đầu tư", client] : null,
+    place ? ["Địa chỉ", place] : null,
     sizeRow ? ["Diện tích", sizeRow] : null,
-    tret && facts.area ? ["Diện tích trệt", prettyArea(`${tret}m2`)] : null,
+    tret && (facts.area || built) && !/x/i.test(String(built)) ? ["Diện tích trệt", prettyArea(`${tret}m2`)] : null,
     scope ? ["Quy mô", scope] : null,
     use ? ["Công năng", use] : null,
     months ? ["Thời gian xây dựng", months] : null,
@@ -319,8 +367,11 @@ export function projectHeadline(post = {}) {
   if (!facts.client || !placeOk) return title;
   const bits = [facts.type];
   if (facts.style && !facts.type.toLowerCase().includes(facts.style)) bits.push(facts.style);
-  if (facts.levelText) bits.push(facts.levelText.toLowerCase().replace(/\s+/g, " "));
-  else if (facts.floorCount && facts.type !== "Nhà cấp 4") bits.push(`${facts.floorCount} tầng`);
+  const scale = scaleOf(facts, post.title, facts.paragraphs);
+  const scaleBit = scale && !new RegExp(`^${facts.type}$`, "i").test(scale)
+    ? scale.replace(new RegExp(`^${facts.type}\\s+`, "i"), "")
+    : "";
+  if (scaleBit && !facts.type.toLowerCase().includes(scaleBit.toLowerCase())) bits.push(scaleBit);
   if (facts.span) bits.push(facts.span);
   else if (facts.area) bits.push(facts.area);
   const right = [facts.client, facts.place].filter(Boolean).join(", ");
