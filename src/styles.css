@@ -1557,7 +1557,7 @@ button.text-link {
   color: var(--accent);
 }
 .about-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; }
-.about-layout img { width: 100%; object-fit: contain; background: var(--paper-2); }
+.about-layout img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; object-position: center; border-radius: 18px; background: var(--paper-2); }
 .prose { line-height: 1.85; color: var(--ink-soft); }
 .prose h1, .prose h2, .prose h3 { color: var(--ink); }
 .about-profile > section { margin-top: 4.2rem; }

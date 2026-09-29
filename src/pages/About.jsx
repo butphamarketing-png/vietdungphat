@@ -13,7 +13,7 @@ const articles = [
     kicker: "Chúng tôi là ai",
     title: "Từ năm 2014, đồng hành thiết kế và thi công",
     excerpt: profile.intro[0],
-    image: "/hsnl/gioi-thieu.jpg",
+    image: "/villas/villa-cong-lon.jpg",
   },
   {
     id: "thu-ngo",
@@ -193,7 +193,7 @@ function ArticleBody({ id, coreServices, site }) {
   if (id === "chung-toi") {
     return (
       <section className="about-layout">
-        <SmartImg src="/hsnl/gioi-thieu.jpg" alt="Giới thiệu Việt Dũng Phát" />
+        <SmartImg src="/villas/villa-cong-lon.jpg" alt="Biệt thự tân cổ điển Việt Dũng Phát" />
         <div className="prose">
           <p className="kicker lined">Chúng tôi là ai</p>
           <h2>Từ năm {profile.founded}, đồng hành thiết kế và thi công</h2>
