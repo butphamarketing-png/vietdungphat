@@ -1016,6 +1016,7 @@ const GROUP_DEEP = {
   "noi-that": `Nội thất nhà phố và biệt thự đóng theo tường thật, không mua tủ sẵn rồi che khe 3 cm. Trình tự: phần ướt xong → trần → sàn → tủ → đá bếp. Xưởng Việt Dũng Phát đọc shop drawing, CNC phào tân cổ điển, sơn 2k hoặc melamine tùy chỗ ẩm. Căn hộ dùng combo gọn, xin lịch ban quản lý. Bảo hành ray, bản lề, sơn; giữ mẫu màu. Điện lạnh âm trần phải chốt trước khi đóng trần.`,
   "bao-gia": `Mọi con số m² chỉ đúng khi cùng quy ước đo (tim tường / thông thủy), cùng danh mục thô hay hoàn thiện, cùng năm niêm yết. Mốc 2026: 3.950.000đ phần thô và 5.950.000đ trọn gói — chưa cọc đặc biệt, đá hoa, thang máy, tủ bếp xưởng. Cải tạo không dùng một đơn giá m² cho mọi nhà. Nhà 5×20 ba tầng là ~300 m² sàn, không phải 100 m² đất. Hợp đồng ghi thời điểm chốt thép xi măng.`,
   "khu-vuc": `Mỗi quận huyện khác hẻm, nền, phép và giờ xe ben. Thủ Đức — kể cả Q9 cũ và Grand Park — hay gặp đất nền và BQL; Gò Vấp, Tân Bình, Tân Phú là nhà ống hẻm; Nhà Bè, Bình Chánh, một phần Bình Thạnh phải tính triều và cốt; Dĩ An, Biên Hòa, Long An là phép tỉnh và nền yếu. Việt Dũng Phát khảo sát tại chỗ trước khi nhận — không khoán trắng xã xa. Hàng xóm, lộ giới, trạm điện nước nằm trong checklist, không chỉ đơn giá m².`,
+  "dong-nam": `Dãy Dĩ An — Biên Hòa — Đồng Nai — Quận 9 — Thủ Đức là một vành đai nhà phố và đất nền, không phải nội thành quận 1. Dĩ An giáp Thủ Đức, nhiều nhà gần khu công nghiệp, nền san lấp, xe ben đi được một số tuyến nhưng hẻm nội bộ vẫn phải bơm bê tông. Biên Hòa và các huyện Đồng Nai (Long Thành, Nhơn Trạch, Trảng Bom) xin phép theo tỉnh, cự ly vật tư dài hơn. Quận 9 cũ nay là TP Thủ Đức: Phước Long, Tăng Nhơn Phú, Long Trường, Vinhomes Grand Park có thêm nội quy ban quản lý. Thủ Đức có văn phòng Việt Dũng Phát trên Kha Vạn Cân nên khảo sát gần. Mỗi nơi vẫn phải đo hẻm, lộ giới và móng tại đất, không copy đơn giá một quận sang quận khác.`,
   "phong-thuy": `Phong thủy và giấy phép là hai lớp: tuổi, hướng, lỗ ban do gia chủ chọn; kết cấu, PCCC, số tầng do luật và KTS chốt. Dung hòa bằng cửa, bậc, vị trí thờ, màu — không xoay nhà trên đất 5 m trái chỉ giới. Thước lỗ ban online miễn phí trên web. Xin phép nhà phố TP.HCM qua hồ sơ đúng quy hoạch, theo dõi Cổng Dịch vụ công. Đổ bê tông vẫn phải tránh mưa lớn, dù ngày đẹp.`,
   "thuong-hieu": `Việt Dũng Phát là pháp nhân kiến trúc — xây dựng nhà ở: mẫu nhà thật, bảng giá công khai, giám sát hiện trường, xưởng nội thất. Hồ sơ năng lực gửi khi bạn yêu cầu, MST trùng hợp đồng. Không bán thầu khoán trắng; việc thuê khoan cọc hay kính vẫn do công ty quản. Không nhận cầu đường, xưởng công nghiệp. Khảo sát TP.HCM theo lịch được hỗ trợ; tỉnh lân cận xác nhận logistics trước.`,
 };
@@ -1120,9 +1121,62 @@ function tuneDensity(html, kw) {
   return out;
 }
 
+function placeOf(phrase) {
+  const p = phrase.toLowerCase();
+  if (/đông hòa/.test(p)) return { name: "phường Đông Hòa, Dĩ An", note: "Đông Hòa nằm sát ranh Thủ Đức. Nhiều lô nhà phố mặt đường nội bộ, xe ben vào được trục chính nhưng hẻm sau phải bơm bê tông và chia vật tư." };
+  if (/an bình/.test(p)) return { name: "phường An Bình, Dĩ An", note: "An Bình có nhà ống cũ xen đất tách thửa. Cải tạo cần biên bản nhà liền kề trước khi đào móng." };
+  if (/tân đông hiệp/.test(p)) return { name: "phường Tân Đông Hiệp, Dĩ An", note: "Tân Đông Hiệp gần khu công nghiệp. Giờ xe tải và tiếng đổ bê tông nên thống nhất với hàng xóm, tránh ca đêm không phép." };
+  if (/dĩ an/.test(p)) return { name: "Dĩ An, Bình Dương", note: "Dĩ An giáp TP Thủ Đức. Nền san lấp hay gặp, móng không lấy theo nhà phố quận nội thành. Giấy phép theo UBND thành phố Dĩ An và quy định xây dựng Bình Dương." };
+  if (/long bình tân/.test(p)) return { name: "Long Bình Tân, Biên Hòa", note: "Long Bình Tân là đất nền và nhà phố mới của Biên Hòa. Lộ giới và chỉ giới xây dựng phải đối chiếu giấy tờ trước khi vẽ mặt đứng." };
+  if (/biên hòa/.test(p)) return { name: "Biên Hòa, Đồng Nai", note: "Biên Hòa có nhà phố trung tâm hẻm hẹp và biệt thự đất rộng ven thành phố. Xin phép theo tỉnh Đồng Nai, không dùng bộ hồ sơ phường TP.HCM." };
+  if (/long thành/.test(p)) return { name: "Long Thành, Đồng Nai", note: "Long Thành đang đổi quy hoạch quanh hạ tầng mới. Khảo sát phải hỏi lại chỉ giới và đường công vụ trước khi chốt số tầng." };
+  if (/nhơn trạch/.test(p)) return { name: "Nhơn Trạch, Đồng Nai", note: "Nhơn Trạch xa xưởng hơn Thủ Đức. Vật tư và bê tông tươi tính cự ly; nền yếu thì móng cọc không gói vào đơn giá nhà phố thường." };
+  if (/trảng bom/.test(p)) return { name: "Trảng Bom, Đồng Nai", note: "Trảng Bom là nhà vườn và nhà phố huyện. Đường vào công trình quyết định được xe ben hay phải trung chuyển." };
+  if (/đồng nai/.test(p)) return { name: "Đồng Nai", note: "Thi công Đồng Nai gồm Biên Hòa và các huyện vệ tinh. Phép tỉnh, logistics và móng được tách khỏi đơn giá niêm yết tại TP.HCM." };
+  if (/grand park/.test(p)) return { name: "Vinhomes Grand Park, Quận 9 cũ", note: "Grand Park có nội quy ban quản lý: giờ thi công, bảo vệ cổng, vận chuyển thang máy hoặc lối phụ. Không thi công như nhà phố hẻm tự do." };
+  if (/phước long/.test(p)) return { name: "Phước Long, Quận 9 cũ", note: "Phước Long nay thuộc TP Thủ Đức. Nhà phố và đất nền xen kẽ, cần đối chiếu sổ với quy hoạch Thủ Đức." };
+  if (/tăng nhơn phú/.test(p)) return { name: "Tăng Nhơn Phú, Quận 9 cũ", note: "Tăng Nhơn Phú là nhà ống mặt tiền và hẻm. Giờ đổ bê tông và che chắn nhà liền kề giống nhà phố Thủ Đức." };
+  if (/long trường/.test(p)) return { name: "Long Trường, Quận 9 cũ", note: "Long Trường có nhiều đất nền và nhà mới. Cốt nền và thoát nước mặt phải xem tại chỗ, nhất là mùa mưa." };
+  if (/long phước/.test(p)) return { name: "Long Phước, Quận 9 cũ", note: "Long Phước thuộc TP Thủ Đức, nhiều đất nền và nhà vườn. Đường vào và thoát nước mưa phải xem tại đất trước khi chốt móng." };
+  if (/hiệp phú/.test(p)) return { name: "Hiệp Phú, Thủ Đức", note: "Hiệp Phú là nhà phố và hẻm trong Thủ Đức. Che chắn nhà liền kề và giờ xe ben cần thống nhất trước ngày đổ sàn." };
+  if (/quận 9/.test(p)) return { name: "Quận 9 (nay thuộc TP Thủ Đức)", note: "Quận 9 không còn là đơn vị hành chính riêng. Hồ sơ và phép đi theo TP Thủ Đức, nhưng gia chủ vẫn tìm bằng tên Quận 9." };
+  if (/linh xuân/.test(p)) return { name: "Linh Xuân, Thủ Đức", note: "Linh Xuân có nhà phố và đất tách thửa. Hẻm xe hơi hay xe máy phải khảo sát trước khi hứa ngày đổ sàn." };
+  if (/trường thọ/.test(p)) return { name: "Trường Thọ, Thủ Đức", note: "Trường Thọ gần văn phòng Việt Dũng Phát trên Kha Vạn Cân. Khảo sát trong ngày làm việc được sắp lịch nhanh hơn các huyện xa." };
+  return { name: "TP Thủ Đức", note: "Thủ Đức gồm cả địa bàn Quận 9 cũ. Văn phòng công ty ở Kha Vạn Cân, xưởng Nguyễn Duy Trinh, showroom Grand Park — khảo sát nội thành Thủ Đức thuận hơn đi tỉnh." };
+}
+
+function serviceOf(phrase) {
+  const p = phrase.toLowerCase();
+  if (/trọn gói/.test(p)) return { name: "xây nhà trọn gói", lead: "là một đầu mối từ móng, khung, mái đến sơn, gạch, điện nước — không tách năm bảy đội thợ.", gist: "Phụ lục phải ghi phần nào nằm trong đơn giá m², phần nào tính riêng: móng cọc, mái kính, thang máy, tủ bếp xưởng.", when: "Nên chọn khi gia chủ chưa có đội thợ quen và muốn bảo hành một pháp nhân.", steps: ["Khảo sát đất và lộ giới", "Chốt công năng và mặt tiền", "Dự toán tách hạng mục", "Thi công móng — thân — mái", "Hoàn thiện và bàn giao"], cost: "Mốc trọn gói 2026 khoảng 5.950.000đ/m², cộng phụ lục sau khảo sát." };
+  if (/phần thô|phan tho/.test(p)) return { name: "xây phần thô", lead: "là móng, cột, đà, sàn, tường, mái và điện nước âm tường — chưa ốp lát, sơn, thiết bị.", gist: "Ranh giới phần thô được liệt kê: bê tông cốt thép, xây tường, chống thấm sàn ướt. Phào đá mặt tiền không nằm trong gói thô.", when: "Phù hợp khi gia chủ muốn tự hoàn thiện theo gu, hoặc tách ngân sách hai đợt.", steps: ["Đo đất", "Chốt kết cấu", "Thi công móng", "Thân nhà và mái", "Nghiệm thu phần thô"], cost: "Mốc phần thô 2026 khoảng 3.950.000đ/m². Móng cọc và tầng hầm tính riêng." };
+  if (/nội thất|noi that/.test(p)) return { name: "thiết kế và thi công nội thất", lead: "đóng theo tường thật sau khi phần ướt xong, không mua tủ sẵn rồi che khe.", gist: "Xưởng đọc bản vẽ, làm phào, tủ, đá bếp. Trần và điều hòa âm phải chốt trước khi đóng trần.", when: "Làm sau khi sàn, tường, điện nước hoàn thiện đã nghiệm thu.", steps: ["Đo hiện trạng", "Bản vẽ nội thất", "Duyệt vật liệu", "Sản xuất xưởng", "Lắp đặt và bảo hành"], cost: "Nội thất tính theo hạng mục hoặc combo, không gộp vào đơn giá xây m²." };
+  if (/cải tạo|sửa nhà|sửa chữa|nâng tầng/.test(p)) return { name: "cải tạo, sửa nhà", lead: "xử lý nứt, thấm, điện cũ và kết cấu trước khi sơn ốp mặt tiền.", gist: "Nâng tầng chỉ làm khi vừa đủ phép vừa đủ tải móng. Hai điều này độc lập.", when: "Nhà cũ vẫn ở được một phần thì cuốn chiếu từng khu, chừa bếp và vệ sinh tạm.", steps: ["Khảo sát kết cấu", "Chốt hạng mục giữ hoặc đập", "Xử lý thấm và điện", "Thi công", "Nghiệm thu"], cost: "Cải tạo không áp một đơn giá m² cho mọi nhà. Báo sau khi mở tường và xem móng." };
+  if (/tân cổ điển|biet thu san|biệt thự sân/.test(p)) return { name: "nhà tân cổ điển", lead: "chỉ đúng khi tỷ lệ cột, phào, con tiện và mái được thi công theo hồ sơ, không đắp tay cảm tính.", gist: "Duyệt một đoạn phào mẫu trên công trình rồi mới làm đại trà. Sơn kem — trắng, đèn ấm.", when: "Phù hợp nhà phố mặt tiền hoặc biệt thự có sân. Nhà ống hẹp thì giảm mật độ hoa.", steps: ["Phối cảnh mặt đứng", "Chi tiết phào", "Phần thô", "Ốp đá và phào", "Sơn và đèn"], cost: "Đơn giá xây cộng phụ lục phào, đá mặt tiền và mái." };
+  if (/biệt thự|biet thu/.test(p)) return { name: "thi công biệt thự", lead: "khác nhà phố ở nhịp cột, sảnh, mái và sân — không so giá với nhà 5×20.", gist: "Sân và hàng rào làm sau phần thô để máy còn vào được. Đá ốp chốt sớm vì thời gian nhập.", when: "Lô đủ rộng hoặc nhà phố giả biệt thự chỉ làm ngôn ngữ mặt đứng.", steps: ["Quy hoạch sân — nhà", "Phối cảnh", "Kết cấu", "Phần thô", "Hoàn thiện đá và mái"], cost: "Đơn giá m² cộng phụ lục mái, đá, thang máy nếu có." };
+  if (/báo giá|giá xây/.test(p)) return { name: "báo giá xây nhà", lead: "chỉ so được khi cùng cách đo m², cùng năm và cùng danh mục thô hoặc trọn gói.", gist: "Mốc 2026: phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m². Vận chuyển và móng địa phương không nằm sẵn trong số đó.", when: "Xin báo giá sau khi có kích thước đất, số tầng và ảnh hẻm.", steps: ["Gửi kích thước", "Khảo sát", "Bảng khối lượng", "Chốt phụ lục", "Ký theo giai đoạn"], cost: "Số trên web là mốc. Hồ sơ sau khảo sát mới là giá ký." };
+  if (/xin phép|xin phep/.test(p)) return { name: "xin phép xây dựng", lead: "là hồ sơ đúng quy hoạch địa phương, không phải bản vẽ đẹp để đăng ảnh.", gist: "Dĩ An và Đồng Nai dùng thủ tục tỉnh. Quận 9 cũ và Thủ Đức dùng thủ tục TP Thủ Đức.", when: "Làm trước khi đào móng. Phối cảnh không thay giấy phép.", steps: ["Đối chiếu sổ và quy hoạch", "Hồ sơ kiến trúc", "Nộp và theo dõi", "Chỉnh nếu bị yêu cầu", "Thi công đúng phép"], cost: "Phí hồ sơ và lệ phí tách khỏi đơn giá thi công m²." };
+  if (/thiết kế|thiet ke|kiến trúc|kien truc/.test(p)) return { name: "thiết kế nhà", lead: "gồm bản xin phép và bản thi công. Thiếu bản sau, thợ làm lệch lầu.", gist: "Đo nở hậu, hẻm, hướng. Phối cảnh 3D chỉ duyệt sau khi mặt bằng đứng với nhu cầu ở.", when: "Nên thiết kế trước khi xin giá thi công, để đơn giá bám đúng số tầng và móng.", steps: ["Khảo sát", "Mặt bằng", "Mặt đứng", "Hồ sơ kỹ thuật", "Bàn giao bản vẽ"], cost: "Thiết kế tính gói hoặc theo m², tách khỏi giá xây." };
+  if (/nhà thầu|cong ty xây|công ty xây/.test(p)) return { name: "chọn nhà thầu", lead: "là chọn pháp nhân chịu bảo hành, không phải chọn giá thấp nhất trên mạng.", gist: "Xem mẫu nhà đã bàn giao, hỏi đội tự thi công hay khoán trắng, đối chiếu mã số thuế trên hợp đồng.", when: "Nhà từ hai tầng trở lên nên có giám sát và nhật ký, không giao khoán miệng.", steps: ["Xem hồ sơ năng lực", "Khảo sát", "Báo giá phạm vi", "Hợp đồng theo đợt", "Thi công có giám sát"], cost: "Giá theo m² hoặc hạng mục. Sau khảo sát mới chốt." };
+  return { name: "xây nhà ở", lead: "là việc đo đất, chốt số tầng, làm móng đúng nền và thi công có nhật ký.", gist: "Nhà phố, nhà ống và nhà vườn không dùng chung một kết cấu. Hẻm quyết định cách đổ bê tông.", when: "Bắt đầu khi đã có giấy đất và hướng sử dụng: ở, cho thuê, hoặc cả hai.", steps: ["Khảo sát", "Thiết kế", "Báo giá", "Thi công", "Bàn giao"], cost: "Tham khảo phần thô 3.950.000đ/m² hoặc trọn gói 5.950.000đ/m², chốt sau khảo sát." };
+}
+
+function locationCopy(item) {
+  const place = placeOf(item.phrase);
+  const job = serviceOf(item.phrase);
+  return {
+    lead: `${job.lead} Tại ${place.name}, việc này phải khảo sát trước vì nền, hẻm và giấy phép không giống quận nội thành.`,
+    gist: `${place.note} ${job.gist}`,
+    when: `${job.when} Với ${place.name}, Việt Dũng Phát chỉ nhận sau khi xem đường vào và hiện trạng liền kề.`,
+    steps: job.steps,
+    cost: `${job.cost} Giá tại ${place.name} cộng hoặc trừ phần vận chuyển và móng, không áp cứng bảng TP.HCM.`,
+    extra: `${place.note} Hotline 098.4444.504. Văn phòng Kha Vạn Cân, Thủ Đức — gần Dĩ An và Quận 9 cũ hơn các huyện sâu của Đồng Nai.`,
+    faq: [`Vì sao phải khảo sát ${place.name} trước khi báo giá chốt?`, "Vì hẻm, nền và phép địa phương làm lệch móng và chi phí vận chuyển. Số trên website chỉ là mốc."],
+  };
+}
+
 function article(item, index) {
   const kw = item.phrase;
-  const c = COPY[item.slug] || COPY[COPY_ALIAS[item.slug]];
+  const c = COPY[item.slug] || COPY[COPY_ALIAS[item.slug]] || (item.group === "dong-nam" ? locationCopy(item) : null);
   if (!c) throw new Error(`Missing COPY for ${item.slug}`);
   const img = (n) => IMGS[(index + n) % IMGS.length];
   const steps = c.steps.map((s, i) => `${i + 1}. ${s}`).join(" ");

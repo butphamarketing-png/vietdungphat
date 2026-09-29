@@ -1,14 +1,14 @@
 import { Link, Navigate, useParams } from "react-router-dom";
-import { findKeyword, KEYWORD_GROUPS, keywordNewsPath } from "../data/keywords.js";
+import { findKeyword, KEYWORD_GROUPS, KEYWORDS, keywordNewsPath } from "../data/keywords.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 
 export function KeywordHub() {
   return (
     <article className="page">
-      <PageHero kicker="100 từ khóa" title="Xây nhà, thiết kế, cải tạo — đúng việc Việt Dũng Phát làm">
+      <PageHero kicker={`${KEYWORDS.length} từ khóa`} title="Xây nhà, thiết kế, cải tạo — đúng việc Việt Dũng Phát làm">
         <p>
-          100 bài tin tức theo cụm gia chủ thường tìm: nhà tân cổ điển, xây phần thô, nhà trọn gói, cải tạo và báo giá tại TP.HCM — Thủ Đức, Bình Dương, Đồng Nai.
+          Bài tin theo cụm gia chủ thường tìm: nhà tân cổ điển, xây phần thô, nhà trọn gói, cải tạo và báo giá tại TP.HCM, Thủ Đức, Quận 9, Dĩ An, Biên Hòa và Đồng Nai.
         </p>
       </PageHero>
       <div className="page-body">

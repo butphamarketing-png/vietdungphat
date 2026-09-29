@@ -54,16 +54,16 @@ export const PAGE_SEO = {
   "/tin-tuc": {
     title: "Tin tức xây nhà, thiết kế, cải tạo | Việt Dũng Phát",
     description:
-      "100 bài tin tức theo từ khóa: xây nhà trọn gói, tân cổ điển, phần thô 3.950.000đ/m², cải tạo và báo giá tại TP.HCM.",
+      "100 bài tin tức theo từ khóa: xây nhà trọn gói, tân cổ điển, phần thô, cải tạo, Dĩ An, Biên Hòa, Đồng Nai, Quận 9 và Thủ Đức.",
   },
   "/lien-he": {
     title: "Liên hệ và đặt lịch khảo sát | Việt Dũng Phát",
     description: "Liên hệ Việt Dũng Phát: 098.4444.504 — 942/2/7 Kha Vạn Cân, Thủ Đức. Đặt lịch khảo sát nhà miễn phí.",
   },
   "/tu-khoa": {
-    title: "100 từ khóa xây nhà tân cổ điển, trọn gói, cải tạo | Việt Dũng Phát",
+    title: "Từ khóa xây nhà Dĩ An, Biên Hòa, Thủ Đức | Việt Dũng Phát",
     description:
-      "100 từ khóa phù hợp năng lực Việt Dũng Phát: xây nhà tân cổ điển, phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m², thiết kế và cải tạo tại TP.HCM.",
+      "Từ khóa xây nhà tân cổ điển, trọn gói, cải tạo, Dĩ An, Biên Hòa, Đồng Nai, Quận 9 và Thủ Đức.",
   },
 };
 

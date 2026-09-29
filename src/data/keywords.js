@@ -154,6 +154,113 @@ const GROUPS = [
     ],
   },
   {
+    id: "dong-nam",
+    label: "Dĩ An, Đồng Nai, Thủ Đức",
+    to: "/lien-he",
+    phrases: [
+      "xây nhà trọn gói dĩ an",
+      "xây nhà phần thô dĩ an",
+      "thiết kế nhà phố dĩ an",
+      "cải tạo nhà phố dĩ an",
+      "xây nhà tân cổ điển dĩ an",
+      "thi công biệt thự dĩ an",
+      "báo giá xây nhà dĩ an",
+      "nhà thầu xây dựng dĩ an",
+      "xây nhà 1 trệt 1 lầu dĩ an",
+      "xây nhà 1 trệt 2 lầu dĩ an",
+      "xây nhà 3 tầng dĩ an",
+      "xây nhà ống dĩ an",
+      "thiết kế nội thất nhà phố dĩ an",
+      "sửa nhà trọn gói dĩ an",
+      "xây nhà chìa khóa trao tay dĩ an",
+      "công ty xây nhà dĩ an",
+      "xây nhà phố 5x20 dĩ an",
+      "thi công nhà ở dân dụng dĩ an",
+      "nâng tầng nhà phố dĩ an",
+      "xây nhà hoàn thiện dĩ an",
+      "thiết kế biệt thự dĩ an",
+      "cải tạo nhà cấp 4 dĩ an",
+      "xin phép xây dựng dĩ an",
+      "giá xây nhà phần thô dĩ an",
+      "giá xây nhà trọn gói dĩ an",
+      "xây nhà mặt tiền dĩ an",
+      "thi công nội thất dĩ an",
+      "xây nhà 4 tầng dĩ an",
+      "cải tạo mặt tiền nhà phố dĩ an",
+      "xây biệt thự sân vườn dĩ an",
+      "công ty kiến trúc dĩ an",
+      "sửa chữa nhà cũ dĩ an",
+      "thiết kế nhà 5x20 dĩ an",
+      "nhà thầu uy tín dĩ an bình dương",
+      "xây nhà đông hòa dĩ an",
+      "xây nhà an bình dĩ an",
+      "xây nhà tân đông hiệp dĩ an",
+      "sửa nhà nâng tầng dĩ an",
+      "thiết kế mặt tiền nhà phố dĩ an",
+      "xây nhà trọn gói biên hòa",
+      "xây nhà phần thô biên hòa",
+      "thiết kế nhà phố biên hòa",
+      "cải tạo nhà phố biên hòa",
+      "thi công biệt thự biên hòa",
+      "báo giá xây nhà biên hòa",
+      "nhà thầu xây dựng biên hòa",
+      "xây nhà tân cổ điển biên hòa",
+      "xây nhà 3 tầng biên hòa",
+      "xây nhà ống biên hòa",
+      "thiết kế nội thất biên hòa",
+      "sửa nhà trọn gói biên hòa",
+      "xây nhà 1 trệt 2 lầu biên hòa",
+      "công ty xây nhà biên hòa",
+      "nâng tầng nhà phố biên hòa",
+      "xây nhà hoàn thiện biên hòa",
+      "xin phép xây dựng biên hòa",
+      "xây nhà long bình tân",
+      "xây nhà trọn gói đồng nai",
+      "xây nhà phần thô đồng nai",
+      "công ty xây dựng nhà ở đồng nai",
+      "thiết kế nhà phố đồng nai",
+      "cải tạo nhà đồng nai",
+      "thi công biệt thự đồng nai",
+      "báo giá xây nhà đồng nai",
+      "nhà thầu xây dựng đồng nai",
+      "xây nhà tân cổ điển đồng nai",
+      "xây nhà long thành đồng nai",
+      "xây nhà nhơn trạch",
+      "xây nhà trảng bom",
+      "thiết kế nội thất đồng nai",
+      "sửa nhà trọn gói đồng nai",
+      "xây nhà 1 trệt 1 lầu đồng nai",
+      "xây nhà trọn gói quận 9",
+      "xây nhà phần thô quận 9",
+      "thiết kế nhà phố quận 9",
+      "cải tạo nhà quận 9",
+      "thi công biệt thự quận 9",
+      "xây nhà vinhomes grand park",
+      "xây nhà phước long",
+      "xây nhà tăng nhơn phú",
+      "xây nhà long trường",
+      "báo giá xây nhà quận 9",
+      "nhà thầu xây dựng quận 9",
+      "thiết kế nội thất quận 9",
+      "xây nhà tân cổ điển quận 9",
+      "xây nhà trọn gói thủ đức",
+      "xây nhà phần thô thủ đức",
+      "thiết kế nhà phố thủ đức",
+      "thi công biệt thự thủ đức",
+      "báo giá xây nhà thủ đức",
+      "nhà thầu xây dựng thủ đức",
+      "xây nhà tân cổ điển thủ đức",
+      "xây nhà linh xuân",
+      "xây nhà trường thọ",
+      "sửa nhà trọn gói thủ đức",
+      "thiết kế nội thất thủ đức",
+      "xây nhà 3 tầng thủ đức",
+      "nâng tầng nhà phố thủ đức",
+      "xây nhà hiệp phú thủ đức",
+      "xây nhà long phước quận 9",
+    ],
+  },
+  {
     id: "phong-thuy",
     label: "Phong thủy & xin phép",
     to: "/thuoc-lo-ban",
@@ -177,6 +284,33 @@ const GROUPS = [
   },
 ];
 
+function areaName(phrase) {
+  const p = phrase.toLowerCase();
+  if (/dĩ an|đông hòa|an bình|tân đông hiệp/.test(p)) return "Dĩ An";
+  if (/biên hòa|long bình tân/.test(p)) return "Biên Hòa";
+  if (/đồng nai|long thành|nhơn trạch|trảng bom/.test(p)) return "Đồng Nai";
+  if (/quận 9|grand park|phước long|tăng nhơn phú|long trường|long phước/.test(p)) return "Quận 9";
+  return "Thủ Đức";
+}
+
+function areaFaqs(phrase) {
+  const place = areaName(phrase);
+  return [
+    {
+      q: `Có nhận ${phrase} không?`,
+      a: `Có. Việt Dũng Phát khảo sát tại ${place} trước khi nhận, vì hẻm, nền đất và giấy phép khác nội thành.`,
+    },
+    {
+      q: "Đơn giá có giống TP.HCM không?",
+      a: "Mốc phần thô 3.950.000đ/m² và trọn gói 5.950.000đ/m² chỉ để tham khảo. Vận chuyển, móng và phép địa phương được chốt sau khảo sát.",
+    },
+    {
+      q: "Khảo sát tính phí thế nào?",
+      a: `Khảo sát tại ${place} theo lịch hẹn. Nên mang sổ hồng hoặc bản vẽ hiện trạng nếu có.`,
+    },
+  ];
+}
+
 export const KEYWORD_GROUPS = GROUPS.map((group) => ({
   ...group,
   items: group.phrases.map((phrase, index) => {
@@ -196,6 +330,7 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
       ],
       "bao-gia": ["/news/news-bao-gia.jpg", "/news/news-thiet-ke.jpg", "/villas/neo-09.jpg"],
       "khu-vuc": ["/villas/neo-01.jpg", "/villas/neo-04.jpg", "/villas/neo-07.jpg", "/news/news-phan-tho.jpg"],
+      "dong-nam": ["/villas/neo-01.jpg", "/villas/neo-04.jpg", "/villas/neo-07.jpg", "/news/news-tron-goi.jpg", "/news/news-phan-tho.jpg", "/villas/villa-cong-lon.jpg"],
       "phong-thuy": ["/news/news-phong-thuy.jpg", "/news/news-thiet-ke.jpg", "/news/news-bao-gia.jpg"],
       "thuong-hieu": ["/villas/villa-mansard-rong.jpg", "/villas/neo-02.jpg", "/villas/neo-11.jpg"],
     };
@@ -208,8 +343,11 @@ export const KEYWORD_GROUPS = GROUPS.map((group) => ({
       to: group.to,
       image: pool[index % pool.length],
       title: `${phrase[0].toUpperCase()}${phrase.slice(1)} | Việt Dũng Phát`,
-      description: `${phrase} — khảo sát, thiết kế, báo giá và thi công tại TP.HCM cùng Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.`.slice(0, 158),
-      faqs: [
+      description: (group.id === "dong-nam"
+        ? `${phrase} — khảo sát, thiết kế và thi công tại ${areaName(phrase)}. Việt Dũng Phát.`
+        : `${phrase} — khảo sát, thiết kế, báo giá và thi công tại TP.HCM cùng Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát.`
+      ).slice(0, 158),
+      faqs: group.id === "dong-nam" ? areaFaqs(phrase) : [
         {
           q: "Chi phí hết bao nhiêu tiền?",
           a: "Chi phí phụ thuộc diện tích, số tầng và phạm vi hạng mục. Việt Dũng Phát báo giá sau khảo sát; đơn giá phần thô 3.950.000đ/m² và trọn gói 5.950.000đ/m² xem tại trang Báo giá.",
