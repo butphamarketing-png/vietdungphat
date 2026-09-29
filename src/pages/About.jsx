@@ -209,16 +209,46 @@ function ArticleBody({ id, coreServices, site }) {
     return (
       <section className="prose">
         <p className="kicker lined">Tầm nhìn, sứ mệnh</p>
-        <h2>Thương hiệu của sự an tâm</h2>
+        <h2>{profile.slogan}</h2>
+        <p>
+          Từ năm {profile.founded}, Việt Dũng Phát làm thiết kế và thi công nhà ở tại TP.HCM và các tỉnh lân cận. Tầm
+          nhìn và sứ mệnh dưới đây là cách công ty giữ phương châm “{profile.motto}” trong từng công trình, không phải
+          khẩu hiệu để treo.
+        </p>
         <h3>Tầm nhìn</h3>
         <p>
-          Việt Dũng Phát hướng tới là nơi gia đình an tâm giao việc làm nhà: công trình đúng thiết kế, bền, rõ công năng
-          và bàn giao đúng hẹn.
+          Việt Dũng Phát hướng tới là nơi gia đình an tâm giao việc làm nhà: ngôi nhà đúng bản vẽ đã duyệt, rõ công
+          năng, bền khi ở và bàn giao đúng thời hạn đã thỏa thuận.
+        </p>
+        <p>
+          Nhà phố, biệt thự hay công trình cải tạo đều là nơi khách hàng ở lâu dài. Vì vậy tầm nhìn không nằm ở việc nhận
+          thật nhiều việc cho có số lượng, mà ở hồ sơ rõ, vật tư đúng thỏa thuận và tay nghề đủ để người nhận nhà yên
+          tâm.
+        </p>
+        <p>
+          Một công trình chỉ được xem là xong khi khách hàng dùng được: mặt tiền đúng phối cảnh, phòng đúng nhu cầu sinh
+          hoạt, điện nước đi đúng kỹ thuật, và những hạng mục đã chốt không bị đổi giữa chừng nếu chưa có sự đồng ý.
         </p>
         <h3>Sứ mệnh</h3>
         <p>
-          Giữ phương châm “{profile.motto}”. Thiết kế kiến trúc, nội thất, thi công và cải tạo nhà với vật tư minh bạch,
-          tiến độ rõ ràng và bảo hành sau khi bàn giao.
+          Sứ mệnh của Việt Dũng Phát là đồng hành từ ý tưởng đến khi đưa nhà vào sử dụng. Khảo sát hiện trạng và nhu cầu,
+          lập báo giá theo hạng mục, thiết kế kiến trúc và nội thất, hỗ trợ hồ sơ xin phép khi khách cần, rồi thi công,
+          nghiệm thu, bàn giao và bảo hành.
+        </p>
+        <p>
+          Việc xây nhà dễ thành mơ hồ nếu chỉ nói chung. Công ty làm cho nó cụ thể hơn: công năng được bàn trước khi thi
+          công, vật tư và hạng mục nằm trong thỏa thuận, tiến độ được theo dõi từng giai đoạn. Phần phát sinh ngoài những
+          gì đã thống nhất thì không tự ý làm.
+        </p>
+        <p>
+          Đội kiến trúc sư, kỹ sư và thợ thi công làm trực tiếp tại công trình, có người phụ trách và giám sát, không bán
+          thầu. Chất lượng nằm ở chi tiết hoàn thiện, đúng kỹ thuật và an toàn. Sau bàn giao, bảo hành và hỗ trợ vẫn còn,
+          vì lúc đó ngôi nhà mới bắt đầu được sử dụng.
+        </p>
+        <p>
+          Với khách hàng, đó là một đầu mối từ thiết kế đến thi công, chi phí nói rõ trước khi vào việc, và một ngôi nhà
+          dùng được lâu. Với từng người trong đội, đó là giữ đúng việc đã nhận — đúng bản vẽ, đúng hẹn, đúng những gì đã
+          cam kết.
         </p>
       </section>
     );
