@@ -181,16 +181,18 @@ export function projectFacts(post = {}) {
   const spec = firstSpecText(paragraphs);
   const blob = `${spec} ${paragraphs.slice(0, 2).join(" ")}`;
   const who = clientAndPlace(post.title);
-  const styleMatch = spec.match(/phong cách\s+(.+?)(?=\s+công\b|[.]|$)/i) || blob.match(/phong cách\s+(.+?)(?=\s+công\b|[.]|$)/i);
+  const styleStop = String.raw`(?=\s+công\b|\s+-\s*tầng|[.]|$)`;
+  const styleMatch = spec.match(new RegExp(`phong cách\\s+(.+?)${styleStop}`, "i")) || blob.match(new RegExp(`phong cách\\s+(.+?)${styleStop}`, "i"));
   let style = styleMatch ? styleMatch[1].replace(/\s+/g, " ").trim() : "";
   style = style.replace(/\s+(pha|chút|hơi|với|và)$/i, "");
-  if (style.length > 28) style = style.split(/\s+/).slice(0, 2).join(" ");
+  if (style.length > 40) style = style.split(/\s+/).slice(0, 4).join(" ");
   const roofMatch = spec.match(/mái\s+(btct|thái|nhật|bằng|ngói|tôn)/i);
   const floors = parseFloors(spec);
   const floorNums = floors.map((floor) => Number(floor.n));
   const floorsClean = floorNums.length > 0 && floorNums.every((n, index) => n === index + 1);
-  const level = blob.match(/(\d+)\s*trệt(?:\s*,\s*(\d+)\s*lầu)?(?:\s*,\s*(\d+)\s*sân thượng)?/i);
-  const floorCount = floorsClean ? floorNums.length : level ? Number(level[1]) + Number(level[2] || 0) + Number(level[3] || 0) : 0;
+  const level = blob.match(/(\d+|một|hai|ba|bốn)\s*trệt(?:\s*,?\s*(\d+|một|hai|ba|bốn)\s*lầu)?(?:\s*,?\s*(\d+|một)\s*sân\s*thượng)?/i);
+  const levelNum = (token) => (/^\d+$/.test(token || "") ? Number(token) : { một: 1, hai: 2, ba: 3, bốn: 4 }[(token || "").toLowerCase()] || 0);
+  const floorCount = floorsClean ? floorNums.length : level ? levelNum(level[1]) + levelNum(level[2]) + levelNum(level[3]) : 0;
   const span = blob.match(/(\d+(?:[.,]\d+)?)\s*x\s*(\d+(?:[.,]\d+)?)\s*m\b/i);
   return {
     ...who,
@@ -217,7 +219,8 @@ export function projectHeadline(post = {}) {
   if (!facts.client || !placeOk) return title;
   const bits = [facts.type];
   if (facts.style && !facts.type.toLowerCase().includes(facts.style)) bits.push(facts.style);
-  if (facts.floorCount && facts.type !== "Nhà cấp 4") bits.push(`${facts.floorCount} tầng`);
+  if (facts.levelText) bits.push(facts.levelText.toLowerCase().replace(/\s+/g, " "));
+  else if (facts.floorCount && facts.type !== "Nhà cấp 4") bits.push(`${facts.floorCount} tầng`);
   if (facts.span) bits.push(facts.span);
   else if (facts.area) bits.push(facts.area);
   const right = [facts.client, facts.place].filter(Boolean).join(", ");
