@@ -1,11 +1,24 @@
 import { Link, useParams } from "react-router-dom";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
 import { FALLBACK_IMAGE, articleContent, cleanArticleHtml, fullImage, keywordAlt, uniqueImages } from "../lib/media.js";
-import { expandProjectHtml, projectHeadline } from "../lib/project-article.js";
+import { expandProjectHtml, projectBrief, projectHeadline } from "../lib/project-article.js";
 import { isHouseStyleSlug } from "../lib/studio.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
+
+function SpecIcon({ kind }) {
+  const paths = {
+    scale: "M12 3 3 7.5 12 12l9-4.5L12 3Zm-9 9L12 16.5 21 12M3 16.5 12 21l9-4.5",
+    area: "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5",
+    date: "M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z",
+  };
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={paths[kind] || paths.scale} />
+    </svg>
+  );
+}
 
 function toDateTime(date) {
   const match = String(date || "").match(/(\d{1,2})[/.](\d{1,2})[/.](\d{4})/);
@@ -54,6 +67,7 @@ export default function Article() {
       ? parsed.body
       : cleanArticleHtml(post.html, post.houseStyle ? "" : kw);
   const headline = projectArticle ? projectHeadline(post) : "";
+  const brief = projectArticle ? projectBrief(post) : null;
   const gallery = parsed
     ? parsed.gallery
     : /<img/i.test(body)
@@ -74,9 +88,35 @@ export default function Article() {
         {post.desc && meta.kind === "products" ? <p>{post.desc}</p> : null}
       </PageHero>
       <div className="page-body article-wrap">
+        {brief?.chips?.length ? (
+          <dl className="project-specs">
+            {brief.chips.map((chip) => (
+              <div key={chip.label}>
+                <SpecIcon kind={chip.key} />
+                <div>
+                  <dt>{chip.label}</dt>
+                  <dd>{chip.value}</dd>
+                </div>
+              </div>
+            ))}
+          </dl>
+        ) : null}
         <figure className="article-cover">
           <SmartImg src={cover} alt={kw || post.title} loading="eager" fetchPriority="high" />
         </figure>
+        {brief?.rows?.length ? (
+          <table className="project-sheet">
+            <caption>{brief.caption}</caption>
+            <tbody>
+              {brief.rows.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  <td>{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : null}
         {body ? (
           <div className="prose article-body" dangerouslySetInnerHTML={{ __html: body }} />
         ) : (

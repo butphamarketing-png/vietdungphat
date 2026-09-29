@@ -795,6 +795,61 @@ button.text-link {
 .related { margin-top: 3.2rem; }
 .related h2 { margin: 0 0 1.2rem; }
 .article-wrap { max-width: 1100px; margin: 0 auto; }
+.project-specs {
+  display: flex;
+  justify-content: space-around;
+  gap: 1.2rem 1.6rem;
+  margin: 0 0 1.8rem;
+  padding: 0.2rem 0 0.4rem;
+}
+.project-specs > div { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.project-specs svg {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.project-specs dt { margin: 0; color: var(--ink-soft); font-size: 0.82rem; }
+.project-specs dd { margin: 0.1rem 0 0; font-weight: 700; color: var(--ink); }
+.project-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.6rem;
+}
+.project-sheet caption {
+  caption-side: top;
+  padding: 0.85rem 1rem;
+  background: var(--accent);
+  color: #2a2414;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.project-sheet th,
+.project-sheet td {
+  padding: 0.72rem 1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+.project-sheet th {
+  width: 28%;
+  font-weight: 600;
+  background: #f6f3ec;
+}
+.project-sheet td { background: #fff; }
+.project-sheet tr:nth-child(even) th { background: #fbf9f4; }
+.project-sheet tr:nth-child(even) td { background: #fbf9f4; }
 .article-cover { margin: 0 0 1.6rem; }
 .card, .project-card, .news-card, .news-col, .review-card { border-radius: 12px; overflow: hidden; }
 .section-head.row {
@@ -1934,6 +1989,8 @@ body.is-popup-open .float-consult {
   .service-cards { gap: 0.5rem; }
   .service-card img { min-height: 150px; height: 150px; }
   .brand img { height: 42px; max-width: 46px; }
+  .project-specs { flex-wrap: wrap; justify-content: flex-start; }
+  .project-sheet th { width: 38%; }
   .article-cover img { max-height: 42vh; }
   .article-gallery { grid-template-columns: 1fr; }
   .album-photo-grid { grid-template-columns: 1fr; }

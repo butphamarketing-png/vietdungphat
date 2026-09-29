@@ -211,6 +211,106 @@ export function projectFacts(post = {}) {
   };
 }
 
+function prettyArea(value) {
+  return String(value || "").replace(/(\d)\s*m2/i, "$1 m2");
+}
+
+function footprintOf(text) {
+  const found = String(text || "").match(/(\d+(?:[.,]\d+)?)\s*[*x×]\s*(\d+(?:[.,]\d+)?)\s*m\b/i);
+  return found ? `${found[1]}x${found[2]}m` : "";
+}
+
+function jobWhen(text) {
+  const month = String(text || "").match(/tháng\s*(\d{1,2})\s*\/\s*(\d{4})/i);
+  if (month) return `Tháng ${Number(month[1])}/${month[2]}`;
+  const year = String(text || "").match(/năm xây dựng\s*(\d{4})/i);
+  return year ? year[1] : "";
+}
+
+function jobMonths(text) {
+  const found = String(text || "").match(/(?:thời gian(?:\s+xây dựng)?|thi công trong)\s*[:：]?\s*(\d+)\s*tháng/i);
+  return found ? `${found[1]} tháng` : "";
+}
+
+function jobService(text) {
+  const blob = String(text || "");
+  if (/xây dựng nhà trọn gói|thi công trọn gói/i.test(blob)) return "Xây dựng nhà trọn gói";
+  if (/thiết kế và thi công/i.test(blob)) return "Thiết kế và thi công";
+  return "";
+}
+
+function jobUse(paragraphs) {
+  const direct = paragraphs.find((line) => /^công năng\b/i.test(line) && line.replace(/^công năng\s*:?\s*/i, "").trim().length > 6);
+  if (direct) return direct.replace(/^công năng\s*:?\s*/i, "").replace(/^[-–]\s*/, "").trim();
+  const floors = paragraphs
+    .filter((line) => /tầng\s*\d+\s*:/i.test(line))
+    .map((line) => line.replace(/^[-–]\s*/, "").trim());
+  if (floors.length) return floors.join("; ");
+  const rooms = paragraphs.find((line) => /phòng ngủ|nhà vệ sinh/i.test(line) && !/^diện tích/i.test(line) && line.length < 240);
+  return rooms ? rooms.replace(/^[-–]\s*/, "").trim() : "";
+}
+
+function normalizeLevel(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/một|hai|ba|bốn/g, (word) => ({ một: "1", hai: "2", ba: "3", bốn: "4" }[word]));
+}
+
+function scaleOf(facts, title) {
+  const fromTitle = String(title || "").match(/(\d+|một|hai|ba|bốn)\s*trệt(?:\s*,?\s*(\d+|một|hai|ba|bốn)\s*lầu)?(?:\s*,?\s*(\d+|một)\s*sân\s*thượng)?/i);
+  if (facts.levelText) return normalizeLevel(facts.levelText);
+  if (fromTitle) return normalizeLevel(fromTitle[0]);
+  if (facts.floorCount && facts.type !== "Nhà cấp 4") return `${facts.floorCount} tầng`;
+  if (facts.type && facts.type !== "Nhà") return facts.type;
+  return "";
+}
+
+export function projectBrief(post = {}) {
+  if (!post || post.houseStyle || isHouseStyleSlug(post.slug)) return null;
+  const facts = projectFacts(post);
+  const paragraphs = facts.paragraphs || [];
+  const blob = paragraphs.join(" ");
+  const thin = /nội dung đang cập nhật/i.test(blob) && !facts.area && !facts.span && !facts.floorCount && !facts.levelText;
+  if (thin) return null;
+  const scale = scaleOf(facts, post.title);
+  const foot = facts.span || footprintOf(blob);
+  const tret = (blob.match(/diện tích trệt\s*[:：]?\s*([0-9][0-9.,]*)\s*m2/i) || [])[1];
+  const when = jobWhen(blob);
+  const months = jobMonths(blob);
+  const use = jobUse(paragraphs);
+  const service = jobService(blob);
+  const areaChip = foot ? prettyArea(foot) : facts.area ? prettyArea(facts.area) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
+  const chips = [
+    scale ? { key: "scale", label: "Quy mô", value: scale } : null,
+    areaChip ? { key: "area", label: "Diện tích", value: areaChip } : null,
+    when ? { key: "date", label: "Ngày khởi công", value: when } : null,
+  ].filter(Boolean);
+  const sizeRow = foot
+    ? prettyArea(foot)
+    : facts.area
+      ? prettyArea(facts.area)
+      : tret
+        ? `Trệt ${prettyArea(`${tret}m2`)}`
+        : "";
+  const scope = scale && facts.type && facts.type !== "Nhà" && !scale.toLowerCase().includes(facts.type.toLowerCase())
+    ? `${facts.type} ${scale}`
+    : scale;
+  const rows = [
+    facts.client ? ["Chủ đầu tư", facts.client] : null,
+    facts.place ? ["Địa chỉ", facts.place] : null,
+    sizeRow ? ["Diện tích", sizeRow] : null,
+    tret && facts.area ? ["Diện tích trệt", prettyArea(`${tret}m2`)] : null,
+    scope ? ["Quy mô", scope] : null,
+    use ? ["Công năng", use] : null,
+    months ? ["Thời gian xây dựng", months] : null,
+    service ? ["Dịch vụ", service] : null,
+  ].filter(Boolean).map(([label, value]) => ({ label, value }));
+  if (!chips.length && rows.length < 2) return null;
+  return { chips, rows, caption: projectHeadline(post) };
+}
+
 export function projectHeadline(post = {}) {
   if (!post || post.houseStyle || isHouseStyleSlug(post.slug)) return post.title || "";
   const facts = projectFacts(post);
