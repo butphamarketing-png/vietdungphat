@@ -1,4 +1,6 @@
 import { findKeyword, keywordNewsPath } from "../data/keywords.js";
+import { expandProjectHtml, projectHeadline } from "./project-article.js";
+import { isHouseStyleSlug } from "./studio.js";
 
 export const SITE_URL = "https://www.vietdungphat.com";
 export const DEFAULT_OG = `${SITE_URL}/villas/villa-mansard-rong.jpg`;
@@ -32,8 +34,9 @@ export const PAGE_SEO = {
       "Video thi công và ảnh công trình theo dự án của Việt Dũng Phát. Mẫu nhà theo phong cách xem tại /mau-nha.",
   },
   "/du-an": {
-    title: "Dự án và mẫu nhà | Việt Dũng Phát",
-    description: "Danh sách dự án thiết kế, xây dựng nhà ở của Việt Dũng Phát — biệt thự, nhà phố, cải tạo.",
+    title: "Dự án công trình tiêu biểu | Việt Dũng Phát",
+    description:
+      "Bài viết công trình Việt Dũng Phát đã thiết kế và thi công: nhà phố, biệt thự, căn hộ, theo diện tích, số tầng và khu vực.",
   },
   "/san-pham": {
     title: "Nội thất và combo từ xưởng | Việt Dũng Phát",
@@ -228,8 +231,8 @@ export function pageSeoFromCms(pathname, cms) {
   const staticPage = PAGE_SEO[path];
   if (staticPage) {
     const album = cms.album;
-    const albumTitle = path === "/album" && album?.title ? `${album.title} | Việt Dũng Phát` : staticPage.title;
-    const albumDesc = path === "/album" && album?.lead ? album.lead : staticPage.description;
+    const albumTitle = (path === "/album" || path === "/du-an") && album?.title ? `${album.title} | Việt Dũng Phát` : staticPage.title;
+    const albumDesc = (path === "/album" || path === "/du-an") && album?.lead ? album.lead : staticPage.description;
     return {
       title: albumTitle,
       description: albumDesc,
@@ -299,11 +302,14 @@ export function pageSeoFromCms(pathname, cms) {
   const meta = typeof cms.kindOf === "function"
     ? cms.kindOf(slug)
     : { label: "Bài viết", path: "/mau-nha" };
-  const rawTitle = (post.seoTitle || post.title || "").trim();
+  const projectArticle = meta.kind === "projects" && !post.houseStyle && !isHouseStyleSlug(slug);
+  const rawTitle = (post.seoTitle || (projectArticle ? projectHeadline(post) : "") || post.title || "").trim();
   const title = seoDocumentTitle(rawTitle);
+  const written = projectArticle ? expandProjectHtml(post).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : "";
   const description = (
     post.seoDesc ||
     post.desc ||
+    written ||
     excerptFromHtml(post.html) ||
     PAGE_SEO["/"].description
   ).slice(0, 160);

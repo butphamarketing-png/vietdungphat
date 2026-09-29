@@ -22,9 +22,9 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/gioi-thieu" element={<About />} />
-          <Route path="/du-an" element={<ListPage kind="projects" />} />
+          <Route path="/du-an" element={<Album />} />
           <Route path="/mau-nha" element={<ListPage kind="projects" />} />
-          <Route path="/album" element={<Album />} />
+          <Route path="/album" element={<Navigate to="/du-an" replace />} />
           <Route path="/san-pham" element={<ListPage kind="products" />} />
           <Route path="/dich-vu" element={<Services />} />
           <Route path="/bao-gia" element={<Pricing />} />

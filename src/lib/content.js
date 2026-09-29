@@ -1,4 +1,5 @@
 import data from "../data/content.json";
+import { isHouseStyleSlug } from "./studio.js";
 
 export const { site: cmsSite, projects, products, services, news, extras = [] } = data;
 
@@ -23,7 +24,11 @@ export function findPost(slug) {
 }
 
 export function kindOf(slug) {
-  if (projects.some((p) => p.slug === slug)) return { kind: "projects", label: "Mẫu nhà", path: "/mau-nha" };
+  if (projects.some((p) => p.slug === slug)) {
+    return isHouseStyleSlug(slug)
+      ? { kind: "projects", label: "Mẫu nhà", path: "/mau-nha" }
+      : { kind: "projects", label: "Dự án", path: "/du-an" };
+  }
   if (products.some((p) => p.slug === slug)) return { kind: "products", label: "Sản phẩm", path: "/san-pham" };
   if (services.some((p) => p.slug === slug)) return { kind: "services", label: "Dịch vụ", path: "/dich-vu" };
   if (news.some((p) => p.slug === slug)) return { kind: "news", label: "Tin tức", path: "/tin-tuc" };

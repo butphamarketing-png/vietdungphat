@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
 import { albumVideosFrom, defaultAlbumVideos } from "./album.js";
-import { houseStylePosts, studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
+import { houseStylePosts, isHouseStyleSlug, studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
 import { withNewsCovers } from "./news-media.js";
 import {
   coreServices as defaultCoreServices,
@@ -524,7 +524,11 @@ export function findPost(slug, cms = getCms()) {
 }
 
 export function kindOf(slug, cms = getCms()) {
-  if (cms.projects.some((p) => p.slug === slug)) return { kind: "projects", label: "Mẫu nhà", path: "/mau-nha" };
+  if (cms.projects.some((p) => p.slug === slug)) {
+    const post = cms.projects.find((p) => p.slug === slug);
+    if (post?.houseStyle || isHouseStyleSlug(slug)) return { kind: "projects", label: "Mẫu nhà", path: "/mau-nha" };
+    return { kind: "projects", label: "Dự án", path: "/du-an" };
+  }
   if (cms.products.some((p) => p.slug === slug)) return { kind: "products", label: "Sản phẩm", path: "/san-pham" };
   if (cms.services.some((p) => p.slug === slug)) return { kind: "services", label: "Dịch vụ", path: "/dich-vu" };
   if (cms.news.some((p) => p.slug === slug)) return { kind: "news", label: "Tin tức", path: "/tin-tuc" };

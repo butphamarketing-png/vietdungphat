@@ -424,7 +424,7 @@ function ArticleBody({ id, coreServices, site }) {
           <p className="kicker lined">Dự án đã thực hiện</p>
           <h2>Công trình trong hồ sơ 2026</h2>
         </div>
-        <Link className="text-link" to="/album">
+        <Link className="text-link" to="/du-an">
           Xem thêm dự án
         </Link>
       </div>

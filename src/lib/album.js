@@ -1,4 +1,5 @@
 import { uniqueImages } from "./media.js";
+import { projectHeadline } from "./project-article.js";
 import { isHouseStyleSlug } from "./studio.js";
 
 export function youtubeId(url) {
@@ -149,6 +150,7 @@ export function albumProjectsFrom(projects = []) {
       cover: photos[0],
       photos,
       count: photos.length,
+      headline: projectHeadline(post),
       paragraphs,
       facts: articleFacts(title, paragraphs),
       excerpt: paragraphs[0] || "",

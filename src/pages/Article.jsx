@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { findPost, kindOf, useCms } from "../lib/cms.js";
 import { FALLBACK_IMAGE, articleContent, cleanArticleHtml, fullImage, keywordAlt, uniqueImages } from "../lib/media.js";
+import { expandProjectHtml, projectHeadline } from "../lib/project-article.js";
+import { isHouseStyleSlug } from "../lib/studio.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
@@ -22,9 +24,11 @@ export default function Article() {
   const meta = kindOf(slug, cms);
   const pool =
     meta.kind === "news" ? cms.news : meta.kind === "products" ? cms.products : meta.kind === "services" ? cms.services : cms.projects;
+  const projectArticle = Boolean(post) && meta.kind === "projects" && !post.houseStyle && !isHouseStyleSlug(post.slug);
   const related = pool
     .filter((p) => p.slug !== slug)
     .filter((p) => (post?.source === "keyword") === (p.source === "keyword"))
+    .filter((p) => !projectArticle || (!p.houseStyle && !isHouseStyleSlug(p.slug)))
     .slice(0, 3);
 
   if (!post) {
@@ -40,12 +44,16 @@ export default function Article() {
   }
 
   const shopLike = /product-briefing|product-detail-gallery|MagicZoom|box-product-detail|Mô tả sản phẩm/i.test(post.html || "");
+  const written = projectArticle ? expandProjectHtml(post) : "";
   const parsed = shopLike || meta.kind === "products" ? articleContent(post) : null;
   const kw = parsed?.kw || keywordAlt(post);
   const cover = parsed?.cover || fullImage(post.image) || FALLBACK_IMAGE;
-  const body = parsed
-    ? parsed.body
-    : cleanArticleHtml(post.html, post.houseStyle ? "" : kw);
+  const body = written
+    ? written
+    : parsed
+      ? parsed.body
+      : cleanArticleHtml(post.html, post.houseStyle ? "" : kw);
+  const headline = projectArticle ? projectHeadline(post) : "";
   const gallery = parsed
     ? parsed.gallery
     : /<img/i.test(body)
@@ -60,7 +68,7 @@ export default function Article() {
             <Link to="/">Trang chủ</Link> / <Link to={meta.path}>{meta.label}</Link>
           </>
         }
-        title={post.title}
+        title={headline || post.title}
       >
         {post.date ? <time dateTime={toDateTime(post.date)}>{post.date}</time> : null}
         {post.desc && meta.kind === "products" ? <p>{post.desc}</p> : null}
@@ -89,7 +97,7 @@ export default function Article() {
               {related.map((p) => (
                 <Link key={p.slug} to={`/${p.slug}`} className="card">
                   <SmartImg src={p.image || cover} alt={keywordAlt(p)} />
-                  <span>{p.title}</span>
+                  <span>{projectArticle ? projectHeadline(p) : p.title}</span>
                 </Link>
               ))}
             </div>

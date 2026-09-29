@@ -20,7 +20,7 @@ const links = [
   },
   { to: "/dich-vu", label: "Dịch vụ" },
   { to: "/mau-nha", label: "Mẫu nhà" },
-  { to: "/album", label: "Dự án" },
+  { to: "/du-an", label: "Dự án" },
   { to: "/san-pham", label: "Sản phẩm" },
   { to: "/bao-gia", label: "Báo giá" },
   { to: "/thuoc-lo-ban", label: "Thước lỗ ban" },
