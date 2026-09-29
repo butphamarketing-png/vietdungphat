@@ -12,6 +12,7 @@ function SpecIcon({ kind }) {
     scale: "M12 3 3 7.5 12 12l9-4.5L12 3Zm-9 9L12 16.5 21 12M3 16.5 12 21l9-4.5",
     area: "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5",
     date: "M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z",
+    budget: "M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16M8 9.5h8M8 14.5h8",
   };
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">

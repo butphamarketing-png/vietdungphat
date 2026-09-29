@@ -234,6 +234,13 @@ function jobMonths(text) {
   return found ? `${found[1]} tháng` : "";
 }
 
+function jobBudget(paragraphs, blob) {
+  const stated = labeled(paragraphs, "ngân sách");
+  if (stated) return stated.replace(/\s+/g, " ");
+  const found = String(blob || "").match(/ngân sách\s*[:：]?\s*([0-9][0-9.,]*\s*(?:tỷ|triệu)(?:\s*đồng)?)/i);
+  return found ? found[1].replace(/\s+/g, " ") : "Liên hệ";
+}
+
 function jobService(text) {
   const blob = String(text || "");
   if (/xây dựng nhà trọn gói|thi công trọn gói/i.test(blob)) return "Xây dựng nhà trọn gói";
@@ -328,12 +335,14 @@ export function projectBrief(post = {}) {
   const months = jobMonths(blob);
   const use = jobUse(paragraphs);
   const service = jobService(blob);
+  const budget = jobBudget(paragraphs, blob);
   if (!built && !when && !use && !scaleShown) return null;
   const areaChip = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
   const chips = [
     scaleShown ? { key: "scale", label: "Quy mô", value: scaleShown } : null,
     areaChip ? { key: "area", label: "Diện tích", value: areaChip } : null,
     when ? { key: "date", label: "Ngày khởi công", value: when } : null,
+    { key: "budget", label: "Ngân sách", value: budget },
   ].filter(Boolean);
   const sizeRow = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
   const scope = scaleShown && facts.type && facts.type !== "Nhà" && !scaleShown.toLowerCase().includes(facts.type.toLowerCase())
@@ -352,6 +361,7 @@ export function projectBrief(post = {}) {
     tret && (facts.area || built) && !/x/i.test(String(built)) ? ["Diện tích trệt", prettyArea(`${tret}m2`)] : null,
     scope ? ["Quy mô", scope] : null,
     use ? ["Công năng", use] : null,
+    ["Ngân sách", budget],
     months ? ["Thời gian xây dựng", months] : null,
     service ? ["Dịch vụ", service] : null,
   ].filter(Boolean).map(([label, value]) => ({ label, value }));
