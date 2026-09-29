@@ -256,19 +256,40 @@ function ArticleBody({ id, coreServices, site }) {
 
   if (id === "gia-tri") {
     return (
-      <section>
-        <div className="section-head">
-          <p className="kicker lined">Giá trị cho khách hàng</p>
-          <h2>Giá trị mang lại cho khách hàng</h2>
-        </div>
-        <div className="policy-grid">
-          {profile.policies.map((item) => (
-            <article key={item.title} className="policy-card">
-              <strong>{item.title}</strong>
-              <p>{item.text}</p>
-            </article>
-          ))}
-        </div>
+      <section className="prose">
+        <p className="kicker lined">Giá trị cho khách hàng</p>
+        <h2>Những gì gia đình nhận được khi giao việc làm nhà</h2>
+        <p>
+          Việt Dũng Phát giữ phương châm “{profile.motto}”. Với khách hàng, giá trị ấy là một ngôi nhà làm xong đúng
+          việc đã chốt: rõ công năng, rõ chi phí, đúng bản vẽ, và còn người chịu trách nhiệm sau ngày bàn giao.
+        </p>
+        <h3>Một đầu mối từ thiết kế đến thi công</h3>
+        <p>
+          Thiết kế kiến trúc, nội thất, thi công nhà phố – biệt thự – văn phòng, cải tạo và hỗ trợ hồ sơ xin phép khi
+          khách cần, làm với cùng một đội. Gia đình không phải tự ghép nhiều đơn vị rồi tự đối chiếu bản vẽ với công
+          trình ngoài thực tế.
+        </p>
+        <h3>Công năng và ngân sách được tính trước</h3>
+        <p>
+          Công ty khảo sát hiện trạng, nghe cách gia đình sinh hoạt và mức đầu tư, rồi mới lập phương án. Bản vẽ đưa
+          khách duyệt trước khi thi công. Công năng, thẩm mỹ và chi phí nằm trong cùng một hướng, để ngôi nhà ở được và
+          vừa khả năng chi.
+        </p>
+        <h3>Hạng mục, vật tư và tiến độ nói rõ</h3>
+        <p>
+          Báo giá lập theo hạng mục sau khảo sát. Vật tư và phần việc đã thống nhất thì thi công đúng như vậy, đúng kỹ
+          thuật. Tiến độ chia theo giai đoạn, có người theo dõi, để khách hàng biết nhà đang tới đâu và khi nào nhận.
+        </p>
+        <h3>Có người phụ trách tại công trình</h3>
+        <p>
+          Kiến trúc sư, kỹ sư và thợ làm trực tiếp, có giám sát tại công trình, không bán thầu. Khách hàng biết ai đang
+          giữ việc, chất lượng nằm ở chi tiết hoàn thiện và an toàn công trình, không chỉ ở phối cảnh lúc đầu.
+        </p>
+        <h3>Nhận nhà kèm bảo hành</h3>
+        <p>
+          Nghiệm thu cùng khách hàng rồi mới bàn giao. Sau đó vẫn còn bảo hành và hỗ trợ khi nhà bắt đầu được sử dụng.
+          Giá trị của công trình nằm ở những năm gia đình ở, không chỉ ở ngày cắt băng.
+        </p>
       </section>
     );
   }
