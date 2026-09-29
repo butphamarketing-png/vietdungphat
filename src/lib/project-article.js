@@ -1,7 +1,7 @@
 import { fullImage, uniqueImages } from "./media.js";
 import { isHouseStyleSlug } from "./studio.js";
 
-const FOOTER = /công ty tnhh|kiến trúc xây dựng việt dũng phát|kha vạn cân|vinhomes grandpark|nguyễn duy trinh|bài viết liên quan|liên hệ với chúng tôi để nhận tư vấn|thương hiệu của sự an tâm|showroom:/i;
+const FOOTER = /công ty tnhh|kiến trúc xây dựng việt dũng phát|kha vạn cân|vinhomes grandpark|nguyễn duy trinh|bài viết liên quan|liên hệ với chúng tôi để nhận tư vấn|thương hiệu của sự an tâm|showroom:|chi nhánh\s*\d|địa chỉ\s*:|hotline\s*:|email\s*:|website\s*:/i;
 
 function esc(value) {
   return String(value || "")
@@ -42,25 +42,49 @@ function tidy(value) {
   return mostlyCaps(text) ? titleCase(text) : text;
 }
 
-function lowerFirst(value) {
-  return String(value || "").replace(/^\p{Lu}/u, (ch) => ch.toLowerCase());
+function readable(line) {
+  if (!mostlyCaps(line)) return line;
+  let text = line.toLowerCase().replace(/^(\p{L})/u, (ch) => ch.toUpperCase());
+  return text.replace(/\bnhật\b/g, "Nhật").replace(/\bbtct\b/g, "BTCT").replace(/\(\s*tổng/g, "(Tổng");
+}
+
+function sourceLines(html) {
+  const raw = String(html || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/P(?=Việt Dũng Phát)/g, "");
+  const seen = new Set();
+  const out = [];
+  for (let line of raw.split(/\n+/)) {
+    if (/bài viết liên quan/i.test(line)) break;
+    line = line.replace(/[ \t]+/g, " ").trim();
+    line = line.replace(/\s+,/g, ",").replace(/,(\S)/g, ", $1").replace(/(\p{L})\.(\d)/gu, "$1, $2");
+    line = line.replace(/tháng\s*(\d+)\s*[_./]\s*(\d{4})\s*\)?/i, "tháng $1/$2");
+    if (line.length < 8 || FOOTER.test(line)) continue;
+    if (/^dự\s*án\b/i.test(line) && line.length < 100) continue;
+    const key = line.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(readable(line));
+  }
+  let sawFloors = false;
+  let closed = false;
+  return out.filter((line) => {
+    const floor = /tầng\s*\d+\s*:/i.test(line);
+    const repeat = /^(công năng|diện tích xây dựng|thiết kế theo phong cách)\b/i.test(line);
+    if (closed && (floor || repeat || /^mái\s+|tổng diện tích/i.test(line))) return false;
+    if (floor) sawFloors = true;
+    if (sawFloors && /^mái\s+|tổng diện tích/i.test(line)) closed = true;
+    return true;
+  });
 }
 
 function plainParagraphs(html) {
-  const seen = new Set();
-  const out = [];
-  for (const match of String(html || "").matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)) {
-    let text = decode(match[1]).replace(/P(?=Việt Dũng Phát)/g, "");
-    const cut = text.split(FOOTER)[0].trim();
-    text = (cut || text).replace(/\s+,/g, ",").replace(/,(\S)/g, ", $1");
-    if (text.length < 36 || FOOTER.test(text)) continue;
-    if (/^dự\s*án\b/i.test(text) && text.length < 90) continue;
-    const key = text.slice(0, 110).toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(text);
-  }
-  return out;
+  return sourceLines(html);
 }
 
 function isFloorList(text) {
@@ -75,16 +99,9 @@ function areaOf(text, label) {
 
 function parseFloors(text) {
   const floors = [];
-  const chunks = String(text || "").split(/\s+-\s*tầng\s*/i).slice(1);
-  for (const chunk of chunks) {
-    const match = chunk.match(/^(\d+)\s*:\s*(.+)/i);
-    if (!match) continue;
-    let rooms = match[2]
-      .replace(/\s*mái\s+[\s\S]*$/i, "")
-      .replace(/\([^)]*\)/g, "")
-      .replace(/\s+/g, " ")
-      .replace(/[.\s]+$/g, "")
-      .trim();
+  const re = /tầng\s*(\d+)\s*:\s*(.+?)(?=\s+-?\s*tầng\s*\d+\s*:|\s+mái\s+|\s+tổng diện|$)/gi;
+  for (const match of String(text || "").matchAll(re)) {
+    const rooms = match[2].replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").replace(/[.\s]+$/g, "").trim();
     if (rooms.length < 3) continue;
     floors.push({ n: match[1], rooms });
   }
@@ -117,7 +134,11 @@ function clientAndPlace(title) {
     if (!client) place = tidyPlace(rest);
   }
   const quan = tidy(clean).match(/quận\s*\d+|thủ đức|đồng nai|bình dương|long an|bình thuận|vũng tàu|tiền giang|đắk nông|phú yên|bình định|đà nẵng|cà mau/i);
-  if (quan && !place.toLowerCase().includes(quan[0].toLowerCase())) {
+  if (/trệt|lầu/i.test(place)) {
+    const city = place.match(/thủ đức|đồng nai|bình dương|long an|bình thuận|vũng tàu|tiền giang|hồ chí minh|đà nẵng|quận\s*\d+/i);
+    place = city ? tidy(city[0]) : "";
+  }
+  if (quan && place && !place.toLowerCase().includes(quan[0].toLowerCase())) {
     place = tidyPlace([place, tidy(quan[0])].filter(Boolean).join(", "));
   }
   const district = place.match(/quận\s*\d+/i);
@@ -143,10 +164,15 @@ function tidyPlace(raw) {
 
 function firstSpecText(paragraphs) {
   const idx = paragraphs.findIndex((text) => /tầng\s*1\s*:/i.test(text));
-  if (idx < 0) return paragraphs.filter(isFloorList).slice(0, 1).join(" ");
+  if (idx < 0) return paragraphs.filter(isFloorList).slice(0, 2).join(" ");
   const block = [];
-  if (idx > 0 && /^diện tích|^thiết kế theo phong cách/i.test(paragraphs[idx - 1])) block.push(paragraphs[idx - 1]);
-  block.push(paragraphs[idx]);
+  for (let i = idx - 1; i >= Math.max(0, idx - 3); i -= 1) {
+    if (/diện tích|phong cách/i.test(paragraphs[i])) block.unshift(paragraphs[i]);
+  }
+  for (let i = idx; i < paragraphs.length; i += 1) {
+    if (block.length && !/tầng\s*\d+\s*:|^công năng|^mái\s+/i.test(paragraphs[i])) break;
+    block.push(paragraphs[i]);
+  }
   return block.join(" ");
 }
 
@@ -161,14 +187,17 @@ export function projectFacts(post = {}) {
   if (style.length > 28) style = style.split(/\s+/).slice(0, 2).join(" ");
   const roofMatch = spec.match(/mái\s+(btct|thái|nhật|bằng|ngói|tôn)/i);
   const floors = parseFloors(spec);
+  const floorNums = floors.map((floor) => Number(floor.n));
+  const floorsClean = floorNums.length > 0 && floorNums.every((n, index) => n === index + 1);
   const level = blob.match(/(\d+)\s*trệt(?:\s*,\s*(\d+)\s*lầu)?(?:\s*,\s*(\d+)\s*sân thượng)?/i);
-  const namedFloors = blob.match(/(\d+)\s*tầng/i);
-  const floorCount = floors.length || (level ? Number(level[1]) + Number(level[2] || 0) + Number(level[3] || 0) : namedFloors ? Number(namedFloors[1]) : 0);
+  const floorCount = floorsClean ? floorNums.length : level ? Number(level[1]) + Number(level[2] || 0) + Number(level[3] || 0) : 0;
   const span = blob.match(/(\d+(?:[.,]\d+)?)\s*x\s*(\d+(?:[.,]\d+)?)\s*m\b/i);
   return {
     ...who,
     type: houseType(`${post.title || ""} ${blob}`),
-    area: areaOf(spec, "diện tích(?:\\s+xây dựng)?") || ((blob.match(/(\d+)\s*m2/i) || [])[1] ? `${(blob.match(/(\d+)\s*m2/i) || [])[1]}m2` : ""),
+    area: (String(spec).match(/(?<!tổng\s)diện tích(?!\s+trệt)(?:\s+xây dựng)?\s*[:：]?\s*([0-9][0-9.,]*)\s*m2/iu) || [])[1]
+      ? `${(String(spec).match(/(?<!tổng\s)diện tích(?!\s+trệt)(?:\s+xây dựng)?\s*[:：]?\s*([0-9][0-9.,]*)\s*m2/iu) || [])[1]}m2`
+      : "",
     total: areaOf(spec, "tổng diện tích xây dựng"),
     style: style ? style.toLowerCase() : "",
     roof: roofMatch ? (roofMatch[1].toUpperCase() === "BTCT" ? "BTCT" : roofMatch[1].toLowerCase()) : "",
@@ -183,9 +212,9 @@ export function projectFacts(post = {}) {
 export function projectHeadline(post = {}) {
   if (!post || post.houseStyle || isHouseStyleSlug(post.slug)) return post.title || "";
   const facts = projectFacts(post);
-  if (!facts.client && !facts.area && !facts.floorCount && !facts.style && !facts.place && !facts.span) {
-    return tidy(String(post.title || "").replace(/^dự\s*án\s*:?\s*/i, ""));
-  }
+  const title = tidy(String(post.title || "").replace(/^dự\s*án\s*:?\s*/i, ""));
+  const placeOk = facts.place && !/trệt|lầu|tầng/i.test(facts.place);
+  if (!facts.client || !placeOk) return title;
   const bits = [facts.type];
   if (facts.style && !facts.type.toLowerCase().includes(facts.style)) bits.push(facts.style);
   if (facts.floorCount && facts.type !== "Nhà cấp 4") bits.push(`${facts.floorCount} tầng`);
@@ -194,20 +223,6 @@ export function projectHeadline(post = {}) {
   const right = [facts.client, facts.place].filter(Boolean).join(", ");
   const left = bits.join(" ");
   return right ? `${left} – ${right}` : left;
-}
-
-function introParagraph(facts) {
-  const who = facts.client ? ` của ${lowerFirst(facts.client)}` : "";
-  const where = facts.place ? ` tại ${facts.place}` : "";
-  const bits = [];
-  if (facts.span) bits.push(`mặt bằng ${facts.span}`);
-  else if (facts.area) bits.push(`diện tích xây dựng ${facts.area}`);
-  if (facts.style) bits.push(`phong cách ${facts.style}`);
-  if (facts.floorCount && !facts.levelText) bits.push(`${facts.floorCount} tầng`);
-  if (facts.levelText && !facts.floors.length) bits.push(facts.levelText.toLowerCase());
-  if (facts.roof) bits.push(`mái ${facts.roof}`);
-  const detail = bits.length ? ` ${bits[0].replace(/^./, (ch) => ch.toUpperCase())}${bits.slice(1).length ? `, ${bits.slice(1).join(", ")}` : ""}.` : "";
-  return `Công trình${who}${where} do Việt Dũng Phát thiết kế và thi công.${detail}`;
 }
 
 function galleryHtml(post, alt) {
@@ -221,26 +236,9 @@ function galleryHtml(post, alt) {
 
 export function expandProjectHtml(post = {}) {
   if (!post || post.houseStyle || isHouseStyleSlug(post.slug)) return "";
-  const facts = projectFacts(post);
-  const narrative = facts.paragraphs.filter((text) => !isFloorList(text)).slice(0, 3);
-  const blocks = [];
-  if (facts.client || facts.area || facts.floors.length || facts.place) {
-    blocks.push(`<p>${esc(introParagraph(facts))}</p>`);
-  }
-  for (const text of narrative) blocks.push(`<p>${esc(text)}</p>`);
-  if (facts.floors.length) {
-    blocks.push("<h3>Công năng từng tầng</h3>");
-    for (const floor of facts.floors) {
-      blocks.push(`<p><strong>Tầng ${esc(floor.n)}.</strong> ${esc(floor.rooms)}.</p>`);
-    }
-  }
-  if (facts.total && facts.total !== facts.area) {
-    blocks.push(`<p>Tổng diện tích xây dựng ghi trong hồ sơ là ${esc(facts.total)}.</p>`);
-  }
+  const lines = sourceLines(post.html);
+  const blocks = lines.map((line) => `<p>${esc(line)}</p>`);
   if (!blocks.length) return "";
-  blocks.push(
-    "<p>Hạng mục thi công theo bản vẽ đã duyệt. Nghiệm thu cùng chủ nhà rồi bàn giao, và bảo hành sau khi nhà được đưa vào sử dụng.</p>",
-  );
   blocks.push(galleryHtml(post, projectHeadline(post)));
   return blocks.join("");
 }
