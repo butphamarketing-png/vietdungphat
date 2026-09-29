@@ -17,6 +17,7 @@ import { uploadAdminFile } from "../lib/upload.js";
 import { seoArticleHtml } from "../lib/seo.js";
 import { analyzeRankMath } from "../lib/rankmath.js";
 import { albumVideosFrom, youtubeId, youtubeThumb } from "../lib/album.js";
+import { projectBrief, projectHeadline } from "../lib/project-article.js";
 import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
@@ -452,11 +453,27 @@ function emptyDraft() {
     noindex: false,
     gallery: [],
     galleryText: "",
+    displayTitle: "",
+    specClient: "",
+    specPlace: "",
+    specScale: "",
+    specArea: "",
+    specDate: "",
+    specBudget: "",
+    specUse: "",
+    specService: "",
   };
 }
 
-function postToDraft(item) {
+function postToDraft(item, kind) {
   if (!item) return emptyDraft();
+  const clean = { ...item };
+  for (const key of ["displayTitle", "specClient", "specPlace", "specScale", "specArea", "specDate", "specBudget", "specUse", "specService"]) {
+    delete clean[key];
+  }
+  const brief = kind === "projects" ? projectBrief(clean) : null;
+  const row = (label) => brief?.rows.find((entry) => entry.label === label)?.value || "";
+  const chip = (label) => brief?.chips.find((entry) => entry.label === label)?.value || "";
   return {
     ...emptyDraft(),
     ...item,
@@ -471,6 +488,15 @@ function postToDraft(item) {
     featured: !!item.featured,
     noindex: !!item.noindex,
     galleryText: (item.gallery || []).join("\n"),
+    displayTitle: item.displayTitle || (brief ? projectHeadline(clean) : ""),
+    specClient: item.specClient || row("Chủ đầu tư"),
+    specPlace: item.specPlace || row("Địa chỉ"),
+    specScale: item.specScale || chip("Quy mô"),
+    specArea: item.specArea || chip("Diện tích"),
+    specDate: item.specDate || chip("Ngày khởi công"),
+    specBudget: item.specBudget || chip("Ngân sách"),
+    specUse: item.specUse || row("Công năng"),
+    specService: item.specService || row("Dịch vụ"),
   };
 }
 
@@ -509,7 +535,7 @@ export function PostsEditor({ kind, title, hint }) {
   const rows = filtered.slice((page - 1) * perPage, page * perPage);
 
   function open(item) {
-    const next = postToDraft(item);
+    const next = postToDraft(item, kind);
     setDraft(next);
     setOrigin(next);
     setTab("vi");
@@ -586,6 +612,21 @@ export function PostsEditor({ kind, title, hint }) {
           <h2>Nội dung {meta.cat}</h2>
           <Tabs value={tab} onChange={setTab} tabs={[{ id: "vi", label: "Tiếng Việt" }]} />
           <Field label="Tiêu đề (vi):" value={draft.title} onChange={setTitle} />
+          {kind === "projects" ? (
+            <>
+              <Field label="Tiêu đề hiển thị trên website:" value={draft.displayTitle} onChange={(v) => setDraft({ ...draft, displayTitle: v })} />
+              <div className="adminbp-grid">
+                <Field label="Chủ đầu tư" value={draft.specClient} onChange={(v) => setDraft({ ...draft, specClient: v })} />
+                <Field label="Địa chỉ" value={draft.specPlace} onChange={(v) => setDraft({ ...draft, specPlace: v })} />
+                <Field label="Quy mô" value={draft.specScale} onChange={(v) => setDraft({ ...draft, specScale: v })} />
+                <Field label="Diện tích" value={draft.specArea} onChange={(v) => setDraft({ ...draft, specArea: v })} />
+                <Field label="Ngày khởi công" value={draft.specDate} onChange={(v) => setDraft({ ...draft, specDate: v })} />
+                <Field label="Ngân sách" value={draft.specBudget} onChange={(v) => setDraft({ ...draft, specBudget: v })} />
+              </div>
+              <Field label="Công năng" value={draft.specUse} onChange={(v) => setDraft({ ...draft, specUse: v })} multiline rows={4} />
+              <Field label="Dịch vụ" value={draft.specService} onChange={(v) => setDraft({ ...draft, specService: v })} />
+            </>
+          ) : null}
           <Field label="Mô tả (vi):" value={draft.desc} onChange={(v) => setDraft({ ...draft, desc: v, seoDesc: draft.seoDesc || v })} multiline rows={5} />
           <button
             type="button"
@@ -739,7 +780,7 @@ export function PostsEditor({ kind, title, hint }) {
                     </td>
                     <td>
                       <button type="button" className="adminbp-table-title" onClick={() => open(item)}>
-                        {item.title}
+                        {kind === "projects" ? item.displayTitle || projectHeadline(item) : item.title}
                       </button>
                       <small>/{item.slug}</small>
                     </td>

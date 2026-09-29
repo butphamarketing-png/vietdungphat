@@ -234,11 +234,42 @@ function jobMonths(text) {
   return found ? `${found[1]} tháng` : "";
 }
 
-function jobBudget(paragraphs, blob) {
-  const stated = labeled(paragraphs, "ngân sách");
-  if (stated) return stated.replace(/\s+/g, " ");
-  const found = String(blob || "").match(/ngân sách\s*[:：]?\s*([0-9][0-9.,]*\s*(?:tỷ|triệu)(?:\s*đồng)?)/i);
-  return found ? found[1].replace(/\s+/g, " ") : "Liên hệ";
+function metersOf(value) {
+  const found = String(value || "").match(/([0-9]+(?:[.,][0-9]+)?)/);
+  if (!found) return 0;
+  const raw = found[1];
+  if (/^\d{1,3}(?:\.\d{3})+$/.test(raw)) return Number(raw.replace(/\./g, ""));
+  return Number(raw.replace(",", ".")) || 0;
+}
+
+function sheetMeters(facts, blob, scale) {
+  const area = metersOf(facts.area);
+  if (area) return area;
+  const total = metersOf(facts.total);
+  if (total) return total;
+  const foot = footprintOf(blob).match(/(\d+(?:,\d+)?)x(\d+(?:,\d+)?)/);
+  if (!foot) return 0;
+  const width = Number(foot[1].replace(",", "."));
+  const depth = Number(foot[2].replace(",", "."));
+  const named = String(scale || facts.levelText || "").match(/(\d+)\s*tầng/);
+  const level = String(scale || facts.levelText || "").match(/(\d+)\s*trệt(?:\s*,?\s*(\d+)\s*lầu)?/);
+  const floors = facts.floorCount || (named ? Number(named[1]) : 0) || (level ? Number(level[1]) + Number(level[2] || 0) : 1);
+  return width * depth * (floors || 1);
+}
+
+function formatBudget(vnd) {
+  const rounded = Math.max(0.5, Math.round((vnd / 1e9) * 10) / 10);
+  const [whole, frac] = rounded.toFixed(1).split(".");
+  return frac === "0" ? `${whole} tỷ` : `${whole},${frac} tỷ`;
+}
+
+function jobBudget(facts, blob, scale) {
+  const meters = sheetMeters(facts, blob, scale);
+  const vnd = meters * 5950000;
+  const rounded = Math.max(0.5, Math.round((vnd / 1e9) * 10) / 10);
+  if (!meters) return "1,5 tỷ";
+  const [whole, frac] = rounded.toFixed(1).split(".");
+  return frac === "0" ? `${whole} tỷ` : `${whole},${frac} tỷ`;
 }
 
 function jobService(text) {
@@ -325,35 +356,43 @@ export function projectBrief(post = {}) {
   const thin = /nội dung đang cập nhật/i.test(blob) && !facts.area && !facts.span && !facts.floorCount && !facts.levelText;
   if (thin) return null;
   const scale = scaleOf(facts, post.title, paragraphs);
-  const scaleShown = scale && !/^(nhà phố|căn hộ|biệt thự|cải tạo|nhà cấp 4)$/i.test(scale) ? scale : "";
+  const scaleRaw = scale && !/^(nhà phố|căn hộ|biệt thự|cải tạo|nhà cấp 4)$/i.test(scale) ? scale : "";
   const statedArea = labeled(paragraphs, "diện tích").replace(/(\d)\s*,\s*(\d)/g, "$1,$2");
   const loose = (paragraphs.find((line) => /^nhà\s+[0-9]/i.test(line) && /m2/i.test(line)) || "").match(/([0-9][0-9.,]*)\s*m2/i);
   const foot = statedArea || facts.span || footprintOf(blob);
   const built = foot || facts.area || (loose ? `${loose[1]}m2` : "");
   const tret = (blob.match(/diện tích trệt\s*[:：]?\s*([0-9][0-9.,]*)\s*m2/i) || [])[1];
-  const when = jobWhen(blob);
+  const whenRaw = jobWhen(blob);
   const months = jobMonths(blob);
-  const use = jobUse(paragraphs);
-  const service = jobService(blob);
-  const budget = jobBudget(paragraphs, blob);
-  if (!built && !when && !use && !scaleShown) return null;
-  const areaChip = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
+  const useRaw = jobUse(paragraphs);
+  const serviceRaw = jobService(blob);
+  const writtenBudget = labeled(paragraphs, "ngân sách");
+  const budgetRaw = writtenBudget || jobBudget(facts, blob, scaleRaw || scale);
+  if (!built && !whenRaw && !useRaw && !scaleRaw && !post.specBudget) return null;
+  const keep = (value, fallback) => String(value || "").trim() || fallback;
+  const scaleShown = keep(post.specScale, scaleRaw);
+  const areaChip = keep(post.specArea, built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "");
+  const when = keep(post.specDate, whenRaw);
+  const use = keep(post.specUse, useRaw);
+  const service = keep(post.specService, serviceRaw);
+  const budget = keep(post.specBudget, budgetRaw);
   const chips = [
     scaleShown ? { key: "scale", label: "Quy mô", value: scaleShown } : null,
     areaChip ? { key: "area", label: "Diện tích", value: areaChip } : null,
     when ? { key: "date", label: "Ngày khởi công", value: when } : null,
     { key: "budget", label: "Ngân sách", value: budget },
   ].filter(Boolean);
-  const sizeRow = built ? prettyArea(built) : tret ? `Trệt ${prettyArea(`${tret}m2`)}` : "";
+  const sizeRow = areaChip;
   const scope = scaleShown && facts.type && facts.type !== "Nhà" && !scaleShown.toLowerCase().includes(facts.type.toLowerCase())
     ? `${facts.type} ${scaleShown}`
     : scaleShown;
-  const client = niceName(labeled(paragraphs, "chủ đầu tư") || facts.client);
+  const client = keep(post.specClient, niceName(labeled(paragraphs, "chủ đầu tư") || facts.client));
   const statedPlace = labeled(paragraphs, "địa chỉ");
   let place = statedPlace || facts.place;
   if (!statedPlace && (!place || /trệt|lầu|\d+\s*tầng/i.test(place) || place.split(/\s+/).length > 5)) {
     place = knownPlace(`${post.title} ${blob}`);
   }
+  place = keep(post.specPlace, place);
   const rows = [
     client ? ["Chủ đầu tư", client] : null,
     place ? ["Địa chỉ", place] : null,
@@ -371,6 +410,7 @@ export function projectBrief(post = {}) {
 
 export function projectHeadline(post = {}) {
   if (!post || post.houseStyle || isHouseStyleSlug(post.slug)) return post.title || "";
+  if (String(post.displayTitle || "").trim()) return String(post.displayTitle).trim();
   const facts = projectFacts(post);
   const title = tidy(String(post.title || "").replace(/^dự\s*án\s*:?\s*/i, ""));
   const placeOk = facts.place && !/trệt|lầu|tầng/i.test(facts.place);
