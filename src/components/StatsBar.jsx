@@ -14,7 +14,7 @@ function formatShown(n, target) {
   return decimals ? n.toFixed(1) : String(Math.round(n));
 }
 
-function StatValue({ value, active }) {
+export function StatValue({ value, active }) {
   const { target, suffix } = parseStat(value);
   const [shown, setShown] = useState(0);
 

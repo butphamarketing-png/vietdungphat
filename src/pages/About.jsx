@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
 import { profile } from "../lib/profile.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
+import { StatValue } from "../components/StatsBar.jsx";
 
 const articles = [
   {
@@ -64,6 +66,40 @@ const articles = [
   },
 ];
 
+function AboutStats({ stats }) {
+  const ref = useRef(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className="about-stat-grid" ref={ref}>
+      {(stats || []).slice(0, 4).map((item) => (
+        <article key={item.label}>
+          <strong>
+            <StatValue value={item.value} active={active} />
+          </strong>
+          <span>{item.label}</span>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 export default function About() {
   const { coreServices, site, stats } = useCms();
   const { hash } = useLocation();
@@ -109,14 +145,7 @@ export default function About() {
                   <span aria-hidden="true">→</span>
                 </button>
               </div>
-              <div className="about-stat-grid">
-                {(stats || []).slice(0, 4).map((item) => (
-                  <article key={item.label}>
-                    <strong>{item.value}</strong>
-                    <span>{item.label}</span>
-                  </article>
-                ))}
-              </div>
+              <AboutStats stats={stats} />
             </section>
 
             <section className="about-values">
