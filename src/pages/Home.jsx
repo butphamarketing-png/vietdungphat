@@ -130,7 +130,7 @@ export default function Home() {
           <p className="kicker">{home.reviewsKicker}</p>
           <h2>{home.reviewsTitle}</h2>
         </div>
-        <div className="review-grid">
+        <div className="review-grid reveal-kids">
           {reviews.map((r) => (
             <article key={r.name} className="review-card">
               <p className="stars">★★★★★</p>

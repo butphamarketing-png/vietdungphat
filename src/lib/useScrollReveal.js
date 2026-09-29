@@ -11,7 +11,7 @@ const ITEMS = [
   "main .price-card",
   "main .card",
   "main .news-col",
-  "main .review-card",
+  "main .review-grid",
   "main .about-collage .shot",
   "main .about-copy",
   "main .about-script",
