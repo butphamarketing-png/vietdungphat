@@ -24,7 +24,7 @@ const KINDS = ["projects", "products", "services", "news", "extras"];
 export const defaultAccount = { email: "admin@vietdungphat.com", password: "vietdungphat.com" };
 
 export const defaultHome = {
-  kicker: "Kiến tạo không gian sống bền vững",
+  kicker: "",
   title1: "Thiết kế xây nhà tân cổ điển",
   title2: "tại TP.HCM",
   cta1: "Đặt lịch khảo sát",
@@ -331,6 +331,7 @@ export function getCms() {
   if (!home.projectsKicker || /công trình/i.test(String(home.projectsKicker || ""))) {
     home.projectsKicker = defaultHome.projectsKicker;
   }
+  if (/kiến tạo không gian/i.test(String(home.kicker || ""))) home.kicker = "";
   if (/kiến tạo không gian/i.test(String(home.title1 || ""))) {
     home.title1 = defaultHome.title1;
     home.title2 = defaultHome.title2;

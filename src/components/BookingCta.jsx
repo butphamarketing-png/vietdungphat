@@ -147,7 +147,6 @@ export default function BookingCta() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <p className="booking-script">Kiến tạo không gian sống bền vững</p>
         </div>
       </div>
       <BookingForm />

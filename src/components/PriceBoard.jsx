@@ -38,7 +38,6 @@ export default function PriceBoard() {
           <path d="M8 188c40-18 90-8 140 4 38 9 78 6 124-10" />
         </g>
       </svg>
-      <p className="price-script">Kiến tạo không gian sống bền vững</p>
 
       <div className="price-head">
         <p className="kicker">Báo giá xây dựng</p>

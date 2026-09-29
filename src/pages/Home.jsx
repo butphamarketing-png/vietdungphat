@@ -102,7 +102,6 @@ export default function Home() {
           <SmartImg className="shot a" src={home.aboutImages?.[0] || "/villas/villa-mansard-rong.jpg"} alt="Biệt thự tân cổ điển mái mansard" />
           <SmartImg className="shot b" src={home.aboutImages?.[1] || "/villas/villa-goc-lon.jpg"} alt="Biệt thự tân cổ điển góc sân vườn" />
           <SmartImg className="shot c" src={home.aboutImages?.[2] || "/villas/villa-cong-lon.jpg"} alt="Biệt thự tân cổ điển mặt tiền rộng" />
-          <p className="about-script">Kiến tạo không gian sống bền vững</p>
         </div>
         <div className="about-copy">
           <p className="kicker lined">{home.aboutKicker}</p>
