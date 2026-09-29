@@ -20,9 +20,10 @@ const NAV_GROUPS = [
     id: "posts",
     label: "Quản lý bài viết",
     items: [
-      { to: "/adminbp/mau-nha", label: "Công trình", icon: "M3 21V9l9-6 9 6v12H3zM9 21v-7h6v7" },
-      { to: "/adminbp/tin-tuc", label: "Tin tức", icon: "M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" },
       { to: "/adminbp/dich-vu", label: "Dịch vụ", icon: "M8 7V4h8v3M6 7h12v13H6zM10 12h4" },
+      { to: "/adminbp/mau-nha", label: "Mẫu nhà", icon: "M3 21V9l9-6 9 6v12H3zM9 21v-7h6v7" },
+      { to: "/adminbp/du-an", label: "Dự án", icon: "M4 6h16v10H4zM8 18h8M10 8l6 4-6 4z" },
+      { to: "/adminbp/tin-tuc", label: "Tin tức", icon: "M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" },
     ],
   },
   {
@@ -30,7 +31,6 @@ const NAV_GROUPS = [
     label: "Quản lý trang tĩnh",
     items: [
       { to: "/adminbp/trang-chu", label: "Trang chủ", icon: "M4 11.5 12 5l8 6.5V20H4zM10 20v-6h4v6" },
-      { to: "/adminbp/album", label: "Dự án", icon: "M4 6h16v10H4zM8 18h8M10 8l6 4-6 4z" },
       { to: "/adminbp/trang", label: "Giới thiệu / Liên hệ", icon: "M7 3h7l5 5v13H7zM14 3v5h5" },
       { to: "/adminbp/bao-gia", label: "Bảng báo giá", icon: "M7 4h10v16H7zM10 8h4M10 12h4M10 16h3" },
       { to: "/adminbp/san-pham", label: "Sản phẩm", icon: "M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM12 12v9M3.5 8 12 12l8.5-4" },

@@ -136,6 +136,7 @@ export function albumProjectsFrom(projects = []) {
   const out = [];
   for (const post of projects || []) {
     if (post.houseStyle || isHouseStyleSlug(post.slug)) continue;
+    if (post.visible === false) continue;
     if (skip.test(post.title || "")) continue;
     const photos = photosFromPost(post);
     if (photos.length < 3) continue;

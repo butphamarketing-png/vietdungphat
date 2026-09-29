@@ -36,6 +36,7 @@ export default function Album() {
           <Link to="/">Trang chủ</Link> · {album?.kicker || "Dự án"}
         </p>
         <h1>{album?.title || "Công trình tiêu biểu"}</h1>
+        {album?.lead ? <p className="catalog-lead">{album.lead}</p> : null}
       </header>
 
       <div className="page-body">

@@ -40,12 +40,12 @@ export default function Article() {
     meta.kind === "news" ? cms.news : meta.kind === "products" ? cms.products : meta.kind === "services" ? cms.services : cms.projects;
   const projectArticle = Boolean(post) && meta.kind === "projects" && !post.houseStyle && !isHouseStyleSlug(post.slug);
   const related = pool
-    .filter((p) => p.slug !== slug)
+    .filter((p) => p.slug !== slug && p.visible !== false)
     .filter((p) => (post?.source === "keyword") === (p.source === "keyword"))
     .filter((p) => !projectArticle || (!p.houseStyle && !isHouseStyleSlug(p.slug)))
     .slice(0, 3);
 
-  if (!post) {
+  if (!post || post.visible === false) {
     return (
       <article className="page">
         <PageHero title="Không tìm thấy bài viết">

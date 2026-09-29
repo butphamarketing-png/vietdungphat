@@ -16,8 +16,9 @@ import {
 import { uploadAdminFile } from "../lib/upload.js";
 import { seoArticleHtml } from "../lib/seo.js";
 import { analyzeRankMath } from "../lib/rankmath.js";
-import { albumVideosFrom, youtubeId, youtubeThumb } from "../lib/album.js";
+import { albumVideosFrom, youtubeId, youtubeThumb, albumProjectsFrom } from "../lib/album.js";
 import { projectBrief, projectHeadline } from "../lib/project-article.js";
+import { isHouseStyleSlug } from "../lib/studio.js";
 import { CardList, CazoDropzone, Crumbs, EditToolbar, Field, HtmlEditor, ImageField, ItemActions, SaveBar, SwitchField, Tabs, moveItem } from "./ui.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
@@ -31,14 +32,14 @@ const QUICK = [
 
 const LINKS = [
   { href: "/adminbp/trang-chu", label: "Trang chủ", desc: "Hero YouTube, intro, thống kê" },
-  { href: "/adminbp/album", label: "Dự án", desc: "Video YouTube + ảnh công trình" },
-  { href: "/adminbp/mau-nha", label: "Mẫu nhà", desc: "Công trình / bài viết" },
+  { href: "/adminbp/du-an", label: "Dự án", desc: "Đúng catalog, thông số và video tại /du-an" },
+  { href: "/adminbp/mau-nha", label: "Mẫu nhà", desc: "Đúng các mẫu đang hiện tại /mau-nha" },
   { href: "/adminbp/san-pham", label: "Sản phẩm", desc: "Nội thất xưởng" },
   { href: "/adminbp/bao-gia", label: "Báo giá", desc: "Gói thi công" },
   { href: "/adminbp/dich-vu", label: "Dịch vụ", desc: "Nhóm dịch vụ + bài viết" },
   { href: "/adminbp/tin-tuc", label: "Tin tức", desc: "Bài viết SEO" },
   { href: "/adminbp/trang", label: "Trang nội dung", desc: "Giới thiệu, liên hệ" },
-  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Ảnh cột phải trang Dự án" },
+  { href: "/adminbp/thu-vien", label: "Thư viện", desc: "Ảnh mẫu nhà và collage trang chủ" },
   { href: "/adminbp/kho-anh", label: "Kho ảnh", desc: "Supabase Storage" },
   { href: "/adminbp/truy-cap", label: "Lượt truy cập", desc: "Khách xem website" },
 ];
@@ -428,7 +429,7 @@ export function HomeEditor() {
 
 const KIND_META = {
   news: { list: "Danh sách Tin tức", edit: "Chỉnh sửa Tin tức", group: "Quản lý bài viết", cat: "Tin tức" },
-  projects: { list: "Danh sách Công trình", edit: "Chỉnh sửa Công trình", group: "Quản lý bài viết", cat: "Công trình" },
+  projects: { list: "Danh sách Dự án", edit: "Chỉnh sửa dự án", group: "Quản lý bài viết", cat: "Dự án" },
   products: { list: "Danh sách Sản phẩm", edit: "Chỉnh sửa Sản phẩm", group: "Quản lý trang tĩnh", cat: "Sản phẩm" },
   services: { list: "Danh sách Dịch vụ", edit: "Chỉnh sửa Dịch vụ", group: "Quản lý bài viết", cat: "Dịch vụ" },
 };
@@ -513,11 +514,32 @@ function draftToPost(draft) {
   };
 }
 
-export function PostsEditor({ kind, title, hint }) {
+export function PostsEditor({ kind, title, hint, scope, embedded }) {
   const cms = useCms();
-  const items = cms[kind] || [];
-  const meta = KIND_META[kind] || { list: title, edit: `Cập nhật ${title}`, group: "Quản lý bài viết", cat: title };
-  const listPath = { news: "/adminbp/tin-tuc", projects: "/adminbp/mau-nha", products: "/adminbp/san-pham", services: "/adminbp/dich-vu" }[kind];
+  const catalog = useMemo(
+    () => (kind === "projects" ? albumProjectsFrom(cms.projects || []) : []),
+    [kind, cms.projects],
+  );
+  const catalogSlugs = useMemo(() => new Set(catalog.map((item) => item.slug)), [catalog]);
+  const catalogBySlug = useMemo(() => new Map(catalog.map((item) => [item.slug, item])), [catalog]);
+  const source = cms[kind] || [];
+  const scoped = useMemo(() => {
+    const picked = source.filter((item) => {
+      const style = item.houseStyle || isHouseStyleSlug(item.slug);
+      if (scope === "catalog") return catalogSlugs.has(item.slug);
+      if (scope === "styles") return style;
+      if (scope === "other-projects") return !style && !catalogSlugs.has(item.slug);
+      return true;
+    });
+    if (scope !== "catalog") return picked;
+    const order = new Map(catalog.map((item, index) => [item.slug, index]));
+    return [...picked].sort((a, b) => (order.get(a.slug) ?? 0) - (order.get(b.slug) ?? 0));
+  }, [source, scope, catalogSlugs, catalog]);
+  const meta = scope === "styles"
+    ? { list: "Danh sách Mẫu nhà", edit: "Chỉnh sửa Mẫu nhà", group: "Quản lý bài viết", cat: "Mẫu nhà" }
+    : scope === "catalog" || scope === "other-projects"
+      ? { list: title || "Danh sách Dự án", edit: "Chỉnh sửa dự án", group: "Quản lý bài viết", cat: "Dự án" }
+      : (KIND_META[kind] || { list: title, edit: `Cập nhật ${title}`, group: "Quản lý bài viết", cat: title });
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
   const [draft, setDraft] = useState(null);
@@ -527,8 +549,8 @@ export function PostsEditor({ kind, title, hint }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const filtered = useMemo(
-    () => items.filter((p) => !q || `${p.title} ${p.slug}`.toLowerCase().includes(q.toLowerCase())),
-    [items, q],
+    () => scoped.filter((p) => !q || `${p.title} ${p.slug} ${p.displayTitle || ""}`.toLowerCase().includes(q.toLowerCase())),
+    [scoped, q],
   );
   const perPage = 10;
   const pages = Math.max(1, Math.ceil(filtered.length / perPage));
@@ -577,6 +599,7 @@ export function PostsEditor({ kind, title, hint }) {
     const seoTitle = draft.seoTitle || draft.title;
     const seoDesc = draft.seoDesc || draft.desc;
     const rm = analyzeRankMath(draft);
+    const showSpecs = kind === "projects" && !(draft.houseStyle || isHouseStyleSlug(draft.slug));
     return (
       <div className="adminbp-cazo">
         <EditToolbar
@@ -612,7 +635,7 @@ export function PostsEditor({ kind, title, hint }) {
           <h2>Nội dung {meta.cat}</h2>
           <Tabs value={tab} onChange={setTab} tabs={[{ id: "vi", label: "Tiếng Việt" }]} />
           <Field label="Tiêu đề (vi):" value={draft.title} onChange={setTitle} />
-          {kind === "projects" ? (
+          {showSpecs ? (
             <>
               <Field label="Tiêu đề hiển thị trên website:" value={draft.displayTitle} onChange={(v) => setDraft({ ...draft, displayTitle: v })} />
               <div className="adminbp-grid">
@@ -727,24 +750,34 @@ export function PostsEditor({ kind, title, hint }) {
 
   return (
     <div className="adminbp-edit">
-      <div className="adminbp-edit-toolbar">
-        <div className="adminbp-edit-toolbar-row">
-          <h1>{meta.list}</h1>
-          <div className="adminbp-edit-tools">
-            <button type="button" className="adminbp-pill is-gold" onClick={() => open(null)}>
-              Thêm mới
-            </button>
-          </div>
+      {embedded ? (
+        <div className="adminbp-page-head">
+          <h2>{title}</h2>
+          {hint ? <p>{hint}</p> : null}
+          <button type="button" className="adminbp-pill is-gold" onClick={() => open(null)}>
+            Thêm mới
+          </button>
         </div>
-        <Crumbs
-          items={[
-            { to: "/adminbp", label: "Bảng điều khiển" },
-            { label: meta.group },
-            { label: meta.list },
-          ]}
-        />
-        <p className="adminbp-edit-hint">{hint}</p>
-      </div>
+      ) : (
+        <div className="adminbp-edit-toolbar">
+          <div className="adminbp-edit-toolbar-row">
+            <h1>{meta.list}</h1>
+            <div className="adminbp-edit-tools">
+              <button type="button" className="adminbp-pill is-gold" onClick={() => open(null)}>
+                Thêm mới
+              </button>
+            </div>
+          </div>
+          <Crumbs
+            items={[
+              { to: "/adminbp", label: "Bảng điều khiển" },
+              { label: meta.group },
+              { label: meta.list },
+            ]}
+          />
+          <p className="adminbp-edit-hint">{hint}</p>
+        </div>
+      )}
       <section className="adminbp-edit-card">
         <form
           className="adminbp-list-search"
@@ -780,9 +813,14 @@ export function PostsEditor({ kind, title, hint }) {
                     </td>
                     <td>
                       <button type="button" className="adminbp-table-title" onClick={() => open(item)}>
-                        {kind === "projects" ? item.displayTitle || projectHeadline(item) : item.title}
+                        {scope === "styles" || kind !== "projects"
+                          ? item.title
+                          : catalogBySlug.get(item.slug)?.headline || item.displayTitle || projectHeadline(item)}
                       </button>
-                      <small>/{item.slug}</small>
+                      <small>
+                        /{item.slug}
+                        {catalogBySlug.get(item.slug)?.place ? ` · ${catalogBySlug.get(item.slug).place}` : ""}
+                      </small>
                     </td>
                     <td>{item.visible === false ? "Ẩn" : "Hiện"}</td>
                     <td>{item.featured ? "Có" : "—"}</td>
@@ -965,8 +1003,7 @@ export function AlbumEditor() {
       <div className="adminbp-page-head">
         <h1>Dự án</h1>
         <p>
-          Trang <a href="/album" target="_blank" rel="noreferrer">/album</a>: cột trái là video YouTube, cột phải lấy ảnh từ{" "}
-          <Link to="/adminbp/thu-vien">Thư viện ảnh</Link>.
+          Banner và video của trang <a href="/du-an" target="_blank" rel="noreferrer">/du-an</a>. Danh sách bài bên dưới trùng các thẻ đang hiện trên website.
         </p>
       </div>
       <div className="adminbp-form">
@@ -1017,6 +1054,28 @@ export function AlbumEditor() {
   );
 }
 
+export function ProjectSiteEditor() {
+  return (
+    <>
+      <AlbumEditor />
+      <PostsEditor
+        kind="projects"
+        scope="catalog"
+        embedded
+        title="Bài trên trang Dự án"
+        hint="Cùng thứ tự và tiêu đề với các thẻ tại /du-an. Sửa tiêu đề, ngân sách, quy mô, diện tích ở đây thì trang bài viết đổi theo."
+      />
+      <PostsEditor
+        kind="projects"
+        scope="other-projects"
+        embedded
+        title="Bài chưa hiện trên trang Dự án"
+        hint="Các bài này chưa đủ ảnh, không phải công trình nhà, hoặc đang tắt Hiển thị, nên chưa có trên /du-an."
+      />
+    </>
+  );
+}
+
 export function StudioEditor() {
   const cms = useCms();
   const [studio, setStudio] = useState(cms.studio);
@@ -1029,9 +1088,7 @@ export function StudioEditor() {
     <>
       <div className="adminbp-page-head">
         <h1>Thư viện ảnh</h1>
-        <p>
-          Ảnh cột phải trang <Link to="/adminbp/album">Dự án</Link>, collage trang chủ và Mẫu nhà.
-        </p>
+        <p>Ảnh bìa mẫu nhà và collage trang chủ.</p>
       </div>
       <div className="adminbp-form">
         <CardList title="Ảnh công trình" onAdd={() => setStudio([...studio, { src: "/studio/01.jpg", title: "Công trình mới" }])}>

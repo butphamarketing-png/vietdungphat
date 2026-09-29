@@ -28,11 +28,11 @@ export default function ListPage({ kind }) {
   const data = cms.lists[kind];
   const projects = kind === "projects";
   const [group, setGroup] = useState("all");
-  const newsItems = data.items || [];
-  const productItems = kind === "products" ? (data.items || []).filter(isWorkshopProduct) : data.items;
+  const newsItems = (data.items || []).filter((p) => p.visible !== false);
+  const productItems = kind === "products" ? (data.items || []).filter((p) => isWorkshopProduct(p) && p.visible !== false) : (data.items || []).filter((p) => p.visible !== false);
   const styleItems = useMemo(() => {
     if (!projects) return [];
-    const fromCms = (data.items || []).filter((p) => p.houseStyle || isHouseStyleSlug(p.slug));
+    const fromCms = (data.items || []).filter((p) => (p.houseStyle || isHouseStyleSlug(p.slug)) && p.visible !== false);
     return fromCms.length ? fromCms : houseStylePosts();
   }, [projects, data.items]);
   const filtered = useMemo(() => {

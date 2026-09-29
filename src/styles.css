@@ -355,6 +355,7 @@ button.text-link {
 .catalog-banner .kicker { letter-spacing: 0.04em; }
 .catalog-banner .kicker a { color: #fff; }
 .catalog-banner h1 { margin: 0.7rem 0 0; font-size: clamp(1.8rem, 3vw, 2.7rem); max-width: 18em; }
+.catalog-banner .catalog-lead { position: relative; z-index: 1; color: #fff; max-width: 40rem; margin: 0.85rem 0 0; }
 .catalog-filters {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 280px));
