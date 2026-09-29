@@ -9,7 +9,15 @@ import { useEffect, useState } from "react";
 
 const links = [
   { to: "/", label: "Trang chủ" },
-  { to: "/gioi-thieu", label: "Giới thiệu" },
+  {
+    to: "/gioi-thieu",
+    label: "Giới thiệu",
+    children: [
+      { to: "/gioi-thieu#chung-toi", label: "Về Việt Dũng Phát" },
+      { to: "/gioi-thieu#tam-nhin", label: "Tầm nhìn, sứ mệnh" },
+      { to: "/gioi-thieu#gia-tri", label: "Giá trị mang lại cho khách hàng" },
+    ],
+  },
   { to: "/dich-vu", label: "Dịch vụ" },
   { to: "/mau-nha", label: "Mẫu nhà" },
   { to: "/album", label: "Dự án" },
@@ -84,11 +92,26 @@ export default function Layout() {
           <span />
         </button>
         <nav className={open ? "open" : ""}>
-          {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.to === "/"} onClick={() => setOpen(false)}>
-              {l.label}
-            </NavLink>
-          ))}
+          {links.map((l) =>
+            l.children ? (
+              <div className="nav-drop" key={l.to}>
+                <NavLink to={l.to} onClick={() => setOpen(false)}>
+                  {l.label}
+                </NavLink>
+                <div className="nav-sub">
+                  {l.children.map((child) => (
+                    <Link key={child.to} to={child.to} onClick={() => setOpen(false)}>
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <NavLink key={l.to} to={l.to} end={l.to === "/"} onClick={() => setOpen(false)}>
+                {l.label}
+              </NavLink>
+            ),
+          )}
         </nav>
         <div className="header-actions">
           <Link className="header-cta" to="/lien-he#dat-lich" onClick={() => setOpen(false)}>

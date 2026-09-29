@@ -66,6 +66,12 @@ const articles = [
   },
 ];
 
+const pages = [
+  ...articles,
+  { id: "tam-nhin", title: "Tầm nhìn, sứ mệnh" },
+  { id: "gia-tri", title: "Giá trị mang lại cho khách hàng" },
+];
+
 function AboutStats({ stats }) {
   const ref = useRef(null);
   const [active, setActive] = useState(false);
@@ -104,7 +110,7 @@ export default function About() {
   const { coreServices, site, stats } = useCms();
   const { hash } = useLocation();
   const navigate = useNavigate();
-  const current = articles.find((item) => item.id === hash.slice(1)) || null;
+  const current = pages.find((item) => item.id === hash.slice(1)) || null;
 
   function openArticle(id) {
     navigate(`/gioi-thieu#${id}`);
@@ -193,6 +199,44 @@ function ArticleBody({ id, coreServices, site }) {
           <h2>Từ năm {profile.founded}, đồng hành thiết kế và thi công</h2>
           {profile.intro.map((p) => (
             <p key={p}>{p}</p>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (id === "tam-nhin") {
+    return (
+      <section className="prose">
+        <p className="kicker lined">Tầm nhìn, sứ mệnh</p>
+        <h2>Thương hiệu của sự an tâm</h2>
+        <h3>Tầm nhìn</h3>
+        <p>
+          Việt Dũng Phát hướng tới là nơi gia đình an tâm giao việc làm nhà: công trình đúng thiết kế, bền, rõ công năng
+          và bàn giao đúng hẹn.
+        </p>
+        <h3>Sứ mệnh</h3>
+        <p>
+          Giữ phương châm “{profile.motto}”. Thiết kế kiến trúc, nội thất, thi công và cải tạo nhà với vật tư minh bạch,
+          tiến độ rõ ràng và bảo hành sau khi bàn giao.
+        </p>
+      </section>
+    );
+  }
+
+  if (id === "gia-tri") {
+    return (
+      <section>
+        <div className="section-head">
+          <p className="kicker lined">Giá trị cho khách hàng</p>
+          <h2>Giá trị mang lại cho khách hàng</h2>
+        </div>
+        <div className="policy-grid">
+          {profile.policies.map((item) => (
+            <article key={item.title} className="policy-card">
+              <strong>{item.title}</strong>
+              <p>{item.text}</p>
+            </article>
           ))}
         </div>
       </section>
