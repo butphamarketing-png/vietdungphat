@@ -25,9 +25,10 @@ export default function App() {
           <Route path="/gioi-thieu" element={<About />} />
           <Route path="/du-an" element={<Album />} />
           <Route path="/mau-nha" element={<ListPage kind="projects" />} />
-          <Route path="/mau-nha/nha-pho" element={<TownhouseList />} />
+          <Route path="/nha-pho" element={<TownhouseList />} />
+          <Route path="/nha-pho/:id" element={<TownhouseSample />} />
+          <Route path="/mau-nha/nha-pho" element={<Navigate to="/nha-pho" replace />} />
           <Route path="/mau-nha/nha-pho/:id" element={<TownhouseSample />} />
-          <Route path="/nha-pho" element={<Navigate to="/mau-nha/nha-pho" replace />} />
           <Route path="/album" element={<Navigate to="/du-an" replace />} />
           <Route path="/san-pham" element={<ListPage kind="products" />} />
           <Route path="/dich-vu" element={<Services />} />

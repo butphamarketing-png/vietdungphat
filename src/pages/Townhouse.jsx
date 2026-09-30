@@ -24,7 +24,7 @@ export function TownhouseList() {
       <div className="page-body">
         <div className="style-grid">
           {samples.map((item) => (
-            <Link key={item.id} to={`/mau-nha/nha-pho/${item.id}`} className="style-card">
+            <Link key={item.id} to={`/nha-pho/${item.id}`} className="style-card">
               <SmartImg src={item.cover} alt={item.title} />
               <div className="style-card-copy">
                 <h3>{item.title}</h3>
@@ -47,7 +47,7 @@ export function TownhouseSample() {
       <article className="page">
         <PageHero title="Không tìm thấy mẫu nhà">
           <p>
-            Mẫu này không có trong danh mục. Quay lại <Link to="/mau-nha/nha-pho">Nhà phố</Link>.
+            Mẫu này không có trong danh mục. Quay lại <Link to="/nha-pho">Nhà phố</Link>.
           </p>
         </PageHero>
       </article>
@@ -59,7 +59,7 @@ export function TownhouseSample() {
       <PageHero
         kicker={
           <>
-            <Link to="/">Trang chủ</Link> / <Link to="/mau-nha">Mẫu nhà</Link> / <Link to="/mau-nha/nha-pho">Nhà phố</Link>
+            <Link to="/">Trang chủ</Link> / <Link to="/mau-nha">Mẫu nhà</Link> / <Link to="/nha-pho">Nhà phố</Link>
           </>
         }
         title={sample.title}

@@ -280,8 +280,9 @@ export function pageSeoFromCms(pathname, cms) {
     };
   }
 
-  if (path === "/mau-nha/nha-pho" || path.startsWith("/mau-nha/nha-pho/")) {
-    const id = path.split("/")[3] || "";
+  if (path === "/nha-pho" || path.startsWith("/nha-pho/") || path === "/mau-nha/nha-pho" || path.startsWith("/mau-nha/nha-pho/")) {
+    const parts = path.split("/").filter(Boolean);
+    const id = parts[0] === "nha-pho" ? parts[1] || "" : parts[2] || "";
     const sample = id ? townhouseSamples.find((item) => item.id === id) : null;
     if (id && !sample) {
       return {
@@ -305,8 +306,8 @@ export function pageSeoFromCms(pathname, cms) {
       breadcrumbs: [
         { name: "Trang chủ", path: "/" },
         { name: "Mẫu nhà", path: "/mau-nha" },
-        { name: "Nhà phố", path: "/mau-nha/nha-pho" },
-        ...(sample ? [{ name: sample.title, path }] : []),
+        { name: "Nhà phố", path: "/nha-pho" },
+        ...(sample ? [{ name: sample.title, path: `/nha-pho/${sample.id}` }] : []),
       ],
     };
   }

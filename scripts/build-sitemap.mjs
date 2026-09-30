@@ -26,8 +26,8 @@ const urls = [
 for (const style of HOUSE_STYLE_MEDIA) {
   if (style?.slug && style.slug !== "nha-pho") urls.push(`/${style.slug}`);
 }
-urls.push("/mau-nha/nha-pho");
-for (const sample of townhouseSamples) urls.push(`/mau-nha/nha-pho/${sample.id}`);
+urls.push("/nha-pho");
+for (const sample of townhouseSamples) urls.push(`/nha-pho/${sample.id}`);
 for (const k of KEYWORDS) urls.push(keywordNewsPath(k));
 for (const p of [...data.projects, ...data.products, ...data.services, ...data.news, ...data.extras, ...editorialNews, ...keywordNews]) {
   if (p?.slug) urls.push(`/${p.slug}`);

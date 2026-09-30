@@ -134,7 +134,7 @@ function spaFallbackHtml() {
       }
       if (townhouses.length) {
         urls.push({
-          loc: "/mau-nha/nha-pho",
+          loc: "/nha-pho",
           title: seoDocumentTitle("Nhà phố"),
           description: `${townhouses.length} mẫu nhà phố. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`.slice(0, 160),
           image: townhouses[0].cover || DEFAULT_OG,
@@ -143,7 +143,7 @@ function spaFallbackHtml() {
         });
         for (const sample of townhouses) {
           urls.push({
-            loc: `/mau-nha/nha-pho/${sample.id}`,
+            loc: `/nha-pho/${sample.id}`,
             title: seoDocumentTitle(sample.title),
             description: `${sample.title}: ${sample.images?.length || 0} ảnh phối cảnh nhà phố của Việt Dũng Phát.`.slice(0, 160),
             image: sample.cover || DEFAULT_OG,
