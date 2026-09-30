@@ -33,6 +33,20 @@ const SPA_ROUTES = [
   "gioi-thieu",
   "du-an",
   "mau-nha",
+  "nha-pho",
+  "nha-pho/01",
+  "nha-pho/02",
+  "nha-pho/03",
+  "nha-pho/04",
+  "nha-pho/05",
+  "nha-pho/06",
+  "nha-pho/07",
+  "nha-pho/08",
+  "nha-pho/09",
+  "nha-pho/10",
+  "nha-pho/11",
+  "nha-pho/12",
+  "nha-pho/13",
   "album",
   "san-pham",
   "dich-vu",
@@ -128,7 +142,9 @@ function spaFallbackHtml() {
 
       let townhouses = [];
       try {
-        townhouses = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/nha-pho-samples.json"), "utf8"));
+        townhouses = JSON.parse(
+          readFileSync(path.join(process.cwd(), "src/data/nha-pho-samples.json"), "utf8").replace(/^\uFEFF/, ""),
+        );
       } catch {
         townhouses = [];
       }
