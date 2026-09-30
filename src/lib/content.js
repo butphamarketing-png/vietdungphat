@@ -156,7 +156,7 @@ export const pricePacks = [
     tag: "Hoàn thiện",
     icon: "finish",
     title: "Thi công hoàn thiện",
-    price: "Từ 1.300.000đ/m²",
+    price: "Từ 2.100.000đ/m²",
     lead: "Phù hợp với khách hàng đã có phần thô và cần hoàn thiện công trình.",
     points: [
       "Vật tư hoàn thiện rõ ràng",
