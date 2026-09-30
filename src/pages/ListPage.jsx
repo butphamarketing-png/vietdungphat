@@ -72,7 +72,7 @@ export default function ListPage({ kind }) {
         {projects ? (
           <div className="style-grid">
             {styleItems.map((p) => (
-              <Link key={p.slug} to={`/${p.slug}`} className="style-card">
+              <Link key={p.slug} to={p.slug === "nha-pho" ? "/mau-nha/nha-pho" : `/${p.slug}`} className="style-card">
                 <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
                 <div className="style-card-copy">
                   <h3>{p.title}</h3>

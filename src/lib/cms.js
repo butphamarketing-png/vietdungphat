@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import data from "../data/content.json";
 import keywordNews from "../data/keyword-news.json";
+import editorialNews from "../data/editorial-news.json";
 import { albumVideosFrom, defaultAlbumVideos } from "./album.js";
 import { houseStylePosts, isHouseStyleSlug, studio as defaultStudio, withHouseCovers, withProductCovers } from "./studio.js";
 import { withNewsCovers } from "./news-media.js";
@@ -236,7 +237,7 @@ function mergePosts(kind) {
     .map((p) => (overrides[p.slug] ? { ...p, ...overrides[p.slug] } : p));
   const generated =
     kind === "news"
-      ? (keywordNews || [])
+      ? [...(editorialNews || []), ...(keywordNews || [])]
           .filter((p) => p?.slug && !deleted.has(p.slug) && !addedSlugs.has(p.slug) && !base.some((b) => b.slug === p.slug))
           .map((p) => (overrides[p.slug] ? { ...p, ...overrides[p.slug] } : p))
       : [];

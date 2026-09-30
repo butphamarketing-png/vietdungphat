@@ -94,10 +94,16 @@ function spaFallbackHtml() {
       );
 
       let keywordNews = [];
+      let editorialNews = [];
       try {
         keywordNews = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/keyword-news.json"), "utf8"));
       } catch {
         keywordNews = [];
+      }
+      try {
+        editorialNews = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/editorial-news.json"), "utf8"));
+      } catch {
+        editorialNews = [];
       }
 
       let houseStyles = [];
@@ -109,7 +115,7 @@ function spaFallbackHtml() {
       }
 
       for (const style of houseStyles) {
-        if (!style?.slug || reserved.has(style.slug)) continue;
+        if (!style?.slug || reserved.has(style.slug) || style.slug === "nha-pho") continue;
         urls.push({
           loc: `/${style.slug}`,
           title: seoDocumentTitle(style.title),
@@ -118,6 +124,33 @@ function spaFallbackHtml() {
           imageAlt: style.alts?.[0] || style.title,
           type: "article",
         });
+      }
+
+      let townhouses = [];
+      try {
+        townhouses = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/nha-pho-samples.json"), "utf8"));
+      } catch {
+        townhouses = [];
+      }
+      if (townhouses.length) {
+        urls.push({
+          loc: "/mau-nha/nha-pho",
+          title: seoDocumentTitle("Nhà phố"),
+          description: `${townhouses.length} mẫu nhà phố. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`.slice(0, 160),
+          image: townhouses[0].cover || DEFAULT_OG,
+          imageAlt: "Nhà phố",
+          type: "website",
+        });
+        for (const sample of townhouses) {
+          urls.push({
+            loc: `/mau-nha/nha-pho/${sample.id}`,
+            title: seoDocumentTitle(sample.title),
+            description: `${sample.title}: ${sample.images?.length || 0} ảnh phối cảnh nhà phố của Việt Dũng Phát.`.slice(0, 160),
+            image: sample.cover || DEFAULT_OG,
+            imageAlt: sample.title,
+            type: "article",
+          });
+        }
       }
 
       if (!reserved.has("album")) {
@@ -131,7 +164,7 @@ function spaFallbackHtml() {
       }
 
       for (const kind of ["projects", "products", "services", "news", "extras"]) {
-        const extraNews = kind === "news" ? keywordNews : [];
+        const extraNews = kind === "news" ? [...editorialNews, ...keywordNews] : [];
         const seenPost = new Set();
         for (const post of [...extraNews, ...(data[kind] || [])]) {
           if (!post?.slug || reserved.has(post.slug) || seenPost.has(post.slug)) continue;

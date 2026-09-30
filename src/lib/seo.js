@@ -1,4 +1,5 @@
 import { findKeyword, keywordNewsPath } from "../data/keywords.js";
+import townhouseSamples from "../data/nha-pho-samples.json";
 import { expandProjectHtml, projectHeadline } from "./project-article.js";
 import { isHouseStyleSlug } from "./studio.js";
 
@@ -26,7 +27,7 @@ export const PAGE_SEO = {
   "/mau-nha": {
     title: "Mẫu nhà theo phong cách | Việt Dũng Phát",
     description:
-      "8 phong cách mẫu nhà: tân cổ điển, hiện đại, mái Thái, mái Nhật, nhà phố, cấp 4 — mỗi phong cách khoảng 20 mẫu của Việt Dũng Phát.",
+      "Mẫu nhà theo phong cách. Mục Nhà phố mở từng mẫu phối cảnh; các phong cách khác là album mặt tiền.",
   },
   "/album": {
     title: "Dự án công trình tiêu biểu | Việt Dũng Phát",
@@ -54,7 +55,7 @@ export const PAGE_SEO = {
   "/tin-tuc": {
     title: "Tin tức xây nhà, thiết kế, cải tạo | Việt Dũng Phát",
     description:
-      "100 bài tin tức theo từ khóa: xây nhà trọn gói, tân cổ điển, phần thô, cải tạo, Dĩ An, Biên Hòa, Đồng Nai, Quận 9 và Thủ Đức.",
+      "Bài tin tức xây nhà, thiết kế, cải tạo tại Dĩ An, Biên Hòa, Đồng Nai, Quận 9 và Thủ Đức.",
   },
   "/lien-he": {
     title: "Liên hệ và đặt lịch khảo sát | Việt Dũng Phát",
@@ -275,6 +276,37 @@ export function pageSeoFromCms(pathname, cms) {
         { name: "Trang chủ", path: "/" },
         { name: "Tin tức", path: "/tin-tuc" },
         { name: item.phrase, path: newsPath },
+      ],
+    };
+  }
+
+  if (path === "/mau-nha/nha-pho" || path.startsWith("/mau-nha/nha-pho/")) {
+    const id = path.split("/")[3] || "";
+    const sample = id ? townhouseSamples.find((item) => item.id === id) : null;
+    if (id && !sample) {
+      return {
+        title: "Không tìm thấy mẫu nhà | Việt Dũng Phát",
+        description: PAGE_SEO["/mau-nha"].description,
+        path,
+        noindex: true,
+      };
+    }
+    const title = sample ? `${sample.title} | Việt Dũng Phát` : "Nhà phố — từng mẫu | Việt Dũng Phát";
+    const description = sample
+      ? `${sample.title}: ${sample.images.length} ảnh phối cảnh nhà phố của Việt Dũng Phát.`
+      : `${townhouseSamples.length} mẫu nhà phố. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`;
+    return {
+      title,
+      description,
+      path,
+      image: sample?.cover || townhouseSamples[0]?.cover || DEFAULT_OG,
+      imageAlt: sample?.title || "Nhà phố",
+      type: sample ? "article" : "website",
+      breadcrumbs: [
+        { name: "Trang chủ", path: "/" },
+        { name: "Mẫu nhà", path: "/mau-nha" },
+        { name: "Nhà phố", path: "/mau-nha/nha-pho" },
+        ...(sample ? [{ name: sample.title, path }] : []),
       ],
     };
   }

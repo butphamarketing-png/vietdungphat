@@ -119,8 +119,8 @@ export const HOUSE_STYLE_MEDIA = [
   {
     slug: "nha-pho",
     title: "Nhà phố",
-    desc: "20 mẫu nhà ống mặt tiền hẹp, 1 trệt 2–3 lầu.",
-    lead: "Nhà phố / nhà ống TP.HCM: mặt tiền hẹp, công năng tầng rõ, giếng trời lấy sáng.",
+    desc: "13 mẫu nhà phố. Bấm vào để xem từng mẫu và toàn bộ ảnh.",
+    lead: "Nhà phố hiện đại: mỗi mẫu là một bộ ảnh phối cảnh riêng.",
     folder: "nha-pho",
     alts: [
       "mẫu nhà phố mặt tiền hẹp",

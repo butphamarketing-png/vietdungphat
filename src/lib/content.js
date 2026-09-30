@@ -41,7 +41,7 @@ export const lists = {
     title: "Mẫu nhà",
     kicker: "Mẫu nhà",
     items: projects,
-    intro: "Chọn phong cách — mỗi mục là danh sách mẫu (khoảng 20 ảnh). Công trình theo dự án xem tại mục Dự án.",
+    intro: "Chọn phong cách. Mục Nhà phố mở ra từng mẫu. Các phong cách khác mở album ảnh của phong cách đó.",
   },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },
@@ -49,7 +49,7 @@ export const lists = {
     title: "Tin tức",
     kicker: "Tin tức",
     items: news,
-    intro: "100 bài theo từ khóa xây nhà, thiết kế, cải tạo cùng các tin gốc của Việt Dũng Phát.",
+    intro: "Bài xây nhà, thiết kế và cải tạo tại Dĩ An, Biên Hòa, Đồng Nai, Quận 9 và Thủ Đức, cùng các tin gốc của Việt Dũng Phát.",
   },
 };
 

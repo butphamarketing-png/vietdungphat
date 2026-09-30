@@ -55,7 +55,7 @@ export default function AdminApp() {
           <Route path="mau-nha" element={<PostsEditor kind="projects" scope="styles" title="Mẫu nhà" hint="Đúng các mẫu nhà đang hiện tại /mau-nha." />} />
           <Route path="san-pham" element={<PostsEditor kind="products" title="Sản phẩm" hint="Nội thất và combo từ xưởng." />} />
           <Route path="dich-vu" element={<PostsEditor kind="services" title="Dịch vụ" hint="Bài viết danh mục dịch vụ." />} />
-          <Route path="tin-tuc" element={<PostsEditor kind="news" title="Tin tức / SEO" hint="Tin gốc và 100 bài theo từ khóa." />} />
+          <Route path="tin-tuc" element={<PostsEditor kind="news" title="Tin tức / SEO" hint="Tin gốc, bài biên tập và bài theo từ khóa." />} />
           <Route path="bao-gia" element={<PricingEditor />} />
           <Route path="trang" element={<PagesEditor />} />
           <Route path="thu-vien" element={<StudioEditor />} />
