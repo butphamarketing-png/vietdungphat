@@ -119,6 +119,7 @@ export const HOUSE_STYLE_MEDIA = [
   {
     slug: "nha-pho",
     title: "Nhà phố",
+    cover: "/mau-nha/pho/01/08.jpg",
     desc: "13 mẫu nhà phố. Bấm vào để xem từng mẫu và toàn bộ ảnh.",
     lead: "Nhà phố hiện đại: mỗi mẫu là một bộ ảnh phối cảnh riêng.",
     folder: "nha-pho",

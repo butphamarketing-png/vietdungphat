@@ -41,7 +41,7 @@ export const lists = {
     title: "Mẫu nhà",
     kicker: "Mẫu nhà",
     items: projects,
-    intro: "Chọn phong cách. Mục Nhà phố mở ra từng mẫu. Các phong cách khác mở album ảnh của phong cách đó.",
+    intro: "13 mẫu nhà phố. Bấm vào để xem từng mẫu và toàn bộ ảnh phối cảnh.",
   },
   products: { title: "Sản phẩm", kicker: "Sản phẩm", items: products, intro: "Nội thất và combo từ xưởng sản xuất của Việt Dũng Phát." },
   services: { title: "Dịch vụ", kicker: "Dịch vụ", items: services, intro: "Thiết kế, xây dựng và cải tạo nhà ở — toàn bộ bài viết gốc được giữ lại." },

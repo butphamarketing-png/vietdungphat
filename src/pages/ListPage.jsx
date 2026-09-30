@@ -33,7 +33,8 @@ export default function ListPage({ kind }) {
   const styleItems = useMemo(() => {
     if (!projects) return [];
     const fromCms = (data.items || []).filter((p) => (p.houseStyle || isHouseStyleSlug(p.slug)) && p.visible !== false);
-    return fromCms.length ? fromCms : houseStylePosts();
+    const styles = fromCms.length ? fromCms : houseStylePosts();
+    return styles.filter((p) => p.slug === "nha-pho");
   }, [projects, data.items]);
   const filtered = useMemo(() => {
     if (kind !== "news" || group === "all") return newsItems;

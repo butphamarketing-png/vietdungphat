@@ -27,7 +27,7 @@ export const PAGE_SEO = {
   "/mau-nha": {
     title: "Mẫu nhà theo phong cách | Việt Dũng Phát",
     description:
-      "Mẫu nhà theo phong cách. Mục Nhà phố mở từng mẫu phối cảnh; các phong cách khác là album mặt tiền.",
+      "13 mẫu nhà phố. Bấm vào để xem từng mẫu và toàn bộ ảnh phối cảnh.",
   },
   "/album": {
     title: "Dự án công trình tiêu biểu | Việt Dũng Phát",

@@ -96,7 +96,7 @@ export const HOUSE_STYLE_SLUG = "biet-thu-tan-co-dien";
 
 export const HOUSE_STYLES = HOUSE_STYLE_MEDIA.map((style) => ({
   ...style,
-  cover: `/mau-nha/${style.folder}/01.png`,
+  cover: style.cover || `/mau-nha/${style.folder}/01.png`,
   samples() {
     return styleSamples(style);
   },
