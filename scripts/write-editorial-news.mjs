@@ -25,14 +25,6 @@ const POOL = [
   "/interior/noi-that-tan-co-dien.png",
 ];
 
-const TAILS = [
-  "nên chọn uy tín 2026",
-  "nên làm minh bạch 2026",
-  "nên hỏi chuẩn 2026",
-  "nên chốt an toàn 2026",
-  "nên giữ cam kết 2026",
-];
-
 const taken = new Set([
   ...keywordNews.map((p) => p.slug),
   ...(content.news || []).map((p) => p.slug),
@@ -127,15 +119,8 @@ function splitLong(text) {
   return out;
 }
 
-function makeTitle(kw, i) {
-  const cap = kw.charAt(0).toUpperCase() + kw.slice(1);
-  let title = `${cap} ${TAILS[i % TAILS.length]}`;
-  const extras = [" cho nhà phố", " trước khi xây", " với gia chủ", " khi làm nhà", " tại công trình"];
-  let e = 0;
-  const ok = () => title.slice(0, Math.ceil(title.length / 2)).toLowerCase().includes(kw);
-  while (!ok() && e < extras.length) title += extras[e++];
-  while (!ok()) title += " nay";
-  return title;
+function makeTitle(kw) {
+  return kw.charAt(0).toUpperCase() + kw.slice(1);
 }
 
 function makeDesc(kw, blurb) {

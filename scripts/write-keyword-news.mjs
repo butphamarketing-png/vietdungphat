@@ -43,17 +43,7 @@ function dateOf(i) {
 
 function seoTitleOf(kw) {
   const head = cap(kw);
-  const options = [
-    `${head}: nên chọn nhà uy tín 2026`,
-    `${head}: nên làm, giá uy tín 2026`,
-    `${head}: nên làm uy tín 2026`,
-    `${head}: nên uy tín 2026`,
-    `${head} — nên uy tín 2026`,
-  ];
-  const hasKw = (t) => t.toLowerCase().includes(kw.toLowerCase());
-  const inHalf = (t) => t.slice(0, Math.ceil(t.length / 2)).toLowerCase().includes(kw.toLowerCase());
-  const fit = options.filter((t) => t.length <= 60 && hasKw(t));
-  return fit.find(inHalf) || fit[0] || head.slice(0, 60);
+  return head.length <= 60 ? head : head.slice(0, 60).trim();
 }
 
 function seoDescOf(kw) {
