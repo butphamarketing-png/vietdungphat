@@ -1745,6 +1745,12 @@ button.text-link {
   object-position: center;
   border-radius: 12px;
 }
+.article-cover.townhouse-cover img {
+  height: auto;
+  max-height: none;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
 .article-body .main-detail-carousel,
 .article-body #carousel-detail { display: none; }
 .article-body .news-order-detail,

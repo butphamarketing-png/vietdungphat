@@ -67,7 +67,7 @@ export function TownhouseSample() {
         <p>{sample.images.length} ảnh phối cảnh.</p>
       </PageHero>
       <div className="page-body article-wrap">
-        <figure className="article-cover">
+        <figure className="article-cover townhouse-cover">
           <SmartImg src={sample.cover} alt={sample.title} loading="eager" />
         </figure>
         {rest.length ? (
