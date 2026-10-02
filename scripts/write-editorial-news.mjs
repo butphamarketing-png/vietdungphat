@@ -3,6 +3,7 @@ import { analyzeRankMath } from "../src/lib/rankmath.js";
 import keywordNews from "../src/data/keyword-news.json" with { type: "json" };
 import content from "../src/data/content.json" with { type: "json" };
 import { COPY } from "./editorial-copy.mjs";
+import { polishNewsTitle } from "./polish-news-titles.mjs";
 
 const POOL = [
   "/bai/xay-nha-tron-goi-tphcm-1.png",
@@ -120,7 +121,7 @@ function splitLong(text) {
 }
 
 function makeTitle(kw) {
-  return kw.charAt(0).toUpperCase() + kw.slice(1);
+  return polishNewsTitle(kw);
 }
 
 function makeDesc(kw, blurb) {

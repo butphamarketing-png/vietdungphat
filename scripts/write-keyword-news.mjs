@@ -2,6 +2,7 @@ import { writeFileSync } from "node:fs";
 import data from "../src/data/content.json" with { type: "json" };
 import articles from "../src/data/keyword-articles.json" with { type: "json" };
 import { KEYWORDS, keywordNewsSlug } from "../src/data/keywords.js";
+import { polishNewsTitle } from "./polish-news-titles.mjs";
 
 const reserved = new Set([
   "gioi-thieu",
@@ -42,8 +43,7 @@ function dateOf(i) {
 }
 
 function seoTitleOf(kw) {
-  const head = cap(kw);
-  return head.length <= 60 ? head : head.slice(0, 60).trim();
+  return polishNewsTitle(kw);
 }
 
 function seoDescOf(kw) {
