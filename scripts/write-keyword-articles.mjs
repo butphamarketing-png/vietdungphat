@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { KEYWORDS, keywordNewsPath } from "../src/data/keywords.js";
+import { hash, locationHtml } from "./location-articles.mjs";
 
 const IMGS = ["/studio/08.jpg", "/studio/11.jpg", "/studio/10.jpg", "/studio/07.jpg", "/studio/09.jpg", "/studio/01.jpg", "/studio/05.jpg", "/studio/02.jpg"];
 
@@ -1174,15 +1175,83 @@ function locationCopy(item) {
   };
 }
 
+const FIELD_NOTES = [
+  "Ảnh thép gửi trước khi đổ từng sàn. Không có ảnh thì không nhớ ô nào đã kiểm tra khi tường nứt.",
+  "Mác bê tông và loại thép ghi bằng chữ. Câu “vật tư tốt” không đối chiếu được lúc nghiệm thu.",
+  "Khu ướt ngâm nước trước khi lát. Bỏ bước này thì gạch đẹp vẫn thấm sau một mùa.",
+  "Ban công cần dốc ra ngoài. Lát gạch bịt lỗ thoát là nước vào phòng.",
+  "Cầu thang nhà hẹp đo chiều người đi. Bậc quá cao, chiếu nghỉ quá ngắn, ở vài tháng là muốn đục.",
+  "Tủ điện tách nhánh bếp, điều hòa và ổ cắm phòng. Một aptomat cho cả nhà thì sự cố nào cũng mất điện hết.",
+  "Sơn ngoài chỉ làm khi tường khô và hết bụi mài. Sơn lúc ẩm là bong.",
+  "Giếng trời có mái che và máng thoát. Để trống cho sáng mà không che mưa là hỏng đồ tầng dưới.",
+  "Cửa sổ nhìn sang nhà bên phải xét hướng phòng khách hàng xóm, không chỉ xét nắng trên bản đồ.",
+  "Ống thoát dốc đúng bản vẽ. Đục nền vì dốc ngược là khoản đáng trách nhất của phần âm tường.",
+  "Mái tôn và mái bê tông khác nhau về nóng, về ồn mưa và về chống thấm. Đổi kiểu mái giữa chừng là làm lại phụ kiện.",
+  "Vật tư để công trình cần chỗ khô và người trông. Mất thép hoặc xi măng ướt mưa là tiền thật.",
+  "Biên bản nhà liền kề ký trước ngày đào, kèm ảnh vết nứt cũ.",
+  "Tạm ứng theo đợt móng, thân, mái, hoàn thiện. Ứng một khoản lớn trước móng thì mất đòn bẩy khi cần sửa sai.",
+  "Trần thạch cao đóng sau khi ống máy lạnh đã treo. Đóng trần rồi mới khoét lỗ là vừa xấu vừa thủng.",
+  "Bảo hành ghi từng việc: thấm, nứt, cửa, thiết bị. Một câu bảo hành chung không nói được việc nào được sửa.",
+];
+
+const MORE = [
+  "Nhà phố TP.HCM thường nở hậu hoặc thóp hậu. Đo đủ bốn cạnh trước khi vẽ mặt bằng chữ nhật. Phòng trên lệch phòng dưới là vì bản vẽ bỏ qua cạnh méo.",
+  "Hẻm dưới 3 mét không vào xe ben. Bê tông phải bơm, gạch đi ba gác. Hai khoản này thành dòng riêng, không giấu trong đơn giá mét vuông sàn.",
+  "Giờ đổ sàn trong hẻm nội thành nên thống nhất ban ngày. Xe bơm chắn lối mà không báo tổ dân phố dễ bị dừng giữa mẻ, bê tông thì không chờ.",
+  "Chỉ giới ban công và tum ở các quận đang chỉnh lộ giới chặt hơn nhà xây mười năm trước. Không lấy nhà bên làm chuẩn để đua ô văng.",
+  "Nhà vừa ở vừa cho thuê cần chốt tầng trệt trước khi đổ cột: để xe, một phòng thuê, hay cả hai. Dầm không dịch được sau khi đã đổ.",
+  "Điện nước vào nhà mới đôi khi chờ nhánh từ trụ. Hợp đồng tách khoản đấu nối. Giả định có nước có điện trong tuần khởi công là hay trễ.",
+  "Chống thấm sân thượng và vệ sinh làm trước hoàn thiện. Một lớp sơn chống thấm quét cho có, không ngâm nước, thì năm sau bong trần tầng dưới.",
+  "Cốt sàn trệt nên cao hơn mặt đường đang chạy, nhất là hẻm trũng mùa mưa. Lấy cao độ trên bản vẽ cũ mà đường đã nâng là nước vào nhà.",
+  "Tường chung với nhà cũ cần ảnh và biên bản trước ngày đào. Vết nứt có sẵn mà không chụp sẽ thành việc của đội mới.",
+  "Nội thất đo sau khi tường tô. Bản vẽ lúc nhà còn thô chỉ để duyệt hướng bếp và hướng giường, không phải số cắt gỗ.",
+  "Phần thô bàn giao khi có kích thước phòng, độ dốc khu ướt và ảnh thép. Nhìn tường đã xây mà chưa có ba mục đó thì chưa gọi là xong thô.",
+  "Trọn gói vẫn phải có danh mục cửa, sơn, gạch, thiết bị. Dòng không có tên hãng thì chưa được xem là đã gồm trong đơn giá.",
+  "Cải tạo nhà đang ở thì cuốn chiếu từng khu, chừa bếp và một vệ sinh. Đập hết rồi mới tính chỗ nấu là gia đình phải dọn đi giữa chừng.",
+  "Nâng tầng chỉ làm khi phép cho thêm tầng và móng cột chịu được tải mới. Có một trong hai thì dừng ở khảo sát, không đục mái.",
+  "Biệt thự và nhà ống không dùng chung một đơn giá. Nhịp cột, sảnh, mái và sân là phụ lục, không phải nhà phố phóng to.",
+  "Tân cổ điển cần một đoạn phào mẫu trên nhà thật rồi mới làm đại trà. Đắp theo một tấm ảnh thì mỗi tầng một tay nghề.",
+  "Báo giá năm 2026 lấy mốc phần thô 3.950.000đ/m² và trọn gói 5.950.000đ/m² để hình dung. Số ký là bảng sau khi đo đất, không phải số trên website.",
+  "Cách đo tim tường hay thông thủy phải kèm sơ đồ trong hợp đồng. Đổi cách đo trên nhà ba tầng lệch hàng chục triệu.",
+  "Giám sát có tên và nhật ký tuần. Ảnh móng, thép, ống và lớp chống thấm chụp trước khi che. Mở nhật ký lúc đã ốp gạch thì không còn gì để xem.",
+  "Giữ 5–10% giá trị đến khi hết xước gạch, lệch cửa, thiếu tay nắm. Thanh lý hết tiền ngày bàn giao thì những lỗi nhỏ không còn người sửa.",
+];
+
+const MISTAKES = [
+  "Ký khi mới có một ảnh phối cảnh, chưa có mặt cắt cầu thang. Lúc xây, dầm chắn đầu người và phòng bị cột ăn.",
+  "Tính tiền trên diện tích đất rồi nhân một tầng. Nhà ba sàn đội gấp ba lần con số đó, chưa kể móng.",
+  "Đổi gạch, sơn hoặc thêm phòng sau khi đã ký mà không lập phụ lục. Tiến độ gãy và không biết khoản nào được trả.",
+  "Giao cọc cho cá nhân trong khi hợp đồng mang tên công ty. Lúc sự cố không biết đòi pháp nhân nào.",
+  "Chọn giá thấp hơn mặt bằng nhiều mà bảng không ghi mác bê tông, loại thép và cách đo mét vuông.",
+  "Xây sát chỉ giới của nhà bên. Nhà bên có thể đang vượt phép, và phần mình vừa ốp phải cắt.",
+  "Lát gạch lên tường còn ẩm, hoặc sơn lên lớp bụi mài. Lớp hoàn thiện bong, phải làm lại.",
+  "Cắt tủ theo kích thước lúc nhà còn thô. Tường tô xong lệch vài phân là tủ hụt.",
+  "Nâng tầng khi mới có một trong hai điều: phép cho thêm tầng, hoặc móng chịu được. Thiếu điều còn lại thì chưa đổ.",
+  "Để sân và cổng xong trước phần thô. Xe bê tông không vào, phát sinh bơm và hỏng sân mới.",
+  "Xin phép sau khi đã đào móng để tranh thủ. Bị yêu cầu dừng thì mẻ bê tông và tiền công ngày đó mất.",
+  "Gộp móng cọc, vận chuyển hẻm và tủ bếp vào một câu trọn gói. Đến lúc làm mới thấy các dòng đó nằm ngoài.",
+];
+
+function pickBySlug(list, slug, n) {
+  return list
+    .map((item, idx) => ({ item, rank: hash(`${slug}:${idx}`) }))
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, n)
+    .map((row) => row.item);
+}
+
 function article(item, index) {
   const kw = item.phrase;
-  const c = COPY[item.slug] || COPY[COPY_ALIAS[item.slug]] || (item.group === "dong-nam" ? locationCopy(item) : null);
+  if (item.group === "dong-nam") return tuneDensity(locationHtml(item), kw);
+  const c = COPY[item.slug] || COPY[COPY_ALIAS[item.slug]] || null;
   if (!c) throw new Error(`Missing COPY for ${item.slug}`);
   const img = (n) => IMGS[(index + n) % IMGS.length];
+  const alt = ["mặt tiền", "phòng khách", "cầu thang", "bếp", "chi tiết hoàn thiện"];
   const steps = c.steps.map((s, i) => `${i + 1}. ${s}`).join(" ");
-  const rel = relatedLinks(item);
-  const related = relatedOf(item).slice(0, 2);
-  const deep = splitParas(GROUP_DEEP[item.group]);
+  const notes = pickBySlug(FIELD_NOTES, item.slug, 3);
+  const more = pickBySlug(MORE, `${item.slug}:more`, 5);
+  const mistakes = pickBySlug(MISTAKES, `${item.slug}:sai`, 2);
+  const focus = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug).slice(0, 2);
 
   const html = `<p><strong>${esc(kw)}</strong> — ${esc(c.lead)}</p>
 <nav class="toc"><strong>Mục lục</strong>
@@ -1197,49 +1266,38 @@ function article(item, index) {
 <li><a href="#faq">Câu hỏi thường gặp</a></li>
 </ol>
 </nav>
-<p>Đọc theo mục lục phía trên để tới đúng phần quy trình, chi phí hoặc rủi ro.</p>
 <h2 id="tong-quan">${esc(kw)}: việc cần hiểu</h2>
 <p>${esc(c.gist)}</p>
-<p>Công ty TNHH Kiến trúc Xây dựng Việt Dũng Phát thành lập năm 2014: khảo sát, thiết kế và thi công nhà ở — không bán thầu. Bài này đi đúng việc <strong>${esc(kw)}</strong>, không viết chung cho mọi gói.</p>
 <h2 id="ky-thuat">Kỹ thuật và hiện trường</h2>
-${deep.map((p) => `<p>${esc(p)}</p>`).join("\n")}
 <p>${esc(c.extra)}</p>
-<p>Hiện trường cần nhật ký: ảnh thép trước khi đổ, biên bản hạng mục ẩn, người phụ trách có tên. Không có các mốc này, gia chủ khó đối chiếu khi tường thấm hay lệch kích thước.</p>
-<p><img src="${img(0)}" alt="${esc(kw)}" /></p>
+${more.map((line) => `<p>${esc(line)}</p>`).join("\n")}
+<p>${esc(notes[0])}</p>
+<p><img src="${img(0)}" alt="${esc(kw)} — ${alt[0]}" /></p>
 <h2 id="phu-hop">Khi nào nên triển khai?</h2>
 <p>${esc(c.when)}</p>
-<p>Mang sổ hồng / giấy đất, ảnh hiện trạng và số người ở khi gặp KTS. Thiếu thông tin này, dự toán chỉ là ước lượng trên giấy.</p>
-<p>Nếu ngân sách hoặc tiến độ chưa khớp, Việt Dũng Phát nói thẳng phần nào làm trước — không ép đủ gói. Có thể tách giai đoạn khi hợp đồng ghi rõ mối nối.</p>
-<p><img src="${img(1)}" alt="${esc(kw)}" /></p>
+<p>${esc(notes[1])}</p>
+<p><img src="${img(1)}" alt="${esc(kw)} — ${alt[1]}" /></p>
 <h2 id="quy-trinh">Quy trình làm việc</h2>
 <p>${esc(steps)}</p>
-<p>Từng mốc có biên bản. Đặt lịch tại <a href="/lien-he">trang liên hệ</a>, xem <a href="/mau-nha">mẫu nhà</a> và <a href="/gioi-thieu">giới thiệu công ty</a>. Dịch vụ liên quan: <a href="${item.to}">${esc(item.label)}</a>.</p>
-<p><img src="${img(2)}" alt="${esc(kw)}" /></p>
+<p>Đặt lịch tại <a href="/lien-he">trang liên hệ</a>, xem <a href="/mau-nha">mẫu nhà</a> và <a href="/gioi-thieu">giới thiệu công ty</a>. Đọc thêm <a href="${keywordNewsPath(focus[0])}">${esc(focus[0].phrase)}</a> và <a href="${keywordNewsPath(focus[1])}">${esc(focus[1].phrase)}</a>.</p>
+<p><img src="${img(2)}" alt="${esc(kw)} — ${alt[2]}" /></p>
 <h2 id="chi-phi">Chi phí và cách tính</h2>
 <p>${esc(c.cost)}</p>
 <p>Đối chiếu <a href="/bao-gia">bảng giá xây dựng Việt Dũng Phát</a>. Nội thất xưởng xem <a href="/san-pham">combo nội thất</a>.</p>
-<p>Hai bên thống nhất cách tính m² (tim tường hay thông thủy) và danh mục trước khi tạm ứng. Phụ lục đá, mái, thang máy, tủ bếp không giấu vào đơn giá m².</p>
-<p><img src="${img(3)}" alt="${esc(kw)}" /></p>
+<p>${esc(notes[2])}</p>
+<p><img src="${img(3)}" alt="${esc(kw)} — ${alt[3]}" /></p>
+<p><img src="${img(4)}" alt="${esc(kw)} — ${alt[4]}" /></p>
 <h2 id="sai-lam">Sai lầm hay gặp</h2>
-<p>Chọn thầu chỉ vì giá thấp hơn thị trường 20–30% mà hợp đồng một trang A4. Thiếu BOQ và thương hiệu vật tư là nguồn phát sinh lớn nhất.</p>
-<p>Sai lầm thứ hai: chốt phối cảnh đẹp rồi bỏ qua phép, PCCC, hàng xóm. Việt Dũng Phát đối chiếu quy hoạch trước khi hứa mặt đứng. Sai lầm thứ ba: đổi gạch, sơn, công năng giữa chừng mà không ký phụ lục — tiến độ và giá sẽ lệch.</p>
-${
-  related.length
-    ? `<p>Gia chủ xem thêm ${related.map((k) => `<a href="${keywordNewsPath(k)}">${esc(k.phrase)}</a>`).join(" và ")} nếu đang so gói liên quan.</p>`
-    : ""
-}
+<p>${esc(mistakes[0])}</p>
+<p>${esc(mistakes[1])}</p>
 <h2 id="luu-y">Rủi ro cần chốt trước</h2>
-<p>Chốt phạm vi, vật tư và cách tính m² trước khi tạm ứng lớn. Giấy phép, PCCC, an toàn lao động không bỏ.</p>
-<p>Tra cứu thủ tục tại <a href="https://dichvucong.gov.vn">Cổng Dịch vụ công Quốc gia</a>. Giữ 5–10% giá trị đến khi hết khiếm khuyết nhỏ.</p>
-<p>Trước khi ký: xem công trình đang làm, hỏi tên giám sát, đối chiếu MST trên hợp đồng, và ghi rõ móng — tum — cửa có nằm trong đơn giá m² hay phụ lục. Ảnh nghiệm thu ẩn nên gửi gia chủ trong tuần đổ sàn, không chờ đến lúc ốp gạch mới mở nhật ký.</p>
-<p>Bài cùng cụm: ${rel}.</p>
+<p>Với <strong>${esc(kw)}</strong>, giữ 5–10% đến khi hết lỗi nhỏ và hỏi tên người giám sát trước khi tạm ứng lớn.</p>
+<p>Việt Dũng Phát thành lập năm 2014. Văn phòng 942/2/7 Kha Vạn Cân, Trường Thọ, Thủ Đức. Hotline 098.4444.504. Thủ tục tham chiếu <a href="https://dichvucong.gov.vn/">Cổng Dịch vụ công quốc gia</a>.</p>
 <h2 id="faq">Câu hỏi thường gặp</h2>
 <h3>${esc(c.faq[0])}</h3>
 <p>${esc(c.faq[1])}</p>
-${item.faqs.map((f) => `<h3>${esc(f.q)}</h3>\n<p>${esc(f.a)}</p>`).join("\n")}
-<h3>${esc(kw)} mất bao lâu?</h3>
-<p>Phụ thuộc phép, diện tích, số tầng và phạm vi. Sau khảo sát bạn nhận tiến độ theo giai đoạn — không hứa ngày bàn giao khi chưa đo hiện trạng.</p>
-<p>Cần trao đổi: <a href="/lien-he#dat-lich">đặt lịch hẹn</a> trên website Việt Dũng Phát.</p>`;
+<h3>Cần mang gì khi hỏi ${esc(kw)}?</h3>
+<p>Sổ hoặc ảnh hiện trạng, kích thước mặt tiền và bề ngang hẻm. Chưa đủ số liệu thì chưa có dự toán đáng ký.</p>`;
 
   return tuneDensity(html, kw);
 }
@@ -1252,5 +1310,5 @@ for (let i = 0; i < KEYWORDS.length; i++) {
 
 writeFileSync(new URL("../src/data/keyword-articles.json", import.meta.url), JSON.stringify(out));
 const words = Object.values(out).map((h) => h.replace(/<[^>]+>/g, " ").trim().split(/\s+/).length);
-const missing = KEYWORDS.filter((k) => !COPY[k.slug]).map((k) => k.slug);
+const missing = KEYWORDS.filter((k) => k.group !== "dong-nam" && !COPY[k.slug] && !COPY[COPY_ALIAS[k.slug]]).map((k) => k.slug);
 console.log("articles", Object.keys(out).length, "minWords", Math.min(...words), "maxWords", Math.max(...words), "missing", missing.length ? missing : "none");

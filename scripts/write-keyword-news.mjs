@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import data from "../src/data/content.json" with { type: "json" };
 import articles from "../src/data/keyword-articles.json" with { type: "json" };
 import { KEYWORDS, keywordNewsSlug } from "../src/data/keywords.js";
-import { polishNewsTitle } from "./polish-news-titles.mjs";
+import { exactKeywordTitle, locationMeta } from "./location-articles.mjs";
 
 const reserved = new Set([
   "gioi-thieu",
@@ -42,23 +42,31 @@ function dateOf(i) {
   return `${dd}/${mm}/${d.getUTCFullYear()}`;
 }
 
-function seoTitleOf(kw) {
-  return polishNewsTitle(kw);
-}
-
-function seoDescOf(kw) {
+function seoDescOf(kw, html) {
   const head = cap(kw);
-  return `${head} — khảo sát, thiết kế, báo giá minh bạch 2026 tại Việt Dũng Phát. Tham khảo phần thô 3.950.000đ/m², trọn gói 5.950.000đ/m².`.slice(0, 158);
+  const first = String(html || "")
+    .replace(/<nav[\s\S]*?<\/nav>/i, " ")
+    .match(/<p>([\s\S]*?)<\/p>/i);
+  let text = first ? first[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : "";
+  if (!text.toLowerCase().includes(kw.toLowerCase())) text = `${head} — ${text}`;
+  if (text.length > 158) {
+    const cut = text.slice(0, 158);
+    const sp = cut.lastIndexOf(" ");
+    text = (sp > 80 ? cut.slice(0, sp) : cut).trim();
+  }
+  if (!text.toLowerCase().includes(kw.toLowerCase())) text = head.slice(0, 158);
+  return text;
 }
 
 const posts = KEYWORDS.map((item, index) => {
   const slug = newsSlug(item);
   const html = articles[item.slug];
   if (!html) throw new Error(`Missing article HTML for ${item.slug}`);
-  const seoTitle = seoTitleOf(item.phrase);
+  const area = item.group === "dong-nam" ? locationMeta(item) : null;
+  const seoTitle = area?.title || exactKeywordTitle(item.phrase);
   const title = seoTitle;
-  const desc = seoDescOf(item.phrase);
-  const related = KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug)
+  const desc = area?.desc || seoDescOf(item.phrase, html);
+  const related = area?.keywords || KEYWORDS.filter((k) => k.group === item.group && k.slug !== item.slug)
     .slice(0, 2)
     .map((k) => k.phrase)
     .join(", ");
@@ -68,7 +76,7 @@ const posts = KEYWORDS.map((item, index) => {
     source: "keyword",
     group: item.group,
     title,
-    image: item.image,
+    image: area?.image || item.image,
     imageAlt: item.phrase,
     date: dateOf(index),
     html,
@@ -78,7 +86,7 @@ const posts = KEYWORDS.map((item, index) => {
     seoTitle,
     seoDesc: desc,
     desc,
-    faqs: item.faqs,
+    faqs: area?.faqs || item.faqs,
   };
 });
 

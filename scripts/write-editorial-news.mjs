@@ -3,7 +3,7 @@ import { analyzeRankMath } from "../src/lib/rankmath.js";
 import keywordNews from "../src/data/keyword-news.json" with { type: "json" };
 import content from "../src/data/content.json" with { type: "json" };
 import { COPY } from "./editorial-copy.mjs";
-import { polishNewsTitle } from "./polish-news-titles.mjs";
+import { locationTitle } from "./location-articles.mjs";
 
 const POOL = [
   "/bai/xay-nha-tron-goi-tphcm-1.png",
@@ -121,7 +121,7 @@ function splitLong(text) {
 }
 
 function makeTitle(kw) {
-  return polishNewsTitle(kw);
+  return locationTitle(kw);
 }
 
 function makeDesc(kw, blurb) {
@@ -143,9 +143,14 @@ function dateOf(i) {
 
 function imgsFor(i) {
   const cover = POOL[i % POOL.length];
-  const body = [1, 2, 3].map((n) => POOL[(i + n * 5) % POOL.length]).filter((src, idx, arr) => src !== cover && arr.indexOf(src) === idx);
-  while (body.length < 3) body.push(POOL[(i + body.length + 7) % POOL.length]);
-  return { cover, body: body.slice(0, 3) };
+  const body = [];
+  let n = 1;
+  while (body.length < 5 && n < POOL.length + 5) {
+    const src = POOL[(i + n * 5) % POOL.length];
+    if (src !== cover && !body.includes(src)) body.push(src);
+    n += 1;
+  }
+  return { cover, body };
 }
 
 function tune(html, kw) {
@@ -216,11 +221,22 @@ function buildHtml(item, i) {
       if (si === 2 && pi === 0) {
         blocks.push(`<img src="${body[1]}" alt="Phối cảnh minh họa cho ${esc(kw)}">`);
       }
+      if (si === 3 && pi === 0 && body[3]) {
+        blocks.push(`<img src="${body[3]}" alt="${esc(kw)} — chi tiết mặt đứng minh họa">`);
+      }
     });
     if (si === sections.length - 2) {
       blocks.push(`<img src="${body[2]}" alt="${esc(kw)} trên bản vẽ minh họa của Việt Dũng Phát">`);
+      if (body[4]) blocks.push(`<img src="${body[4]}" alt="${esc(kw)} — không gian sinh hoạt minh họa">`);
     }
   });
+  const used = new Set(blocks.join("").match(/src="([^"]+)"/g)?.map((s) => s.slice(5, -1)) || []);
+  for (const src of body) {
+    if (used.size >= 5) break;
+    if (used.has(src)) continue;
+    blocks.push(`<img src="${src}" alt="${esc(kw)} — minh họa hạng mục ${used.size + 1}">`);
+    used.add(src);
+  }
   blocks.push(
     `<p>Với ${esc(kw)}, xem <a href="/bao-gia">báo giá xây nhà</a>, <a href="/mau-nha">mẫu nhà</a> và <a href="/gioi-thieu">giới thiệu công ty</a>. Đặt khảo sát tại <a href="/lien-he">trang liên hệ</a>. Thủ tục hành chính tham chiếu <a href="https://dichvucong.gov.vn/">Cổng dịch vụ công quốc gia</a>. Văn phòng 942/2/7 Kha Vạn Cân, Trường Thọ, Thủ Đức. Hotline 098.4444.504.</p>`,
   );
