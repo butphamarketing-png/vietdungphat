@@ -33,13 +33,14 @@ const GROUP_POOLS = {
 };
 
 const HOME_NEWS = [
-  { slug: "xay-nha-tron-goi-tphcm", image: IMG.tronGoi },
-  { slug: "thiet-ke-nha-tan-co-dien", image: IMG.thietKe },
-  { slug: "thiet-ke-noi-that-nha-pho", image: "/bai/thiet-ke-noi-that-nha-pho-1.png" },
+  "xay-nha-tron-goi-tphcm",
+  "thiet-ke-nha-tan-co-dien",
+  "thiet-ke-noi-that-nha-pho",
 ];
 
 function keepNewsPhoto(src = "") {
   const url = String(src);
+  if (url.startsWith("/mau-nha/pho/")) return true;
   if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/villas/") || url.startsWith("/media/") || url.startsWith("/bai/")) return true;
   return /supabase\.co|r2\.dev|cloudflarestorage/i.test(url);
 }
@@ -78,11 +79,11 @@ export function homeNewsCards(list = []) {
   const bySlug = new Map(list.map((p) => [p.slug, p]));
   const out = [];
   const usedImg = new Set();
-  for (const row of HOME_NEWS) {
-    const p = bySlug.get(row.slug);
-    if (!p) continue;
-    usedImg.add(row.image);
-    out.push({ ...p, image: row.image });
+  for (const slug of HOME_NEWS) {
+    const p = bySlug.get(slug);
+    if (!p || usedImg.has(p.image)) continue;
+    usedImg.add(p.image);
+    out.push(p);
   }
   for (const p of list) {
     if (out.length >= 3) break;
