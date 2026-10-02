@@ -1959,7 +1959,6 @@ body.is-popup-open .float-consult {
   .header,
   .header.on-hero,
   .header.is-solid {
-    background: rgba(255, 255, 255, 0.9);
     color: var(--ink);
   }
   .about-collage { min-height: 380px; }
@@ -1970,6 +1969,22 @@ body.is-popup-open .float-consult {
   .brand strong { font-size: 0.78rem; }
   .news-grid.list, .product-grid, .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 1180px) {
+  .header,
+  .header.on-hero,
+  .header.is-solid,
+  body.is-menu-open .header {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .brand,
+  .header-actions,
+  .menu-btn { position: relative; z-index: 52; }
 }
 
 @media (max-width: 720px) {
