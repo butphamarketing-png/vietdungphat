@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
-import { houseStylePosts, isHouseStyleSlug, isWorkshopProduct } from "../lib/studio.js";
+import { HOUSE_CATALOGS } from "../data/house-catalogs.js";
+import { isWorkshopProduct } from "../lib/studio.js";
 import { KEYWORD_GROUPS } from "../data/keywords.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
@@ -30,12 +31,7 @@ export default function ListPage({ kind }) {
   const [group, setGroup] = useState("all");
   const newsItems = (data.items || []).filter((p) => p.visible !== false);
   const productItems = kind === "products" ? (data.items || []).filter((p) => isWorkshopProduct(p) && p.visible !== false) : (data.items || []).filter((p) => p.visible !== false);
-  const styleItems = useMemo(() => {
-    if (!projects) return [];
-    const fromCms = (data.items || []).filter((p) => (p.houseStyle || isHouseStyleSlug(p.slug)) && p.visible !== false);
-    const styles = fromCms.length ? fromCms : houseStylePosts();
-    return styles.filter((p) => p.slug === "nha-pho");
-  }, [projects, data.items]);
+  const styleItems = projects ? HOUSE_CATALOGS : [];
   const filtered = useMemo(() => {
     if (kind !== "news" || group === "all") return newsItems;
     if (group === "goc") return newsItems.filter((p) => p.source !== "keyword");
@@ -73,11 +69,11 @@ export default function ListPage({ kind }) {
         {projects ? (
           <div className="style-grid">
             {styleItems.map((p) => (
-              <Link key={p.slug} to={`/${p.slug}`} className="style-card">
-                <SmartImg src={p.image || FALLBACK_IMAGE} alt={keywordAlt(p)} />
+              <Link key={p.slug} to={p.base} className="style-card">
+                <SmartImg src={p.samples[0]?.cover || FALLBACK_IMAGE} alt={p.title} />
                 <div className="style-card-copy">
                   <h3>{p.title}</h3>
-                  {p.desc ? <p>{p.desc}</p> : null}
+                  <p>{p.cardDesc}</p>
                 </div>
               </Link>
             ))}

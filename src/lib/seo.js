@@ -1,5 +1,5 @@
 import { findKeyword, keywordNewsPath } from "../data/keywords.js";
-import townhouseSamples from "../data/nha-pho-samples.json";
+import { catalogFromPath } from "../data/house-catalogs.js";
 import { expandProjectHtml, projectHeadline } from "./project-article.js";
 import { isHouseStyleSlug } from "./studio.js";
 
@@ -27,7 +27,7 @@ export const PAGE_SEO = {
   "/mau-nha": {
     title: "Mẫu nhà theo phong cách | Việt Dũng Phát",
     description:
-      "13 mẫu nhà phố. Bấm vào để xem từng mẫu và toàn bộ ảnh phối cảnh.",
+      "Nhà phố, nhà mái Nhật và nhà tân cổ điển. Bấm vào từng phong cách để xem mẫu và ảnh phối cảnh.",
   },
   "/album": {
     title: "Dự án công trình tiêu biểu | Việt Dũng Phát",
@@ -280,10 +280,10 @@ export function pageSeoFromCms(pathname, cms) {
     };
   }
 
-  if (path === "/nha-pho" || path.startsWith("/nha-pho/") || path === "/mau-nha/nha-pho" || path.startsWith("/mau-nha/nha-pho/")) {
-    const parts = path.split("/").filter(Boolean);
-    const id = parts[0] === "nha-pho" ? parts[1] || "" : parts[2] || "";
-    const sample = id ? townhouseSamples.find((item) => item.id === id) : null;
+  const catalogHit = catalogFromPath(path);
+  if (catalogHit) {
+    const { catalog, id } = catalogHit;
+    const sample = id ? catalog.samples.find((item) => item.id === id) : null;
     if (id && !sample) {
       return {
         title: "Không tìm thấy mẫu nhà | Việt Dũng Phát",
@@ -292,22 +292,22 @@ export function pageSeoFromCms(pathname, cms) {
         noindex: true,
       };
     }
-    const title = sample ? `${sample.title} | Việt Dũng Phát` : "Nhà phố — từng mẫu | Việt Dũng Phát";
+    const title = sample ? `${sample.title} | Việt Dũng Phát` : `${catalog.title} — từng mẫu | Việt Dũng Phát`;
     const description = sample
-      ? `${sample.title}: ${sample.images.length} ảnh phối cảnh nhà phố của Việt Dũng Phát.`
-      : `${townhouseSamples.length} mẫu nhà phố. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`;
+      ? `${sample.title}: ${sample.images.length} ảnh phối cảnh ${catalog.noun} của Việt Dũng Phát.`
+      : catalog.lead;
     return {
       title,
       description,
       path,
-      image: sample?.cover || townhouseSamples[0]?.cover || DEFAULT_OG,
-      imageAlt: sample?.title || "Nhà phố",
+      image: sample?.cover || catalog.samples[0]?.cover || DEFAULT_OG,
+      imageAlt: sample?.title || catalog.title,
       type: sample ? "article" : "website",
       breadcrumbs: [
         { name: "Trang chủ", path: "/" },
         { name: "Mẫu nhà", path: "/mau-nha" },
-        { name: "Nhà phố", path: "/nha-pho" },
-        ...(sample ? [{ name: sample.title, path: `/nha-pho/${sample.id}` }] : []),
+        { name: catalog.title, path: catalog.base },
+        ...(sample ? [{ name: sample.title, path: `${catalog.base}/${sample.id}` }] : []),
       ],
     };
   }

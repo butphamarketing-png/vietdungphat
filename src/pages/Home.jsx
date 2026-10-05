@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCms } from "../lib/cms.js";
+import { HOUSE_CATALOGS } from "../data/house-catalogs.js";
 import { homeWorkshopProducts } from "../lib/studio.js";
 import { homeNewsCards } from "../lib/news-media.js";
 import PriceBoard from "../components/PriceBoard.jsx";
@@ -23,16 +24,13 @@ function BrText({ text }) {
 export default function Home() {
   const cms = useCms();
   const { coreServices, news, products, reviews, home } = cms;
-  const neoHomes = (cms.projects || [])
-    .filter((item) => item.slug === "nha-pho" && item.visible !== false)
-    .slice(0, 8)
-    .map((item) => ({
-      src: item.image,
-      title: item.title,
-      desc: item.desc,
-      imageAlt: item.imageAlt || item.title,
-      slug: `/${item.slug}`,
-    }));
+  const neoHomes = HOUSE_CATALOGS.map((item) => ({
+    src: item.samples[0]?.cover,
+    title: item.title,
+    desc: item.cardDesc,
+    imageAlt: item.title,
+    slug: item.base,
+  }));
   const workshopProducts = homeWorkshopProducts(products);
   const shareNews = homeNewsCards(news);
   return (

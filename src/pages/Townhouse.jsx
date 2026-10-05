@@ -1,14 +1,11 @@
 import { Link, useParams } from "react-router-dom";
-import samples from "../data/nha-pho-samples.json";
+import { catalogBySlug, findCatalogSample } from "../data/house-catalogs.js";
 import PageHero from "../components/PageHero.jsx";
 import BookingCta from "../components/BookingCta.jsx";
 import SmartImg from "../components/SmartImg.jsx";
 
-export function findTownhouse(id) {
-  return samples.find((item) => item.id === id) || null;
-}
-
-export function TownhouseList() {
+function CatalogList({ slug }) {
+  const catalog = catalogBySlug(slug);
   return (
     <article className="page">
       <PageHero
@@ -17,14 +14,14 @@ export function TownhouseList() {
             <Link to="/">Trang chủ</Link> / <Link to="/mau-nha">Mẫu nhà</Link>
           </>
         }
-        title="Nhà phố"
+        title={catalog.title}
       >
-        <p>{samples.length} mẫu nhà phố. Bấm vào từng mẫu để xem toàn bộ ảnh phối cảnh.</p>
+        <p>{catalog.lead}</p>
       </PageHero>
       <div className="page-body">
         <div className="style-grid">
-          {samples.map((item) => (
-            <Link key={item.id} to={`/nha-pho/${item.id}`} className="style-card">
+          {catalog.samples.map((item) => (
+            <Link key={item.id} to={`${catalog.base}/${item.id}`} className="style-card">
               <SmartImg src={item.cover} alt={item.title} />
               <div className="style-card-copy">
                 <h3>{item.title}</h3>
@@ -39,15 +36,16 @@ export function TownhouseList() {
   );
 }
 
-export function TownhouseSample() {
+function CatalogSample({ slug }) {
+  const catalog = catalogBySlug(slug);
   const { id } = useParams();
-  const sample = findTownhouse(id);
+  const sample = findCatalogSample(catalog, id);
   if (!sample) {
     return (
       <article className="page">
         <PageHero title="Không tìm thấy mẫu nhà">
           <p>
-            Mẫu này không có trong danh mục. Quay lại <Link to="/nha-pho">Nhà phố</Link>.
+            Mẫu này không có trong danh mục. Quay lại <Link to={catalog.base}>{catalog.title}</Link>.
           </p>
         </PageHero>
       </article>
@@ -59,7 +57,7 @@ export function TownhouseSample() {
       <PageHero
         kicker={
           <>
-            <Link to="/">Trang chủ</Link> / <Link to="/mau-nha">Mẫu nhà</Link> / <Link to="/nha-pho">Nhà phố</Link>
+            <Link to="/">Trang chủ</Link> / <Link to="/mau-nha">Mẫu nhà</Link> / <Link to={catalog.base}>{catalog.title}</Link>
           </>
         }
         title={sample.title}
@@ -81,4 +79,32 @@ export function TownhouseSample() {
       <BookingCta />
     </article>
   );
+}
+
+export function findTownhouse(id) {
+  return findCatalogSample(catalogBySlug("nha-pho"), id);
+}
+
+export function TownhouseList() {
+  return <CatalogList slug="nha-pho" />;
+}
+
+export function TownhouseSample() {
+  return <CatalogSample slug="nha-pho" />;
+}
+
+export function MaiNhatList() {
+  return <CatalogList slug="nha-mai-nhat" />;
+}
+
+export function MaiNhatSample() {
+  return <CatalogSample slug="nha-mai-nhat" />;
+}
+
+export function TanCoList() {
+  return <CatalogList slug="nha-tan-co-dien" />;
+}
+
+export function TanCoSample() {
+  return <CatalogSample slug="nha-tan-co-dien" />;
 }

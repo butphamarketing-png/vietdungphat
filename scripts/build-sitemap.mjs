@@ -5,6 +5,8 @@ import editorialNews from "../src/data/editorial-news.json" with { type: "json" 
 import { KEYWORDS, keywordNewsPath } from "../src/data/keywords.js";
 import { HOUSE_STYLE_MEDIA } from "../src/lib/house-style-media.js";
 import townhouseSamples from "../src/data/nha-pho-samples.json" with { type: "json" };
+import maiNhatSamples from "../src/data/nha-mai-nhat-samples.json" with { type: "json" };
+import tanCoSamples from "../src/data/nha-tan-co-dien-samples.json" with { type: "json" };
 
 const host = "https://www.vietdungphat.com";
 const today = new Date().toISOString().slice(0, 10);
@@ -24,10 +26,16 @@ const urls = [
 ];
 
 for (const style of HOUSE_STYLE_MEDIA) {
-  if (style?.slug && style.slug !== "nha-pho") urls.push(`/${style.slug}`);
+  if (style?.slug && style.slug !== "nha-pho" && style.slug !== "nha-mai-nhat") urls.push(`/${style.slug}`);
 }
-urls.push("/nha-pho");
-for (const sample of townhouseSamples) urls.push(`/nha-pho/${sample.id}`);
+for (const [base, samples] of [
+  ["/nha-pho", townhouseSamples],
+  ["/nha-mai-nhat", maiNhatSamples],
+  ["/nha-tan-co-dien", tanCoSamples],
+]) {
+  urls.push(base);
+  for (const sample of samples) urls.push(`${base}/${sample.id}`);
+}
 for (const k of KEYWORDS) urls.push(keywordNewsPath(k));
 for (const p of [...data.projects, ...data.products, ...data.services, ...data.news, ...data.extras, ...editorialNews, ...keywordNews]) {
   if (p?.slug) urls.push(`/${p.slug}`);

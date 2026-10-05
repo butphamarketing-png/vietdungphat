@@ -129,7 +129,7 @@ function spaFallbackHtml() {
       }
 
       for (const style of houseStyles) {
-        if (!style?.slug || reserved.has(style.slug) || style.slug === "nha-pho") continue;
+        if (!style?.slug || reserved.has(style.slug) || style.slug === "nha-pho" || style.slug === "nha-mai-nhat") continue;
         urls.push({
           loc: `/${style.slug}`,
           title: seoDocumentTitle(style.title),
@@ -140,28 +140,34 @@ function spaFallbackHtml() {
         });
       }
 
-      let townhouses = [];
-      try {
-        townhouses = JSON.parse(
-          readFileSync(path.join(process.cwd(), "src/data/nha-pho-samples.json"), "utf8").replace(/^\uFEFF/, ""),
-        );
-      } catch {
-        townhouses = [];
-      }
-      if (townhouses.length) {
+      const catalogs = [
+        { file: "nha-pho-samples.json", slug: "nha-pho", title: "Nhà phố", noun: "nhà phố" },
+        { file: "nha-mai-nhat-samples.json", slug: "nha-mai-nhat", title: "Nhà mái Nhật", noun: "nhà mái Nhật" },
+        { file: "nha-tan-co-dien-samples.json", slug: "nha-tan-co-dien", title: "Nhà tân cổ điển", noun: "nhà tân cổ điển" },
+      ];
+      for (const catalog of catalogs) {
+        let samples = [];
+        try {
+          samples = JSON.parse(
+            readFileSync(path.join(process.cwd(), "src/data", catalog.file), "utf8").replace(/^\uFEFF/, ""),
+          );
+        } catch {
+          samples = [];
+        }
+        if (!samples.length) continue;
         urls.push({
-          loc: "/nha-pho",
-          title: seoDocumentTitle("Nhà phố"),
-          description: `${townhouses.length} mẫu nhà phố. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`.slice(0, 160),
-          image: townhouses[0].cover || DEFAULT_OG,
-          imageAlt: "Nhà phố",
+          loc: `/${catalog.slug}`,
+          title: seoDocumentTitle(catalog.title),
+          description: `${samples.length} mẫu ${catalog.noun}. Mỗi mẫu là một bộ ảnh phối cảnh riêng.`.slice(0, 160),
+          image: samples[0].cover || DEFAULT_OG,
+          imageAlt: catalog.title,
           type: "website",
         });
-        for (const sample of townhouses) {
+        for (const sample of samples) {
           urls.push({
-            loc: `/nha-pho/${sample.id}`,
+            loc: `/${catalog.slug}/${sample.id}`,
             title: seoDocumentTitle(sample.title),
-            description: `${sample.title}: ${sample.images?.length || 0} ảnh phối cảnh nhà phố của Việt Dũng Phát.`.slice(0, 160),
+            description: `${sample.title}: ${sample.images?.length || 0} ảnh phối cảnh ${catalog.noun} của Việt Dũng Phát.`.slice(0, 160),
             image: sample.cover || DEFAULT_OG,
             imageAlt: sample.title,
             type: "article",

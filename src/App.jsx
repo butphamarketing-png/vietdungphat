@@ -10,7 +10,7 @@ import Pricing from "./pages/Pricing.jsx";
 import LoBan from "./pages/LoBan.jsx";
 import Album from "./pages/Album.jsx";
 import { KeywordHub, KeywordPage } from "./pages/Keywords.jsx";
-import { TownhouseList, TownhouseSample } from "./pages/Townhouse.jsx";
+import { MaiNhatList, MaiNhatSample, TanCoList, TanCoSample, TownhouseList, TownhouseSample } from "./pages/Townhouse.jsx";
 import AdminApp from "./adminbp/AdminApp.jsx";
 import SiteLoader from "./components/SiteLoader.jsx";
 
@@ -29,6 +29,14 @@ export default function App() {
           <Route path="/nha-pho/:id" element={<TownhouseSample />} />
           <Route path="/mau-nha/nha-pho" element={<Navigate to="/nha-pho" replace />} />
           <Route path="/mau-nha/nha-pho/:id" element={<TownhouseSample />} />
+          <Route path="/nha-mai-nhat" element={<MaiNhatList />} />
+          <Route path="/nha-mai-nhat/:id" element={<MaiNhatSample />} />
+          <Route path="/mau-nha/nha-mai-nhat" element={<Navigate to="/nha-mai-nhat" replace />} />
+          <Route path="/mau-nha/nha-mai-nhat/:id" element={<MaiNhatSample />} />
+          <Route path="/nha-tan-co-dien" element={<TanCoList />} />
+          <Route path="/nha-tan-co-dien/:id" element={<TanCoSample />} />
+          <Route path="/mau-nha/nha-tan-co-dien" element={<Navigate to="/nha-tan-co-dien" replace />} />
+          <Route path="/mau-nha/nha-tan-co-dien/:id" element={<TanCoSample />} />
           <Route path="/album" element={<Navigate to="/du-an" replace />} />
           <Route path="/san-pham" element={<ListPage kind="products" />} />
           <Route path="/dich-vu" element={<Services />} />

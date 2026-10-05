@@ -90,8 +90,8 @@ export const HOUSE_STYLE_MEDIA = [
   {
     slug: "nha-mai-nhat",
     title: "Nhà mái Nhật",
-    desc: "20 mẫu mái Nhật thấp tầng, hiên rộng và sân trước.",
-    lead: "Nhà mái Nhật: mái dốc vừa, hiên rộng, sân trước thoáng — ấm cúng và dễ thi công.",
+    desc: "13 mẫu nhà mái Nhật. Bấm vào để xem từng mẫu và toàn bộ ảnh.",
+    lead: "Nhà mái Nhật: mỗi mẫu là một bộ ảnh phối cảnh riêng, mái dốc vừa, hiên rộng và sân trước thoáng.",
     folder: "mai-nhat",
     alts: [
       "mẫu nhà mái Nhật 1 trệt 1 lầu",

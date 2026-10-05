@@ -1,35 +1,35 @@
-import { villaSrcs } from "./studio.js";
+import nhatSamples from "../data/nha-mai-nhat-samples.json";
+import tanSamples from "../data/nha-tan-co-dien-samples.json";
 
-const IMG = {
-  tronGoi: "/news/news-tron-goi.jpg",
-  phanTho: "/news/news-phan-tho.jpg",
-  thietKe: "/news/news-thiet-ke.jpg",
-  caiTao: "/news/news-cai-tao.jpg",
-  phongThuy: "/news/news-phong-thuy.jpg",
-  baoGia: "/news/news-bao-gia.jpg",
-  mansard: "/villas/villa-mansard-rong.jpg",
-  thai: "/villas/villa-goc-lon.jpg",
-  pho4: "/villas/villa-cong-lon.jpg",
-  living: "/interior/noi-that-tan-co-dien.png",
-  combo: "/interior/combo-noi-that-danh-cho-can-ho.png",
-  wardrobe: "/interior/tu-quan-ao.png",
-  bed: "/interior/giuong-doi-lon-18.png",
-  indochine: "/interior/combo-noi-that-indochine.png",
-  loft: "/interior/noi-that-loft-industrial.png",
-  jp: "/interior/noi-that-phong-cach-nhat.png",
-  villa: "/interior/noi-that-luxury-modern-villa.png",
-};
+const SKIP_THUMB = new Set([
+  "/mau-nha/nhat/06/01.jpg",
+  "/mau-nha/nhat/08/01.jpg",
+  "/mau-nha/tan/02/01.jpg",
+  "/mau-nha/tan/04/01.jpg",
+  "/mau-nha/tan/11/01.jpg",
+]);
+
+function samplePhotos(samples) {
+  const covers = samples.map((item) => item.cover).filter((src) => !SKIP_THUMB.has(src));
+  const rest = samples.flatMap((item) => item.images).filter((src) => !SKIP_THUMB.has(src) && !covers.includes(src));
+  return [...covers, ...rest];
+}
+
+const NHAT = samplePhotos(nhatSamples);
+const TAN = samplePhotos(tanSamples);
+const HOUSE = [...TAN.slice(0, 13), ...NHAT.slice(0, 13), ...TAN.slice(13), ...NHAT.slice(13)];
 
 const GROUP_POOLS = {
-  "xay-dung": [IMG.tronGoi, IMG.phanTho, ...villaSrcs],
-  "tan-co-dien": villaSrcs,
-  "thiet-ke": [IMG.thietKe, ...villaSrcs],
-  "cai-tao": [IMG.caiTao, IMG.phanTho, ...villaSrcs],
-  "noi-that": [IMG.living, IMG.combo, IMG.wardrobe, IMG.bed, IMG.indochine, IMG.loft, IMG.jp, IMG.villa],
-  "bao-gia": [IMG.baoGia, IMG.thietKe, ...villaSrcs.slice(0, 6)],
-  "khu-vuc": [IMG.tronGoi, IMG.phanTho, ...villaSrcs],
-  "phong-thuy": [IMG.phongThuy, IMG.thietKe, IMG.baoGia],
-  "thuong-hieu": villaSrcs,
+  "xay-dung": HOUSE,
+  "tan-co-dien": TAN,
+  "thiet-ke": HOUSE,
+  "cai-tao": HOUSE,
+  "noi-that": HOUSE,
+  "bao-gia": HOUSE,
+  "khu-vuc": HOUSE,
+  "dong-nam": HOUSE,
+  "phong-thuy": HOUSE,
+  "thuong-hieu": HOUSE,
 };
 
 const HOME_NEWS = [
@@ -40,13 +40,12 @@ const HOME_NEWS = [
 
 function keepNewsPhoto(src = "") {
   const url = String(src);
-  if (url.startsWith("/mau-nha/pho/")) return true;
-  if (url.startsWith("/news/") || url.startsWith("/interior/") || url.startsWith("/villas/") || url.startsWith("/media/") || url.startsWith("/bai/")) return true;
+  if (url.startsWith("/mau-nha/nhat/") || url.startsWith("/mau-nha/tan/")) return true;
   return /supabase\.co|r2\.dev|cloudflarestorage/i.test(url);
 }
 
 function hashPick(pool, key) {
-  const list = pool?.length ? pool : [IMG.tronGoi];
+  const list = pool?.length ? pool : HOUSE;
   let h = 0;
   for (const ch of String(key)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   return list[h % list.length];
@@ -54,16 +53,10 @@ function hashPick(pool, key) {
 
 function topicPool(item = {}) {
   const hay = `${item.slug || ""} ${item.title || ""} ${item.seoKeyword || ""} ${item.group || ""}`.toLowerCase();
-  if (/lỗ ban|lo-ban|phong thủy|xin phép|cấp phép|tuổi xây/.test(hay)) return GROUP_POOLS["phong-thuy"];
-  if (/phần thô/.test(hay)) return [IMG.phanTho];
-  if (/chìa khóa|trọn gói/.test(hay) && !/nội thất/.test(hay)) return [IMG.tronGoi];
-  if (/nội thất|combo|tủ quần|kệ tivi/.test(hay)) return GROUP_POOLS["noi-that"];
-  if (/cải tạo|sửa nhà|nâng tầng|chống thấm/.test(hay)) return GROUP_POOLS["cai-tao"];
-  if (/báo giá|đơn giá|giá xây/.test(hay) || item.group === "bao-gia") return GROUP_POOLS["bao-gia"];
-  if (/thiết kế|hồ sơ|phối cảnh|kiến trúc/.test(hay)) return GROUP_POOLS["thiet-ke"];
-  if (/tân cổ|cổ điển|mansard/.test(hay)) return GROUP_POOLS["tan-co-dien"];
+  if (/tân cổ|cổ điển|mansard/.test(hay) || item.group === "tan-co-dien") return TAN;
+  if (/mái nhật|mai nhat/.test(hay)) return NHAT;
   if (GROUP_POOLS[item.group]) return GROUP_POOLS[item.group];
-  return GROUP_POOLS["xay-dung"];
+  return HOUSE;
 }
 
 export function newsCover(item = {}) {
