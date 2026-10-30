@@ -144,11 +144,11 @@ function titlePlace(phrase) {
 }
 
 function titleAction(kw) {
-  if (/thước lỗ ban/.test(kw)) return "đo cửa, cầu thang và bậc theo thước Lỗ Ban trước khi xây";
-  if (/xem tuổi/.test(kw)) return "xem tuổi gia chủ và chọn ngày động thổ năm 2026";
-  if (/phối cảnh|\b3d\b/.test(kw)) return "xem phối cảnh mặt tiền trước khi đưa bản vẽ ra thi công";
+  if (/thước lỗ ban/.test(kw)) return "đo cửa, cầu thang và bậc trước khi xây";
+  if (/xem tuổi/.test(kw)) return "chọn ngày động thổ và xem hướng làm nhà";
+  if (/phối cảnh|\b3d\b/.test(kw)) return "đối chiếu mặt bằng với mặt đứng trước khi thi công";
   if (/hồ sơ năng lực/.test(kw)) return "xem hồ sơ năng lực và các công trình đã bàn giao";
-  if (/việt dũng phát/.test(kw)) return "xem văn phòng tại Thủ Đức và công trình nhà ở đã làm";
+  if (/việt dũng phát/.test(kw) && !/bảng giá/.test(kw)) return "xem văn phòng tại Thủ Đức và công trình nhà ở đã làm";
   if (/chống thấm/.test(kw)) return "xử lý sân thượng, ban công và chân tường trước khi sơn";
   if (/điện nước/.test(kw)) return "đi ống điện nước âm tường trước khi tô và ốp lát";
   if (/móng|bê tông|cọc/.test(kw)) return "kiểm tra nền đất rồi mới chọn cách đổ móng";
@@ -160,7 +160,16 @@ function titleAction(kw) {
   if (/sơn chống/.test(kw)) return "sơn chống nóng sau khi tường ngoài đã khô";
   if (/nội quy/.test(kw)) return "đọc nội quy ban quản lý trước khi đưa vật tư vào công trình";
   if (/giấy phép|xin phép|thủ tục cấp phép|hồ sơ thiết kế xin phép/.test(kw)) return "đối chiếu sổ, chỉ giới và nơi nộp hồ sơ trước khi đào móng";
-  if (/báo giá|đơn giá|giá xây|chi phí|bảng giá/.test(kw)) return "khảo sát công trình trước khi chốt báo giá năm 2026";
+  if (/không phát sinh/.test(kw)) return "chốt phạm vi, vật tư và cách tính diện tích trước khi đổ móng";
+  if (/báo giá thiết kế/.test(kw)) return "tính phí hồ sơ xin phép và bản vẽ thi công, tách khỏi giá xây";
+  if (/báo giá cải tạo/.test(kw)) return "lập bảng khối lượng sau khi xem kết cấu cũ";
+  if (/100\s?m/.test(kw)) return "tính tiền theo diện tích sàn, không nhân đơn giá với diện tích đất";
+  if (/5x20/.test(kw) && /chi phí|giá|báo giá/.test(kw)) return "nhân đơn giá với tổng sàn, không với 100m² đất";
+  if (/phần thô/.test(kw) && /giá|báo giá|chi phí|đơn giá|bảng giá/.test(kw)) return "lấy mốc phần thô năm 2026, móng và hẻm tính thêm sau khảo sát";
+  if (/trọn gói/.test(kw) && /giá|báo giá|chi phí|đơn giá|bảng giá/.test(kw)) return "lấy mốc trọn gói năm 2026 và đọc kỹ khoản chưa gồm trong đơn giá";
+  if (/hoàn thiện/.test(kw) && /giá|báo giá|chi phí/.test(kw)) return "báo theo gạch, sơn và cửa sau khi phần thô đã nghiệm thu";
+  if (/bảng giá/.test(kw)) return "xem mốc phần thô và trọn gói năm 2026, số ký chốt sau khảo sát";
+  if (/báo giá|đơn giá|giá xây|chi phí/.test(kw)) return "đối chiếu cách đo mét vuông và khoản chưa gồm trước khi ký";
   if (/nội thất|tủ bếp|đồ gỗ|combo nội thất/.test(kw)) return "đo tường thật sau khi tô xong rồi mới đóng tủ và trần";
   if (/nâng tầng/.test(kw)) return "xem giấy phép và sức chịu của móng trước khi đúc thêm tầng";
   if (/cấp 4/.test(kw)) return "xem móng, mái và điện cũ trước khi quyết định sửa hay xây lại";
@@ -174,7 +183,7 @@ function titleAction(kw) {
   if (/phần thô/.test(kw)) return "chốt móng, khung, mái và những khoản chưa gồm trong đơn giá";
   if (/hoàn thiện/.test(kw)) return "ốp, sơn và lắp cửa sau khi phần thô đã nghiệm thu";
   if (/chìa khóa/.test(kw)) return "ghi đủ danh mục đến lúc vào ở trước khi nhận nhà";
-  if (/trọn gói/.test(kw)) return "khảo sát công trình trước khi báo giá năm 2026";
+  if (/trọn gói/.test(kw)) return "một hợp đồng từ móng đến hoàn thiện, khảo sát trước khi báo giá năm 2026";
   if (/nhà thầu|công ty xây|uy tín/.test(kw)) return "xem công trình đang làm và người đứng giám sát trước khi đặt cọc";
   if (/sân thượng/.test(kw)) return "chống thấm và tạo dốc sân thượng trước khi lát";
   if (/5x20|4x16|nhà ống|1 trệt|\dtầng|nhà phố/.test(kw)) return "đo mặt tiền, chiều sâu và miệng hẻm trước khi chốt số tầng";
@@ -183,39 +192,52 @@ function titleAction(kw) {
   return "khảo sát công trình trước khi báo giá năm 2026";
 }
 
-const PLACE_FACT = {
-  "ranh Thủ Đức và hẻm sau nhà": "Đo hẻm sau nhà sát ranh Thủ Đức.",
-  "nhà ống cũ và hẻm hẹp": "Nhà ống cũ nằm trong hẻm hẹp.",
-  "khu công nghiệp và giờ xe": "Tránh giờ tan ca khu công nghiệp.",
-  "nền san lấp và phép Bình Dương": "Nền san lấp, giấy phép nộp ở Bình Dương.",
-  "đất nền mới và lộ giới": "Đất nền mới, đối chiếu lộ giới.",
-  "hẻm trung tâm và đất ven sông": "Hẻm trung tâm khác đất ven sông.",
-  "quy hoạch đang đổi": "Đối chiếu quy hoạch trước khi đào.",
-  "nền yếu và cự ly vật tư": "Nền yếu, đường chở vật tư xa.",
-  "nhà vườn và đường huyện": "Nhà vườn trên đường huyện.",
-  "phép tỉnh và quãng đường vật tư": "Giấy phép tỉnh, quãng đường vật tư dài.",
-  "nội quy ban quản lý": "Làm theo nội quy ban quản lý.",
-  "nhà phố xen đất nền Thủ Đức": "Nhà phố xen với đất nền Thủ Đức.",
-  "nhà ống mặt tiền và hẻm": "Có cả nhà mặt tiền và nhà trong hẻm.",
-  "đất nền và thoát nước mưa": "Đất nền mới, tính thoát nước mưa.",
-  "đất nền và nhà vườn": "Nhiều lô là đất nền và nhà vườn.",
-  "nhà phố trong hẻm": "Phần lớn là nhà phố trong hẻm.",
-  "địa bàn cũ, hồ sơ Thủ Đức": "Hồ sơ xây dựng nộp ở Thủ Đức.",
-  "đất tách thửa và hẻm xe": "Đất tách thửa, hẻm xe không đều.",
-  "gần văn phòng Kha Vạn Cân": "Gần văn phòng trên đường Kha Vạn Cân.",
-  "Quận 9 cũ và các phường phía đông": "Thuộc các phường phía đông, gồm Quận 9 cũ.",
+const PLACE_CLAUSE = {
+  "ranh Thủ Đức và hẻm sau nhà": "đo hẻm sau nhà sát ranh Thủ Đức trước khi báo giá",
+  "nhà ống cũ và hẻm hẹp": "đo hẻm hẹp và tường chung của nhà ống cũ trước khi đào",
+  "khu công nghiệp và giờ xe": "tránh giờ tan ca khu công nghiệp khi đổ bê tông",
+  "nền san lấp và phép Bình Dương": "xem nền san lấp và giấy phép Bình Dương trước khi báo giá",
+  "đất nền mới và lộ giới": "đối chiếu lộ giới trên đất nền mới trước khi đào",
+  "hẻm trung tâm và đất ven sông": "đo hẻm trung tâm hoặc đất ven sông trước khi chọn móng",
+  "quy hoạch đang đổi": "đối chiếu quy hoạch đang điều chỉnh trước khi đào móng",
+  "nền yếu và cự ly vật tư": "xem nền yếu và đường chở vật tư trước khi chốt móng",
+  "nhà vườn và đường huyện": "đo đường huyện và đất vườn trước khi cho xe vào",
+  "phép tỉnh và quãng đường vật tư": "tính giấy phép tỉnh và quãng đường vật tư trước khi ký",
+  "nội quy ban quản lý": "đọc nội quy ban quản lý trước khi đưa vật tư vào",
+  "nhà phố xen đất nền Thủ Đức": "xem nhà phố xen đất nền trước khi chốt móng",
+  "nhà ống mặt tiền và hẻm": "đo riêng nhà mặt tiền và nhà trong hẻm trước khi báo giá",
+  "đất nền và thoát nước mưa": "xem đất nền và hướng thoát nước mưa trước khi đổ sàn",
+  "đất nền và nhà vườn": "đo đất nền và lối vào nhà vườn trước khi thi công",
+  "nhà phố trong hẻm": "đo miệng hẻm trước khi xếp nhà phố",
+  "địa bàn cũ, hồ sơ Thủ Đức": "nộp hồ sơ ở Thủ Đức và khảo sát nền trước khi báo giá",
+  "đất tách thửa và hẻm xe": "đo đất tách thửa và hẻm xe trước khi chọn cách đổ bê tông",
+  "gần văn phòng Kha Vạn Cân": "khảo sát khu gần văn phòng Kha Vạn Cân trước khi báo giá",
+  "Quận 9 cũ và các phường phía đông": "khảo sát các phường phía đông, gồm Quận 9 cũ, trước khi báo giá",
 };
+
+const CITY_CLAUSE = [
+  [/quận 7/, "đọc giấy phép và phòng cháy của từng lô trước khi thi công"],
+  [/gò vấp/, "đo đất nhỏ và hẻm trước khi xếp nhà ống"],
+  [/bình thạnh/, "xem cốt nền và thoát nước trước khi chọn móng"],
+  [/tân bình/, "tính hẻm nhỏ và cách âm trước khi chốt mặt đứng"],
+  [/tân phú/, "đo hẻm và giờ xe ben trước khi đổ bê tông"],
+  [/bình tân/, "khoan xem nền trước khi chọn móng"],
+  [/nhà bè/, "xem nền yếu, triều và đường vào trước khi chốt cốt nền"],
+  [/bình chánh/, "hỏi điện nước hạ tầng và đường vào trước khi nhận nhà"],
+  [/long an/, "tính nền, đường tỉnh và giấy phép sở xây dựng trước khi ký"],
+  [/kha vạn cân/, "khảo sát khu gần văn phòng Kha Vạn Cân trước khi báo giá"],
+];
 
 function foldTitle(s) {
   return s.toLowerCase().replace(/m²/g, "m2").replace(/,/g, "").replace(/\s+/g, " ");
 }
 
 function finishTitle(head, kw, fact) {
-  const clause = titleAction(kw);
-  const generic = /^khảo sát công trình trước khi /.test(clause);
-  let title = generic && fact ? `${head}: ${clause}. ${fact}` : `${head}: ${clause}`;
+  let clause = titleAction(kw);
+  if (fact && clause === "khảo sát công trình trước khi báo giá năm 2026") clause = fact;
+  let title = `${head}: ${clause}`;
   const halfHas = () => foldTitle(title.slice(0, Math.ceil(title.length / 2))).includes(foldTitle(kw));
-  if (!halfHas()) title = `${head}: ${clause}. Khảo sát trước khi thi công năm 2026`;
+  if (!halfHas()) title = `${head}: ${clause}. Khảo sát năm 2026`;
   return title;
 }
 
@@ -227,7 +249,8 @@ function keywordTitle(phrase) {
   const kw = phrase.toLowerCase();
   if (TITLE_OVERRIDES[kw]) return TITLE_OVERRIDES[kw];
   const place = titlePlace(phrase);
-  const fact = place ? PLACE_FACT[place.h2] || place.h2 : "";
+  const city = CITY_CLAUSE.find(([test]) => test.test(kw));
+  const fact = place ? PLACE_CLAUSE[place.h2] || "" : city ? city[1] : "";
   return finishTitle(capPhrase(phrase), kw, fact);
 }
 
