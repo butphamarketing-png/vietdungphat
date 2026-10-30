@@ -99,18 +99,17 @@ const CAPS = [
   ["dĩ an", "Dĩ An"],
 ];
 
-const TAILS = [
-  "nên chốt minh bạch theo mét vuông năm 2026",
-  "để gia chủ yên tâm với hợp đồng chuẩn năm 2026",
-  "đáng đối chiếu dự toán minh bạch năm 2026",
-  "tránh rủi ro nhờ bảng khối lượng chuẩn năm 2026",
-  "nên xem công trình trước báo giá chuẩn năm 2026",
-  "cho mặt tiền đẹp hơn khi thi công chuẩn năm 2026",
-  "giúp gia chủ yên tâm nhờ cam kết nhật ký năm 2026",
-  "tiết kiệm phát sinh khi phạm vi được chốt năm 2026",
+const TITLE_CAPS = [
+  ["dĩ an bình dương", "Dĩ An Bình Dương"],
+  ["biên hòa đồng nai", "Biên Hòa Đồng Nai"],
+  ["long thành đồng nai", "Long Thành Đồng Nai"],
+  ["thành phố thủ đức", "thành phố Thủ Đức"],
+  ["phước long b", "Phước Long B"],
+  ["tăng nhơn phú a", "Tăng Nhơn Phú A"],
+  ["kha vạn cân", "Kha Vạn Cân"],
+  ["việt dũng phát", "Việt Dũng Phát"],
+  ["lỗ ban", "Lỗ Ban"],
 ];
-
-const TITLE_EXTRA = [" theo hiện trạng từng thửa", " sau khi đo hẻm và nền", " với phụ lục vật tư rõ", " và bàn giao có biên bản"];
 
 const CITY_CAPS = [
   ["hồ chí minh", "Hồ Chí Minh"],
@@ -128,38 +127,113 @@ const CITY_CAPS = [
   ["tphcm", "TPHCM"],
 ];
 
-function finishTitle(head, kw, hook) {
-  const tail = TAILS[hash(kw) % TAILS.length];
-  let title = hook ? `${head} — ${hook}, ${tail}` : `${head} — ${tail}`;
-  let i = 0;
-  const halfHas = () => title.slice(0, Math.ceil(title.length / 2)).toLowerCase().includes(kw);
-  while (!halfHas() && i < TITLE_EXTRA.length) {
-    title += TITLE_EXTRA[i];
-    i += 1;
-  }
-  while (!halfHas() && title.length < 190) title += " trước khi đào móng";
-  return title;
+function capPhrase(phrase) {
+  let head = phrase.toLowerCase();
+  head = head.replace(/m2\b/g, "m²");
+  head = head.replace(/\b3d\b/g, "3D");
+  const pairs = [...TITLE_CAPS, ...CAPS, ...CITY_CAPS].sort((a, b) => b[0].length - a[0].length);
+  for (const [from, to] of pairs) head = head.replaceAll(from, to);
+  return head.charAt(0).toUpperCase() + head.slice(1);
 }
 
-export function locationTitle(phrase) {
-  let head = phrase.toLowerCase();
-  for (const [from, to] of CAPS) head = head.replaceAll(from, to);
-  head = head.charAt(0).toUpperCase() + head.slice(1);
-  return finishTitle(head, phrase.toLowerCase(), placeOf(phrase).h2);
+function titlePlace(phrase) {
+  const kw = phrase.toLowerCase();
+  if (/dĩ an bình dương/.test(kw)) return PLACES.find((place) => String(place.test) === String(/dĩ an/));
+  if (/biên hòa đồng nai/.test(kw)) return PLACES.find((place) => String(place.test) === String(/biên hòa/));
+  return PLACES.find((place) => place.test.test(kw)) || null;
+}
+
+function titleAction(kw) {
+  if (/thước lỗ ban/.test(kw)) return "nên đo cửa, cầu thang và bậc theo thước Lỗ Ban trước khi xây";
+  if (/xem tuổi/.test(kw)) return "nên xem tuổi gia chủ và chọn ngày động thổ năm 2026";
+  if (/phối cảnh|\b3d\b/.test(kw)) return "nên xem phối cảnh mặt tiền trước khi đưa bản vẽ ra thi công";
+  if (/hồ sơ năng lực/.test(kw)) return "nên xem hồ sơ năng lực và các công trình đã bàn giao";
+  if (/việt dũng phát/.test(kw)) return "nên xem văn phòng tại Thủ Đức và công trình nhà ở đã làm";
+  if (/chống thấm/.test(kw)) return "nên xử lý sân thượng, ban công và chân tường trước khi sơn";
+  if (/điện nước/.test(kw)) return "nên đi ống điện nước âm tường trước khi tô và ốp lát";
+  if (/móng|bê tông|cọc/.test(kw)) return "nên kiểm tra nền đất rồi mới chọn cách đổ móng";
+  if (/bảo hành/.test(kw)) return "nên ghi thời hạn bảo hành và người phụ trách trong hợp đồng";
+  if (/giám sát/.test(kw)) return "nên có người giám sát và nhật ký ảnh trước mỗi lần đổ bê tông";
+  if (/tiến độ/.test(kw)) return "nên chia tiến độ theo móng, thân, mái rồi mới đến hoàn thiện";
+  if (/hợp đồng/.test(kw)) return "nên ghi phạm vi, cách tính mét vuông và người giám sát trước khi tạm ứng";
+  if (/vật tư|vận chuyển/.test(kw)) return "nên chốt đường vào công trình và chủng loại vật tư trước khi đặt hàng";
+  if (/sơn chống/.test(kw)) return "nên sơn chống nóng sau khi tường ngoài đã khô";
+  if (/nội quy/.test(kw)) return "nên đọc nội quy ban quản lý trước khi đưa vật tư vào công trình";
+  if (/giấy phép|xin phép|thủ tục cấp phép|hồ sơ thiết kế xin phép/.test(kw)) return "nên đối chiếu sổ, chỉ giới và nơi nộp hồ sơ trước khi đào móng";
+  if (/báo giá|đơn giá|giá xây|chi phí|bảng giá/.test(kw)) return "nên khảo sát công trình trước khi chốt báo giá năm 2026";
+  if (/nội thất|tủ bếp|đồ gỗ|combo nội thất/.test(kw)) return "nên đo tường thật sau khi tô xong rồi mới đóng tủ và trần";
+  if (/nâng tầng/.test(kw)) return "nên xem giấy phép và sức chịu của móng trước khi đúc thêm tầng";
+  if (/cấp 4/.test(kw)) return "nên xem móng, mái và điện cũ trước khi quyết định sửa hay xây lại";
+  if (/cải tạo|sửa nhà|sửa chữa/.test(kw)) return "nên xem nhà đang ở và chỗ thấm trước khi đục";
+  if (/mặt tiền/.test(kw)) return "nên đo bề ngang và khoảng lùi trước khi chốt mặt đứng";
+  if (/tân cổ điển|mansard|mái thái/.test(kw)) return "nên duyệt một đoạn phào mẫu trước khi đắp đại trà";
+  if (/thiết kế|kiến trúc sư|công ty kiến trúc/.test(kw)) return "nên đo đất thật và chốt mặt bằng trước khi làm mặt tiền";
+  if (/sân vườn/.test(kw)) return "nên chừa lối cho xe và máy vào suốt thời gian xây phần thô";
+  if (/biệt thự/.test(kw)) return "nên làm kết cấu, mái và sảnh theo hồ sơ, không tính như nhà phố";
+  if (/\d tầng/.test(kw)) return "nên chốt móng đủ tải cho đúng số tầng trước khi đổ sàn";
+  if (/phần thô/.test(kw)) return "nên chốt móng, khung, mái và những khoản chưa gồm trong đơn giá";
+  if (/hoàn thiện/.test(kw)) return "nên ốp, sơn và lắp cửa sau khi phần thô đã nghiệm thu";
+  if (/chìa khóa/.test(kw)) return "nên ghi đủ danh mục đến lúc vào ở trước khi nhận nhà";
+  if (/trọn gói/.test(kw)) return "nên khảo sát công trình trước khi báo giá năm 2026";
+  if (/nhà thầu|công ty xây|uy tín/.test(kw)) return "nên xem công trình đang làm và người đứng giám sát trước khi đặt cọc";
+  if (/5x20|4x16|nhà ống|1 trệt|\dtầng|nhà phố/.test(kw)) return "nên đo mặt tiền, chiều sâu và miệng hẻm trước khi chốt số tầng";
+  return "nên khảo sát công trình trước khi báo giá năm 2026";
+}
+
+const PLACE_FACT = {
+  "ranh Thủ Đức và hẻm sau nhà": "hẻm sau nhà sát ranh Thủ Đức",
+  "nhà ống cũ và hẻm hẹp": "nhiều nhà ống cũ nằm trong hẻm hẹp",
+  "khu công nghiệp và giờ xe": "công trình gần khu công nghiệp, phải tránh giờ tan ca",
+  "nền san lấp và phép Bình Dương": "nền nhiều chỗ là đất san lấp và giấy phép nộp ở Bình Dương",
+  "đất nền mới và lộ giới": "đất nền mới và lộ giới chưa ổn định",
+  "hẻm trung tâm và đất ven sông": "hẻm trong trung tâm khác đất ven sông",
+  "quy hoạch đang đổi": "quy hoạch khu vực đang điều chỉnh",
+  "nền yếu và cự ly vật tư": "nền yếu và đường chở vật tư khá xa",
+  "nhà vườn và đường huyện": "nhiều nhà vườn nằm trên đường huyện",
+  "phép tỉnh và quãng đường vật tư": "giấy phép do tỉnh cấp và quãng đường vật tư dài",
+  "nội quy ban quản lý": "ban quản lý có nội quy thi công riêng",
+  "nhà phố xen đất nền Thủ Đức": "nhà phố xen với đất nền Thủ Đức",
+  "nhà ống mặt tiền và hẻm": "vừa có nhà ống mặt tiền vừa có nhà trong hẻm",
+  "đất nền và thoát nước mưa": "đất nền mới, phải tính thoát nước mưa",
+  "đất nền và nhà vườn": "nhiều đất nền và nhà vườn",
+  "nhà phố trong hẻm": "phần lớn là nhà phố trong hẻm",
+  "địa bàn cũ, hồ sơ Thủ Đức": "người dân vẫn gọi Quận 9 nhưng hồ sơ nộp ở Thủ Đức",
+  "đất tách thửa và hẻm xe": "đất tách thửa và hẻm xe không đều",
+  "gần văn phòng Kha Vạn Cân": "khu này gần văn phòng trên đường Kha Vạn Cân",
+  "Quận 9 cũ và các phường phía đông": "công trình nằm ở các phường phía đông, gồm Quận 9 cũ",
+};
+
+function foldTitle(s) {
+  return s.toLowerCase().replace(/m²/g, "m2").replace(/,/g, "").replace(/\s+/g, " ");
+}
+
+function finishTitle(head, kw, fact) {
+  let clause = titleAction(kw);
+  if (fact) clause = `${clause}, vì ${fact}`;
+  let title = `${head}: ${clause}`;
+  const halfHas = () => foldTitle(title.slice(0, Math.ceil(title.length / 2))).includes(foldTitle(kw));
+  if (!halfHas()) title = `${head}: ${clause}, khảo sát trước khi thi công`;
+  return title;
 }
 
 const TITLE_OVERRIDES = {
   "xây nhà trọn gói tphcm": "Xây nhà trọn gói TPHCM: khảo sát công trình trước khi báo giá năm 2026",
 };
 
-export function exactKeywordTitle(phrase) {
+function keywordTitle(phrase) {
   const kw = phrase.toLowerCase();
   if (TITLE_OVERRIDES[kw]) return TITLE_OVERRIDES[kw];
-  let head = kw;
-  for (const [from, to] of [...CAPS, ...CITY_CAPS]) head = head.replaceAll(from, to);
-  head = head.charAt(0).toUpperCase() + head.slice(1);
-  const place = PLACES.find((item) => item.test.test(kw));
-  return finishTitle(head, kw, place ? place.h2 : "");
+  const place = titlePlace(phrase);
+  const fact = place ? PLACE_FACT[place.h2] || place.h2 : "";
+  return finishTitle(capPhrase(phrase), kw, fact);
+}
+
+export function locationTitle(phrase) {
+  return keywordTitle(phrase);
+}
+
+export function exactKeywordTitle(phrase) {
+  return keywordTitle(phrase);
 }
 
 const PLACES = [
