@@ -104,7 +104,7 @@ const TAILS = [
   "để gia chủ yên tâm với hợp đồng chuẩn năm 2026",
   "đáng đối chiếu dự toán minh bạch năm 2026",
   "tránh rủi ro nhờ bảng khối lượng chuẩn năm 2026",
-  "nên xem hiện trường trước báo giá chuẩn năm 2026",
+  "nên xem công trình trước báo giá chuẩn năm 2026",
   "cho mặt tiền đẹp hơn khi thi công chuẩn năm 2026",
   "giúp gia chủ yên tâm nhờ cam kết nhật ký năm 2026",
   "tiết kiệm phát sinh khi phạm vi được chốt năm 2026",
