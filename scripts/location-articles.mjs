@@ -148,11 +148,16 @@ export function locationTitle(phrase) {
   return finishTitle(head, phrase.toLowerCase(), placeOf(phrase).h2);
 }
 
+const TITLE_OVERRIDES = {
+  "xây nhà trọn gói tphcm": "Xây nhà trọn gói TPHCM: khảo sát hiện trường trước khi báo giá năm 2026",
+};
+
 export function exactKeywordTitle(phrase) {
-  let head = phrase.toLowerCase();
+  const kw = phrase.toLowerCase();
+  if (TITLE_OVERRIDES[kw]) return TITLE_OVERRIDES[kw];
+  let head = kw;
   for (const [from, to] of [...CAPS, ...CITY_CAPS]) head = head.replaceAll(from, to);
   head = head.charAt(0).toUpperCase() + head.slice(1);
-  const kw = phrase.toLowerCase();
   const place = PLACES.find((item) => item.test.test(kw));
   return finishTitle(head, kw, place ? place.h2 : "");
 }
