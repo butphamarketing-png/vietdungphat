@@ -149,7 +149,7 @@ export function locationTitle(phrase) {
 }
 
 const TITLE_OVERRIDES = {
-  "xây nhà trọn gói tphcm": "Xây nhà trọn gói TPHCM: khảo sát hiện trường trước khi báo giá năm 2026",
+  "xây nhà trọn gói tphcm": "Xây nhà trọn gói TPHCM: khảo sát công trình trước khi báo giá năm 2026",
 };
 
 export function exactKeywordTitle(phrase) {
